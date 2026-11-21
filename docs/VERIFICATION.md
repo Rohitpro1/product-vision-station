@@ -113,9 +113,11 @@ From a fresh `git clone` of tip `28b68ce` (local clone; see the publication stat
 | `PVS_RUN_MODELS=1 pytest tests/test_models.py` | 2 passed |
 | `ruff check src tests scripts` | clean |
 
-GitHub publication was blocked: this session can push to repositories attached to it but cannot create
-one (`POST /user/repos` → 403 for the integration; the session git proxy only allows repository-scoped
-endpoints). CI therefore has not run on GitHub yet; `.github/workflows/ci.yml` is ready.
+Publication: pushed to https://github.com/Rohitpro1/product-vision-station (`main`, remote tip `ff3e3b8`
+at push time). GitHub Actions run 44896002149 on `ff3e3b8`: `deterministic`, `train-smoke` and
+`postgres-migrations` succeeded; `real-models` skipped (manual opt-in). A fresh clone from GitHub of `ff3e3b8`
+ran `./scripts/bootstrap.sh` (exit 0; 101 passed) plus the fixture and pretrained `pvs detect` smoke runs above.
+The repository was created **public** by the owner (spec default was private).
 
 ## 4. Named deployment hardware — not run
 
