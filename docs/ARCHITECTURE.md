@@ -23,7 +23,7 @@ flowchart TD
     T --> I1[gallery.py<br/>DINOv2 / colour-hist embeddings]
     T --> I2[barcode.py<br/>ZXing-C++, GTIN check digit,<br/>polygon → one instance]
     T --> I3[geometry.py fit_axis<br/>orientation.py SIFT template A/B, face, variant cues]
-    I1 & I2 & I3 --> FU[fusion.py — versioned rules fusion-v1.3]
+    I1 & I2 & I3 --> FU[fusion.py — versioned rules fusion-v1.5]
     FU --> R[FrameResult schema 1.0 — schema.py]
     R --> O1[render.py overlay / preview]
     R --> O2[api.py REST · WebSocket · /metrics]

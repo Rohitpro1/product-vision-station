@@ -1,0 +1,17 @@
+{
+ "steps": 2,
+ "losses": [
+  311.1137,
+  163.4151
+ ],
+ "finite": true,
+ "train_s": 6.7,
+ "input_size": 320,
+ "init": "PekingU/rtdetr_r18vd@ac77a11ff017",
+ "onnx": "runs/rtdetr/rtdetr_r18_package.onnx",
+ "onnx_sha256": "de63a5f816c9604eb43d51be4cebf818d69ac59de5c9ddcf278b4ddae0c275a9",
+ "max_abs_diff_logits": 5.486607551574707e-05,
+ "max_abs_diff_boxes": 5.125999450683594e-06,
+ "provider": "CPUExecutionProvider",
+ "note": "fixture smoke only; not a trained station detector"
+}

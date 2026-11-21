@@ -1,0 +1,327 @@
+{
+ "counts": {
+  "gt": 24,
+  "matched": 21,
+  "sku_accepted": 10,
+  "sku_correct": 10,
+  "target_presentations": 17,
+  "target_correct": 10,
+  "neg_presentations": 7,
+  "neg_false_accept": 0,
+  "axis_obs": 24,
+  "axis_ret": 21,
+  "head_obs": 14,
+  "head_ret": 14,
+  "reversals": 0,
+  "empty_scenes": 7,
+  "empty_false_pos": 0,
+  "target_id_observable": 14,
+  "target_id_observable_correct": 10
+ },
+ "metrics": {
+  "localisation_recall": {
+   "metric": "localisation_recall",
+   "status": "measured",
+   "k": 21,
+   "n": 24,
+   "value": 0.875,
+   "ci95": [
+    0.6763886418111671,
+    0.973440685013751
+   ],
+   "gate": "fail (>=0.97)"
+  },
+  "exact_sku_precision": {
+   "metric": "exact_sku_precision",
+   "status": "measured",
+   "k": 10,
+   "n": 10,
+   "value": 1.0,
+   "ci95": [
+    0.6915028921812392,
+    1.0
+   ],
+   "gate": "pass (>=0.99)"
+  },
+  "exact_sku_recall": {
+   "metric": "exact_sku_recall",
+   "status": "measured",
+   "k": 10,
+   "n": 17,
+   "value": 0.5882352941176471,
+   "ci95": [
+    0.32924715394675735,
+    0.8155630382160532
+   ],
+   "gate": "fail (>=0.95)"
+  },
+  "exact_sku_recall_identity_observable": {
+   "metric": "exact_sku_recall_identity_observable",
+   "status": "measured",
+   "k": 10,
+   "n": 14,
+   "value": 0.7142857142857143,
+   "ci95": [
+    0.4189647428163391,
+    0.9161106816928725
+   ],
+   "gate": "fail (>=0.95)"
+  },
+  "false_target_acceptance": {
+   "metric": "false_target_acceptance",
+   "status": "measured",
+   "k": 0,
+   "n": 7,
+   "value": 0.0,
+   "ci95": [
+    0.0,
+    0.40961639722500337
+   ],
+   "one_sided_upper95": 0.34816365513116077,
+   "gate": "insufficient_evidence (point=0.0000, upper95=0.3482 > 0.01; need >=299 clean independent negatives)"
+  },
+  "axis_coverage": {
+   "metric": "axis_coverage",
+   "status": "measured",
+   "k": 21,
+   "n": 24,
+   "value": 0.875,
+   "ci95": [
+    0.6763886418111671,
+    0.973440685013751
+   ],
+   "gate": "fail (>=0.95)"
+  },
+  "axis_p95_err_deg": {
+   "metric": "axis_p95_err_deg",
+   "status": "measured",
+   "n": 21,
+   "value": 0.9078477865765535,
+   "max": 1.003344497938027,
+   "mean": 0.3520016843884619,
+   "gate": "pass (<=10.0)"
+  },
+  "heading_coverage": {
+   "metric": "heading_coverage",
+   "status": "measured",
+   "k": 14,
+   "n": 14,
+   "value": 1.0,
+   "ci95": [
+    0.7683642383498834,
+    1.0
+   ],
+   "gate": "pass (>=0.9)"
+  },
+  "heading_p95_err_deg": {
+   "metric": "heading_p95_err_deg",
+   "status": "measured",
+   "n": 14,
+   "value": 0.052471816573313027,
+   "max": 0.06887755698436138,
+   "mean": 0.02137077275975206,
+   "gate": "pass (<=15.0)"
+  },
+  "heading_reversal_rate": {
+   "metric": "heading_reversal_rate",
+   "status": "measured",
+   "k": 0,
+   "n": 14,
+   "value": 0.0,
+   "ci95": [
+    0.0,
+    0.23163576165011646
+   ],
+   "gate": "pass (<0.01)"
+  }
+ },
+ "negative_slices": {
+  "similar_gold_wrapper": {
+   "false_accept": 0,
+   "n": 7
+  }
+ },
+ "failures": [
+  {
+   "scene": "fx-009001",
+   "truth_sku": "fixture:zephyr-classic-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "not_in_catalogue"
+   }
+  },
+  {
+   "scene": "fx-009005",
+   "truth_sku": "fixture:zephyr-classic-40g",
+   "face": "front",
+   "pred": {
+    "level": "family",
+    "sku": null,
+    "rule": "R4_family_tie",
+    "reason": "tied_candidates"
+   }
+  },
+  {
+   "scene": "fx-009006",
+   "truth_sku": "fixture:zephyr-classic-40g",
+   "face": "front",
+   "pred": {
+    "level": "family",
+    "sku": null,
+    "rule": "R4b_template_family",
+    "reason": "variant_cue_missing"
+   }
+  },
+  {
+   "scene": "fx-009007",
+   "truth_sku": "fixture:zephyr-classic-40g",
+   "face": "front",
+   "pred": {
+    "level": "family",
+    "sku": null,
+    "rule": "R4_family_tie",
+    "reason": "tied_candidates"
+   }
+  },
+  {
+   "scene": "fx-009008",
+   "truth_sku": "unknown",
+   "face": "front",
+   "pred": null
+  },
+  {
+   "scene": "fx-009012",
+   "truth_sku": "fixture:zephyr-lite-40g",
+   "face": "edge",
+   "pred": null
+  },
+  {
+   "scene": "fx-009013",
+   "truth_sku": "fixture:zephyr-classic-40g",
+   "face": "edge",
+   "pred": null
+  },
+  {
+   "scene": "fx-009016",
+   "truth_sku": "fixture:zephyr-lite-40g",
+   "face": "front",
+   "pred": {
+    "level": "family",
+    "sku": null,
+    "rule": "R4b_template_family",
+    "reason": "variant_cue_missing"
+   }
+  }
+ ],
+ "run": {
+  "profile": "pretrained",
+  "backend": {
+   "detector": "grounding-dino:IDEA-Research/grounding-dino-tiny@a2bb814dd30d",
+   "masks": "sam2:facebook/sam2.1-hiera-tiny@de431c404385",
+   "embedder": "dinov2:facebook/dinov2-small@ed25f3a31f01",
+   "gallery": "dinov2:facebook/dinov2-small@ed25f3a31f01#3ab064159054efcf",
+   "template": "sift-homography-v1",
+   "barcode": "zxing-cpp",
+   "ocr": "unavailable"
+  },
+  "thresholds": "thr-dev-0.4",
+  "catalogue": "fixture-r1",
+  "ground_truth": "data/heldout/scenes/ground_truth_first20.json",
+  "ground_truth_sha256": "0ad2eb9f34d7a18da9e40b52ca7f77990cc720db6f72cb1691cd33189e04c941",
+  "input_sha256": [
+   "4ad30c0215c5b47f992a1d658537dabd615cb302263330ae43f10b6b4eb6d2c1",
+   "61cc1a269f6a679fcdb1627f577d8c51c420b1d0114cdebaa9c811ec438a0a51",
+   "c096a227327ac733ec2d5a43b8128392ff1519d1e645ed2775b6d635d80c5de6",
+   "..."
+  ],
+  "n_scenes": 20,
+  "timing_method": "time.perf_counter around Pipeline.process (processing-only; no capture delay)",
+  "processing_ms": {
+   "metric": "processing_ms",
+   "status": "measured",
+   "n": 20,
+   "value": 17046.584865550056,
+   "max": 25923.044966000132,
+   "mean": 13266.738828999994,
+   "median": 13053.04267849999
+  },
+  "env": {
+   "python": "3.13.18",
+   "platform": "Linux-6.18.44-fc-v726-x86_64-with-glibc2.39",
+   "machine": "x86_64",
+   "cpu_count": 2,
+   "implementation_commit": null,
+   "onnxruntime": "1.32.0",
+   "torch": "2.15.0+cpu",
+   "cuda": false
+  },
+  "caveat": "synthetic scenes; not real 5 Star presentations",
+  "rescored_with_commit": null,
+  "rescored_from": "results.jsonl (no re-inference)"
+ },
+ "summary": {
+  "localisation_recall": {
+   "k": 21,
+   "n": 24,
+   "value": 0.875,
+   "gate": "fail (>=0.97)"
+  },
+  "exact_sku_precision": {
+   "k": 10,
+   "n": 10,
+   "value": 1.0,
+   "gate": "pass (>=0.99)"
+  },
+  "exact_sku_recall": {
+   "k": 10,
+   "n": 17,
+   "value": 0.5882352941176471,
+   "gate": "fail (>=0.95)"
+  },
+  "exact_sku_recall_identity_observable": {
+   "k": 10,
+   "n": 14,
+   "value": 0.7142857142857143,
+   "gate": "fail (>=0.95)"
+  },
+  "false_target_acceptance": {
+   "k": 0,
+   "n": 7,
+   "value": 0.0,
+   "gate": "insufficient_evidence (point=0.0000, upper95=0.3482 > 0.01; need >=299 clean independent negatives)"
+  },
+  "axis_coverage": {
+   "k": 21,
+   "n": 24,
+   "value": 0.875,
+   "gate": "fail (>=0.95)"
+  },
+  "axis_p95_err_deg": {
+   "k": null,
+   "n": 21,
+   "value": 0.9078477865765535,
+   "gate": "pass (<=10.0)"
+  },
+  "heading_coverage": {
+   "k": 14,
+   "n": 14,
+   "value": 1.0,
+   "gate": "pass (>=0.9)"
+  },
+  "heading_p95_err_deg": {
+   "k": null,
+   "n": 14,
+   "value": 0.052471816573313027,
+   "gate": "pass (<=15.0)"
+  },
+  "heading_reversal_rate": {
+   "k": 0,
+   "n": 14,
+   "value": 0.0,
+   "gate": "pass (<0.01)"
+  }
+ }
+}

@@ -48,7 +48,7 @@ Abbreviated real response (fixture profile, `evidence/examples/exact_sku_barcode
 {
   "schema_version": "1.0", "status": "ok", "profile": "fixture",
   "backend": {"detector": "scripted-fixture", "embedder": "colour-hist-v1", "template": "sift-homography-v1", "barcode": "zxing-cpp", "ocr": "unavailable"},
-  "model_bundle": "dev-unbundled", "catalogue_revision": "fixture-r1", "thresholds_version": "thr-dev-0.4", "fusion_rules_version": "fusion-v1.3",
+  "model_bundle": "dev-unbundled", "catalogue_revision": "fixture-r1", "thresholds_version": "thr-dev-0.5", "fusion_rules_version": "fusion-v1.5",
   "camera": "file", "stream_epoch": 0, "frame_id": 0, "image_size_px": [960, 540], "coordinate_frame": "image_rectified",
   "instances": [{
     "bbox_xyxy_px": [270.0, 210.0, 690.0, 330.0], "mask_source": "manual",

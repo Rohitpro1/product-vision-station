@@ -1,0 +1,156 @@
+[
+ {
+  "example": "exact_sku_visual",
+  "provenance": "synthetic fixture (pvs.fixtures, seed 321), scripted boxes",
+  "status": "ok",
+  "instances": [
+   {
+    "identity": "sku",
+    "sku": "fixture:zephyr-lite-40g",
+    "family": "fixture:zephyr",
+    "rule": "R3_visual_sku_with_variant_cue",
+    "reason": "ok",
+    "face": "front",
+    "axis_deg": 32.09,
+    "heading_deg": 32.0,
+    "heading_reason": "ok"
+   }
+  ]
+ },
+ {
+  "example": "exact_sku_barcode_back_face",
+  "provenance": "synthetic fixture (pvs.fixtures, seed 321), scripted boxes",
+  "status": "ok",
+  "instances": [
+   {
+    "identity": "sku",
+    "sku": "fixture:zephyr-classic-40g",
+    "family": "fixture:zephyr",
+    "rule": "R2_verified_gtin",
+    "reason": "ok",
+    "face": "back",
+    "axis_deg": 0.0,
+    "heading_deg": 0.0,
+    "heading_reason": "ok"
+   }
+  ]
+ },
+ {
+  "example": "unknown_lookalike_axis_only",
+  "provenance": "synthetic fixture (pvs.fixtures, seed 321), scripted boxes",
+  "status": "ok",
+  "instances": [
+   {
+    "identity": "unknown",
+    "sku": null,
+    "family": null,
+    "rule": "R7_unknown",
+    "reason": "not_in_catalogue",
+    "face": "unknown",
+    "axis_deg": 140.14,
+    "heading_deg": null,
+    "heading_reason": "endpoint_hidden"
+   }
+  ]
+ },
+ {
+  "example": "edge_view_axis_only",
+  "provenance": "synthetic fixture (pvs.fixtures, seed 321), scripted boxes",
+  "status": "ok",
+  "instances": [
+   {
+    "identity": "unknown",
+    "sku": null,
+    "family": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold",
+    "face": "edge",
+    "axis_deg": 59.99,
+    "heading_deg": null,
+    "heading_reason": "endpoint_hidden"
+   }
+  ]
+ },
+ {
+  "example": "conflict_foreign_code",
+  "provenance": "synthetic fixture (pvs.fixtures, seed 321), scripted boxes",
+  "status": "ok",
+  "instances": [
+   {
+    "identity": "conflict",
+    "sku": null,
+    "family": null,
+    "rule": "R1_unknown_code_vs_visual",
+    "reason": "conflicting_code",
+    "face": "front",
+    "axis_deg": 0.02,
+    "heading_deg": 0.0,
+    "heading_reason": "ok"
+   }
+  ]
+ },
+ {
+  "example": "family_variant_cue_hidden",
+  "provenance": "synthetic fixture (pvs.fixtures, seed 321), scripted boxes",
+  "status": "ok",
+  "instances": [
+   {
+    "identity": "family",
+    "sku": null,
+    "family": "fixture:zephyr",
+    "rule": "R4b_template_family",
+    "reason": "variant_cue_missing",
+    "face": "front",
+    "axis_deg": 0.0,
+    "heading_deg": 359.99,
+    "heading_reason": "ok"
+   }
+  ]
+ },
+ {
+  "example": "three_packs",
+  "provenance": "synthetic fixture (pvs.fixtures, seed 321), scripted boxes",
+  "status": "ok",
+  "instances": [
+   {
+    "identity": "sku",
+    "sku": "fixture:zephyr-classic-40g",
+    "family": "fixture:zephyr",
+    "rule": "R3_visual_sku_with_variant_cue",
+    "reason": "ok",
+    "face": "front",
+    "axis_deg": 19.97,
+    "heading_deg": 200.03,
+    "heading_reason": "ok"
+   },
+   {
+    "identity": "sku",
+    "sku": "fixture:zephyr-lite-40g",
+    "family": "fixture:zephyr",
+    "rule": "R3b_variant_cue_region",
+    "reason": "ok",
+    "face": "back",
+    "axis_deg": 95.03,
+    "heading_deg": 94.99,
+    "heading_reason": "ok"
+   },
+   {
+    "identity": "unknown",
+    "sku": null,
+    "family": null,
+    "rule": "R7_unknown",
+    "reason": "not_in_catalogue",
+    "face": "unknown",
+    "axis_deg": 14.89,
+    "heading_deg": null,
+    "heading_reason": "endpoint_hidden"
+   }
+  ]
+ },
+ {
+  "example": "empty_frame",
+  "provenance": "synthetic fixture (pvs.fixtures, seed 321), scripted boxes",
+  "status": "no_packages",
+  "instances": []
+ }
+]

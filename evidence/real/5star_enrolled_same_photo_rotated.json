@@ -1,0 +1,140 @@
+{
+ "schema_version": "1.0",
+ "status": "ok",
+ "reason": "ok",
+ "profile": "pretrained",
+ "backend": {
+  "detector": "grounding-dino:IDEA-Research/grounding-dino-tiny@a2bb814dd30d",
+  "masks": "sam2:facebook/sam2.1-hiera-tiny@de431c404385",
+  "embedder": "dinov2:facebook/dinov2-small@ed25f3a31f01",
+  "gallery": "dinov2:facebook/dinov2-small@ed25f3a31f01#b5a2a0a51b45314e",
+  "template": "sift-homography-v1",
+  "barcode": "zxing-cpp",
+  "ocr": "unavailable"
+ },
+ "model_bundle": "pretrained-dev",
+ "catalogue_revision": "demo5star-r2",
+ "thresholds_version": "thr-dev-0.5",
+ "fusion_rules_version": "fusion-v1.5",
+ "camera": "photo",
+ "stream_epoch": 0,
+ "frame_id": 1,
+ "captured_at": "2026-11-21T09:48:39.959Z",
+ "processed_at": "2026-11-21T09:59:56.140Z",
+ "source": "off_5star_1.jpg (rotated 65deg, relit)",
+ "image_size_px": [
+  3072,
+  4096
+ ],
+ "coordinate_frame": "image_rectified",
+ "quality": {
+  "status": "ok",
+  "mean_luma": 143.143,
+  "saturated_frac": 0.0,
+  "sharpness": 399.323
+ },
+ "timing_ms": {
+  "quality": 23.39,
+  "detect": 8883.2,
+  "masks": 2448.11,
+  "identity": 95.14,
+  "orientation": 392.48,
+  "barcode": 82.43,
+  "total": 11939.28
+ },
+ "instances": [
+  {
+   "instance_id": "photo:0:1:0",
+   "track_id": null,
+   "bbox_xyxy_px": [
+    1280.8,
+    1505.1,
+    2410.9,
+    3023.3
+   ],
+   "det_score": 0.5483,
+   "det_source": "grounding-dino:IDEA-Research/grounding-dino-tiny@a2bb814dd30d",
+   "mask_source": "segmentation",
+   "identity": {
+    "level": "sku",
+    "family": "cadbury:5star",
+    "sku": "demo:cadbury-5star-18g-unverified",
+    "gtin": null,
+    "score": 0.9497,
+    "score_type": "raw_cosine_uncalibrated",
+    "margin": 0.8907,
+    "rule": "R3_visual_sku_with_variant_cue",
+    "reason": "ok",
+    "evidence": [
+     {
+      "kind": "gallery",
+      "value": "demo:cadbury-5star-18g-unverified",
+      "score": 0.9497,
+      "score_type": "raw_cosine_uncalibrated",
+      "frame_id": 1,
+      "observed_at": "2026-11-21T09:48:39.959Z",
+      "age_ms": null,
+      "polygon_px": null
+     },
+     {
+      "kind": "template",
+      "value": "demo:cadbury-5star-18g-unverified/front inliers=970 other_sku=0 cues=None",
+      "score": 1.0,
+      "score_type": "rule_based",
+      "frame_id": 1,
+      "observed_at": "2026-11-21T09:48:39.959Z",
+      "age_ms": null,
+      "polygon_px": null
+     }
+    ],
+    "candidates": [
+     {
+      "sku": "demo:cadbury-5star-18g-unverified",
+      "family": "cadbury:5star",
+      "side": "front",
+      "score": 0.9497151374816895,
+      "reference_revision": "observed-off-1"
+     }
+    ],
+    "observed_at": "2026-11-21T09:48:39.959Z",
+    "age_ms": 0.0
+   },
+   "pose": {
+    "frame": "image_rectified",
+    "face": "front",
+    "face_score": 1.0,
+    "face_reason": "ok",
+    "axis": {
+     "value_deg": 120.69,
+     "period_deg": 180,
+     "available": true,
+     "score": 1.0,
+     "reason": "ok",
+     "source": "mask:segmentation",
+     "observed_at": "2026-11-21T09:48:39.959Z",
+     "age_ms": 0.0
+    },
+    "heading": {
+     "value_deg": 300.72,
+     "period_deg": 360,
+     "available": true,
+     "score": 1.0,
+     "reason": "ok",
+     "source": "sift-homography-v1",
+     "observed_at": "2026-11-21T09:48:39.959Z",
+     "age_ms": 0.0
+    },
+    "endpoints_px": {
+     "A": [
+      1454.3,
+      2908.5
+     ],
+     "B": [
+      2239.4,
+      1587.4
+     ]
+    }
+   }
+  }
+ ]
+}

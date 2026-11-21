@@ -1,0 +1,54 @@
+{
+ "steps_run": 10,
+ "resumed_from": 20,
+ "final_step": 30,
+ "train_s": 0.5,
+ "n_items": {
+  "train": 64,
+  "val": 11,
+  "test": 11
+ },
+ "split_hash": {
+  "train": "e309390d20d4ed29",
+  "val": "be79951ca6c91db2",
+  "test": "6703f4abacd060ee"
+ },
+ "leakage": [],
+ "val": {
+  "n": 11,
+  "heading_n": 9,
+  "heading_median_err_deg": 106.32844317343813,
+  "face_acc": 0.45454545454545453
+ },
+ "log_tail": [
+  {
+   "step": 26,
+   "loss": 0.7542,
+   "lm": 0.046
+  },
+  {
+   "step": 27,
+   "loss": 0.5137,
+   "lm": 0.0451
+  },
+  {
+   "step": 28,
+   "loss": 0.372,
+   "lm": 0.0489
+  },
+  {
+   "step": 29,
+   "loss": 0.5319,
+   "lm": 0.0445
+  },
+  {
+   "step": 30,
+   "loss": 0.4491,
+   "lm": 0.0508
+  }
+ ],
+ "predicts": "ordered A/B landmarks + visibility + face",
+ "data": "data/fixtures/scenes/ground_truth.json",
+ "data_sha256": "47796bc0faddbbbe",
+ "note": "fixture-data smoke run; weights are NOT eligible for the production bundle"
+}

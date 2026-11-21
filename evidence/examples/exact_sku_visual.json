@@ -1,0 +1,147 @@
+{
+ "schema_version": "1.0",
+ "status": "ok",
+ "reason": "ok",
+ "profile": "fixture",
+ "backend": {
+  "detector": "scripted-fixture",
+  "masks": "scripted-fixture",
+  "embedder": "colour-hist-v1",
+  "gallery": "colour-hist-v1#7b16c94878feebca",
+  "template": "sift-homography-v1",
+  "barcode": "zxing-cpp",
+  "ocr": "unavailable"
+ },
+ "model_bundle": "dev-unbundled",
+ "catalogue_revision": "fixture-r1",
+ "thresholds_version": "thr-dev-0.5",
+ "fusion_rules_version": "fusion-v1.5",
+ "camera": "file",
+ "stream_epoch": 0,
+ "frame_id": 0,
+ "captured_at": "2026-11-21T10:07:06.171Z",
+ "processed_at": "2026-11-21T10:07:06.284Z",
+ "source": "evidence/examples/exact_sku_visual.png",
+ "image_size_px": [
+  960,
+  540
+ ],
+ "coordinate_frame": "image_rectified",
+ "quality": {
+  "status": "ok",
+  "mean_luma": 193.296,
+  "saturated_frac": 0.0,
+  "sharpness": 143.242
+ },
+ "timing_ms": {
+  "quality": 2.19,
+  "detect": 0.22,
+  "masks": 0.0,
+  "identity": 0.49,
+  "orientation": 79.6,
+  "barcode": 6.68,
+  "total": 90.39
+ },
+ "instances": [
+  {
+   "instance_id": "file:0:0:0",
+   "track_id": null,
+   "bbox_xyxy_px": [
+    271.0,
+    108.0,
+    690.0,
+    432.0
+   ],
+   "det_score": 0.99,
+   "det_source": "scripted-fixture",
+   "mask_source": "manual",
+   "identity": {
+    "level": "sku",
+    "family": "fixture:zephyr",
+    "sku": "fixture:zephyr-lite-40g",
+    "gtin": null,
+    "score": 0.8615,
+    "score_type": "raw_cosine_uncalibrated",
+    "margin": 0.1053,
+    "rule": "R3_visual_sku_with_variant_cue",
+    "reason": "ok",
+    "evidence": [
+     {
+      "kind": "gallery",
+      "value": "fixture:zephyr-lite-40g",
+      "score": 0.8615,
+      "score_type": "raw_cosine_uncalibrated",
+      "frame_id": 0,
+      "observed_at": "2026-11-21T10:07:06.171Z",
+      "age_ms": null,
+      "polygon_px": null
+     },
+     {
+      "kind": "template",
+      "value": "fixture:zephyr-lite-40g/front inliers=107 other_sku=54 cues={'fixture:zephyr-classic-40g': 0.8691, 'fixture:zephyr-lite-40g': 0.9934}",
+      "score": 1.0,
+      "score_type": "rule_based",
+      "frame_id": 0,
+      "observed_at": "2026-11-21T10:07:06.171Z",
+      "age_ms": null,
+      "polygon_px": null
+     }
+    ],
+    "candidates": [
+     {
+      "sku": "fixture:zephyr-lite-40g",
+      "family": "fixture:zephyr",
+      "side": "front",
+      "score": 0.8615330457687378,
+      "reference_revision": "fx-art-1"
+     },
+     {
+      "sku": "fixture:zephyr-classic-40g",
+      "family": "fixture:zephyr",
+      "side": "front",
+      "score": 0.7562146186828613,
+      "reference_revision": "fx-art-1"
+     }
+    ],
+    "observed_at": "2026-11-21T10:07:06.171Z",
+    "age_ms": 0.0
+   },
+   "pose": {
+    "frame": "image_rectified",
+    "face": "front",
+    "face_score": 1.0,
+    "face_reason": "ok",
+    "axis": {
+     "value_deg": 32.09,
+     "period_deg": 180,
+     "available": true,
+     "score": 0.872,
+     "reason": "ok",
+     "source": "mask:manual",
+     "observed_at": "2026-11-21T10:07:06.171Z",
+     "age_ms": 0.0
+    },
+    "heading": {
+     "value_deg": 32.0,
+     "period_deg": 360,
+     "available": true,
+     "score": 1.0,
+     "reason": "ok",
+     "source": "sift-homography-v1",
+     "observed_at": "2026-11-21T10:07:06.171Z",
+     "age_ms": 0.0
+    },
+    "endpoints_px": {
+     "A": [
+      302.0,
+      158.6
+     ],
+     "B": [
+      658.3,
+      381.2
+     ]
+    }
+   }
+  }
+ ]
+}

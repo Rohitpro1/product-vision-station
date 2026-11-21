@@ -1,0 +1,58 @@
+[
+ {
+  "event_id": "29002269b8738561b46e561ae200e76a",
+  "track": "fixture-cam:0:1",
+  "seq": 1,
+  "kind": "state_change",
+  "state": {
+   "face": "front",
+   "family": "fixture:zephyr",
+   "heading_available": true,
+   "identity_level": "sku",
+   "sku": "fixture:zephyr-lite-40g"
+  },
+  "captured_at": "2026-01-01T00:00:00.000Z"
+ },
+ {
+  "event_id": "52d1882a0789ce61af30a948f4000af3",
+  "track": "fixture-cam:0:1",
+  "seq": 2,
+  "kind": "state_change",
+  "state": {
+   "face": "edge",
+   "family": "fixture:zephyr",
+   "heading_available": false,
+   "identity_level": "sku",
+   "sku": "fixture:zephyr-lite-40g"
+  },
+  "captured_at": "2026-01-01T00:00:01.000Z"
+ },
+ {
+  "event_id": "8ca64d97f0af8addf61258c3618b6ee0",
+  "track": "fixture-cam:0:1",
+  "seq": 3,
+  "kind": "state_change",
+  "state": {
+   "face": "back",
+   "family": "fixture:zephyr",
+   "heading_available": true,
+   "identity_level": "sku",
+   "sku": "fixture:zephyr-lite-40g"
+  },
+  "captured_at": "2026-01-01T00:00:01.533Z"
+ },
+ {
+  "event_id": "783ece5616e2490d8aeba6285ff3b9ad",
+  "track": "fixture-cam:0:2",
+  "seq": 1,
+  "kind": "state_change",
+  "state": {
+   "face": "unknown",
+   "family": null,
+   "heading_available": false,
+   "identity_level": "unknown",
+   "sku": null
+  },
+  "captured_at": "2026-01-01T00:00:03.066Z"
+ }
+]

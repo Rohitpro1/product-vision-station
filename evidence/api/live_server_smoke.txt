@@ -1,0 +1,21 @@
+# Live server smoke — 2026-11-21T10:07:21Z — commit 84aaa68 — fixture profile, replay source data/fixtures/video/crossing.mp4
+## GET /healthz
+{"status":"alive"}
+## GET /readyz
+{"ready":true,"profile":"fixture","bundle":"dev-unbundled"}
+## POST /v1/detect data/fixtures/scenes/fx-001000.png
+{"schema_version": "1.0", "status": "ok", "reason": "ok", "profile": "fixture", "model_bundle": "dev-unbundled", "thresholds_version": "thr-dev-0.5", "fusion_rules_version": "fusion-v1.5", "instances": [["sku", "fixture:zephyr-classic-40g", 51.23, 51.28], ["sku", "fixture:zephyr-lite-40g", 166.09, 166.15]]}
+## POST /v1/detect pyproject.toml (not an image) -> HTTP 400
+{"schema_version":"1.0","status":"decode_failed","error":"undecodable","detail":"undecodable:UnidentifiedImageError"}
+## GET /v1/live/latest (replay worker, sample 1)
+{"epoch": 1, "frame_id": 29, "camera_stale": false, "tracks": [["fixture-cam:1:1", "fixture:zephyr-classic-40g", "R2_verified_gtin", 9.99], ["fixture-cam:1:2", "fixture:zephyr-lite-40g", "R3b_variant_cue_region", 170.01]]}
+## GET /v1/live/latest (replay worker, sample 2)
+{"epoch": 1, "frame_id": 50, "camera_stale": false, "tracks": [["fixture-cam:1:1", "fixture:zephyr-classic-40g", "R2_verified_gtin", 10.0], ["fixture-cam:1:2", "fixture:zephyr-lite-40g", "R3b_variant_cue_region", 170.01]]}
+## GET /v1/live/latest (replay worker, sample 3)
+{"epoch": 2, "frame_id": 10, "camera_stale": false, "tracks": [["fixture-cam:2:1", "fixture:zephyr-classic-40g", "R2_verified_gtin", 10.0], ["fixture-cam:2:2", "fixture:zephyr-lite-40g", "R3_visual_sku_with_variant_cue", 170.01]]}
+## GET /metrics (excerpt)
+pvs_requests_total{status="ok"} 132.0
+pvs_live_processed_total 131.0
+pvs_live_scheduled_total 132.0
+pvs_identity_total{level="sku"} 264.0
+pvs_model_ready 1.0

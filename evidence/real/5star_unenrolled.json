@@ -1,0 +1,290 @@
+{
+ "schema_version": "1.0",
+ "status": "ok",
+ "reason": "ok",
+ "profile": "pretrained",
+ "backend": {
+  "detector": "grounding-dino:IDEA-Research/grounding-dino-tiny@a2bb814dd30d",
+  "masks": "sam2:facebook/sam2.1-hiera-tiny@de431c404385",
+  "embedder": "dinov2:facebook/dinov2-small@ed25f3a31f01",
+  "gallery": "dinov2:facebook/dinov2-small@ed25f3a31f01#3ab064159054efcf",
+  "template": "sift-homography-v1",
+  "barcode": "zxing-cpp",
+  "ocr": "unavailable"
+ },
+ "model_bundle": "pretrained-dev",
+ "catalogue_revision": "fixture-r1",
+ "thresholds_version": "thr-dev-0.5",
+ "fusion_rules_version": "fusion-v1.5",
+ "camera": "photo",
+ "stream_epoch": 0,
+ "frame_id": 0,
+ "captured_at": "2026-11-21T09:48:39.959Z",
+ "processed_at": "2026-11-21T09:59:27.856Z",
+ "source": "realdata/off_5star_1.jpg",
+ "image_size_px": [
+  3072,
+  4096
+ ],
+ "coordinate_frame": "image_rectified",
+ "quality": {
+  "status": "ok",
+  "mean_luma": 127.746,
+  "saturated_frac": 0.001,
+  "sharpness": 808.231
+ },
+ "timing_ms": {
+  "quality": 22.97,
+  "detect": 9016.29,
+  "masks": 2692.11,
+  "identity": 424.5,
+  "orientation": 1461.37,
+  "barcode": 443.86,
+  "total": 14092.68
+ },
+ "instances": [
+  {
+   "instance_id": "photo:0:0:0",
+   "track_id": null,
+   "bbox_xyxy_px": [
+    486.1,
+    2124.0,
+    2411.6,
+    2877.7
+   ],
+   "det_score": 0.6787,
+   "det_source": "grounding-dino:IDEA-Research/grounding-dino-tiny@a2bb814dd30d",
+   "mask_source": "segmentation",
+   "identity": {
+    "level": "unknown",
+    "family": null,
+    "sku": null,
+    "gtin": null,
+    "score": 0.1714,
+    "score_type": "raw_cosine_uncalibrated",
+    "margin": 0.0198,
+    "rule": "R7_unknown",
+    "reason": "below_threshold",
+    "evidence": [
+     {
+      "kind": "gallery",
+      "value": "fixture:zephyr-classic-40g",
+      "score": 0.1714,
+      "score_type": "raw_cosine_uncalibrated",
+      "frame_id": 0,
+      "observed_at": "2026-11-21T09:48:39.959Z",
+      "age_ms": null,
+      "polygon_px": null
+     }
+    ],
+    "candidates": [
+     {
+      "sku": "fixture:zephyr-classic-40g",
+      "family": "fixture:zephyr",
+      "side": "front",
+      "score": 0.17137904465198517,
+      "reference_revision": "fx-art-1"
+     },
+     {
+      "sku": "fixture:zephyr-lite-40g",
+      "family": "fixture:zephyr",
+      "side": "front",
+      "score": 0.1515369415283203,
+      "reference_revision": "fx-art-1"
+     }
+    ],
+    "observed_at": "2026-11-21T09:48:39.959Z",
+    "age_ms": 0.0
+   },
+   "pose": {
+    "frame": "image_rectified",
+    "face": "unknown",
+    "face_score": null,
+    "face_reason": "face_unknown",
+    "axis": {
+     "value_deg": 5.72,
+     "period_deg": 180,
+     "available": true,
+     "score": 1.0,
+     "reason": "ok",
+     "source": "mask:segmentation",
+     "observed_at": "2026-11-21T09:48:39.959Z",
+     "age_ms": 0.0
+    },
+    "heading": {
+     "value_deg": null,
+     "period_deg": 360,
+     "available": false,
+     "score": null,
+     "reason": "endpoint_hidden",
+     "source": null,
+     "observed_at": null,
+     "age_ms": null
+    },
+    "endpoints_px": null
+   }
+  },
+  {
+   "instance_id": "photo:0:0:1",
+   "track_id": null,
+   "bbox_xyxy_px": [
+    157.9,
+    3452.7,
+    2460.3,
+    4085.0
+   ],
+   "det_score": 0.3146,
+   "det_source": "grounding-dino:IDEA-Research/grounding-dino-tiny@a2bb814dd30d",
+   "mask_source": "segmentation",
+   "identity": {
+    "level": "unknown",
+    "family": null,
+    "sku": null,
+    "gtin": null,
+    "score": 0.2407,
+    "score_type": "raw_cosine_uncalibrated",
+    "margin": 0.0301,
+    "rule": "R7_unknown",
+    "reason": "not_in_catalogue",
+    "evidence": [
+     {
+      "kind": "gallery",
+      "value": "negative:plain-gold-wrapper",
+      "score": 0.2407,
+      "score_type": "raw_cosine_uncalibrated",
+      "frame_id": 0,
+      "observed_at": "2026-11-21T09:48:39.959Z",
+      "age_ms": null,
+      "polygon_px": null
+     }
+    ],
+    "candidates": [
+     {
+      "sku": "fixture:zephyr-classic-40g",
+      "family": "fixture:zephyr",
+      "side": "back",
+      "score": 0.2105499804019928,
+      "reference_revision": "fx-art-1"
+     },
+     {
+      "sku": "fixture:zephyr-lite-40g",
+      "family": "fixture:zephyr",
+      "side": "back",
+      "score": 0.18797382712364197,
+      "reference_revision": "fx-art-1"
+     }
+    ],
+    "observed_at": "2026-11-21T09:48:39.959Z",
+    "age_ms": 0.0
+   },
+   "pose": {
+    "frame": "image_rectified",
+    "face": "unknown",
+    "face_score": null,
+    "face_reason": "face_unknown",
+    "axis": {
+     "value_deg": 3.99,
+     "period_deg": 180,
+     "available": true,
+     "score": 0.762,
+     "reason": "ok",
+     "source": "mask:segmentation",
+     "observed_at": "2026-11-21T09:48:39.959Z",
+     "age_ms": 0.0
+    },
+    "heading": {
+     "value_deg": null,
+     "period_deg": 360,
+     "available": false,
+     "score": null,
+     "reason": "endpoint_hidden",
+     "source": null,
+     "observed_at": null,
+     "age_ms": null
+    },
+    "endpoints_px": null
+   }
+  },
+  {
+   "instance_id": "photo:0:0:2",
+   "track_id": null,
+   "bbox_xyxy_px": [
+    344.8,
+    1959.9,
+    2588.4,
+    3077.7
+   ],
+   "det_score": 0.3045,
+   "det_source": "grounding-dino:IDEA-Research/grounding-dino-tiny@a2bb814dd30d",
+   "mask_source": "segmentation",
+   "identity": {
+    "level": "unknown",
+    "family": null,
+    "sku": null,
+    "gtin": null,
+    "score": 0.1757,
+    "score_type": "raw_cosine_uncalibrated",
+    "margin": 0.0179,
+    "rule": "R7_unknown",
+    "reason": "below_threshold",
+    "evidence": [
+     {
+      "kind": "gallery",
+      "value": "fixture:zephyr-classic-40g",
+      "score": 0.1757,
+      "score_type": "raw_cosine_uncalibrated",
+      "frame_id": 0,
+      "observed_at": "2026-11-21T09:48:39.959Z",
+      "age_ms": null,
+      "polygon_px": null
+     }
+    ],
+    "candidates": [
+     {
+      "sku": "fixture:zephyr-classic-40g",
+      "family": "fixture:zephyr",
+      "side": "front",
+      "score": 0.175734281539917,
+      "reference_revision": "fx-art-1"
+     },
+     {
+      "sku": "fixture:zephyr-lite-40g",
+      "family": "fixture:zephyr",
+      "side": "front",
+      "score": 0.1578730344772339,
+      "reference_revision": "fx-art-1"
+     }
+    ],
+    "observed_at": "2026-11-21T09:48:39.959Z",
+    "age_ms": 0.0
+   },
+   "pose": {
+    "frame": "image_rectified",
+    "face": "unknown",
+    "face_score": null,
+    "face_reason": "face_unknown",
+    "axis": {
+     "value_deg": 5.48,
+     "period_deg": 180,
+     "available": true,
+     "score": 1.0,
+     "reason": "ok",
+     "source": "mask:segmentation",
+     "observed_at": "2026-11-21T09:48:39.959Z",
+     "age_ms": 0.0
+    },
+    "heading": {
+     "value_deg": null,
+     "period_deg": 360,
+     "available": false,
+     "score": null,
+     "reason": "endpoint_hidden",
+     "source": null,
+     "observed_at": null,
+     "age_ms": null
+    },
+    "endpoints_px": null
+   }
+  }
+ ]
+}

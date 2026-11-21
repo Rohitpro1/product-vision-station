@@ -1,0 +1,355 @@
+{
+ "counts": {
+  "gt": 33,
+  "matched": 25,
+  "sku_accepted": 11,
+  "sku_correct": 11,
+  "target_presentations": 21,
+  "target_correct": 11,
+  "neg_presentations": 12,
+  "neg_false_accept": 0,
+  "axis_obs": 33,
+  "axis_ret": 25,
+  "head_obs": 13,
+  "head_ret": 13,
+  "reversals": 0,
+  "empty_scenes": 3,
+  "empty_false_pos": 0,
+  "target_id_observable": 13,
+  "target_id_observable_correct": 11
+ },
+ "metrics": {
+  "localisation_recall": {
+   "metric": "localisation_recall",
+   "status": "measured",
+   "k": 25,
+   "n": 33,
+   "value": 0.7575757575757576,
+   "ci95": [
+    0.5774106822882981,
+    0.8890767004411605
+   ],
+   "gate": "fail (>=0.97)"
+  },
+  "exact_sku_precision": {
+   "metric": "exact_sku_precision",
+   "status": "measured",
+   "k": 11,
+   "n": 11,
+   "value": 1.0,
+   "ci95": [
+    0.7150858470818455,
+    1.0
+   ],
+   "gate": "pass (>=0.99)"
+  },
+  "exact_sku_recall": {
+   "metric": "exact_sku_recall",
+   "status": "measured",
+   "k": 11,
+   "n": 21,
+   "value": 0.5238095238095238,
+   "ci95": [
+    0.29780683878364417,
+    0.7428693735935925
+   ],
+   "gate": "fail (>=0.95)"
+  },
+  "exact_sku_recall_identity_observable": {
+   "metric": "exact_sku_recall_identity_observable",
+   "status": "measured",
+   "k": 11,
+   "n": 13,
+   "value": 0.8461538461538461,
+   "ci95": [
+    0.5455289443234422,
+    0.9807933280174715
+   ],
+   "gate": "fail (>=0.95)"
+  },
+  "false_target_acceptance": {
+   "metric": "false_target_acceptance",
+   "status": "measured",
+   "k": 0,
+   "n": 12,
+   "value": 0.0,
+   "ci95": [
+    0.0,
+    0.2646484693970512
+   ],
+   "one_sided_upper95": 0.22092219194555585,
+   "gate": "insufficient_evidence (point=0.0000, upper95=0.2209 > 0.01; need >=299 clean independent negatives)"
+  },
+  "axis_coverage": {
+   "metric": "axis_coverage",
+   "status": "measured",
+   "k": 25,
+   "n": 33,
+   "value": 0.7575757575757576,
+   "ci95": [
+    0.5774106822882981,
+    0.8890767004411605
+   ],
+   "gate": "fail (>=0.95)"
+  },
+  "axis_p95_err_deg": {
+   "metric": "axis_p95_err_deg",
+   "status": "measured",
+   "n": 25,
+   "value": 0.5153499351447436,
+   "max": 3.164236998211834,
+   "mean": 0.3507286428167923,
+   "gate": "pass (<=10.0)"
+  },
+  "heading_coverage": {
+   "metric": "heading_coverage",
+   "status": "measured",
+   "k": 13,
+   "n": 13,
+   "value": 1.0,
+   "ci95": [
+    0.752947361999529,
+    1.0
+   ],
+   "gate": "pass (>=0.9)"
+  },
+  "heading_p95_err_deg": {
+   "metric": "heading_p95_err_deg",
+   "status": "measured",
+   "n": 13,
+   "value": 0.017247332253418787,
+   "max": 0.018627926010708507,
+   "mean": 0.009116550283044042,
+   "gate": "pass (<=15.0)"
+  },
+  "heading_reversal_rate": {
+   "metric": "heading_reversal_rate",
+   "status": "measured",
+   "k": 0,
+   "n": 13,
+   "value": 0.0,
+   "ci95": [
+    0.0,
+    0.24705263800047092
+   ],
+   "gate": "pass (<0.01)"
+  }
+ },
+ "negative_slices": {
+  "similar_gold_wrapper": {
+   "false_accept": 0,
+   "n": 12
+  }
+ },
+ "failures": [
+  {
+   "scene": "fx-012000",
+   "truth_sku": "unknown",
+   "face": "front",
+   "pred": null
+  },
+  {
+   "scene": "fx-012003",
+   "truth_sku": "fixture:zephyr-lite-40g",
+   "face": "front",
+   "pred": {
+    "level": "family",
+    "sku": null,
+    "rule": "R4b_template_family",
+    "reason": "variant_cue_missing"
+   }
+  },
+  {
+   "scene": "fx-012004",
+   "truth_sku": "fixture:zephyr-classic-40g",
+   "face": "edge",
+   "pred": null
+  },
+  {
+   "scene": "fx-012007",
+   "truth_sku": "fixture:zephyr-classic-40g",
+   "face": "front",
+   "pred": {
+    "level": "family",
+    "sku": null,
+    "rule": "R4b_template_family",
+    "reason": "variant_cue_missing"
+   }
+  },
+  {
+   "scene": "fx-012010",
+   "truth_sku": "fixture:zephyr-lite-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "not_in_catalogue"
+   }
+  },
+  {
+   "scene": "fx-012011",
+   "truth_sku": "fixture:zephyr-classic-40g",
+   "face": "edge",
+   "pred": null
+  },
+  {
+   "scene": "fx-012011",
+   "truth_sku": "fixture:zephyr-classic-40g",
+   "face": "edge",
+   "pred": null
+  },
+  {
+   "scene": "fx-012012",
+   "truth_sku": "unknown",
+   "face": "front",
+   "pred": null
+  },
+  {
+   "scene": "fx-012014",
+   "truth_sku": "unknown",
+   "face": "front",
+   "pred": null
+  },
+  {
+   "scene": "fx-012015",
+   "truth_sku": "fixture:zephyr-lite-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "not_in_catalogue"
+   }
+  },
+  {
+   "scene": "fx-012016",
+   "truth_sku": "fixture:zephyr-lite-40g",
+   "face": "edge",
+   "pred": null
+  },
+  {
+   "scene": "fx-012018",
+   "truth_sku": "fixture:zephyr-classic-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "not_in_catalogue"
+   }
+  },
+  {
+   "scene": "fx-012019",
+   "truth_sku": "fixture:zephyr-lite-40g",
+   "face": "edge",
+   "pred": null
+  }
+ ],
+ "run": {
+  "profile": "pretrained",
+  "backend": {
+   "detector": "grounding-dino:IDEA-Research/grounding-dino-tiny@a2bb814dd30d",
+   "masks": "sam2:facebook/sam2.1-hiera-tiny@de431c404385",
+   "embedder": "dinov2:facebook/dinov2-small@ed25f3a31f01",
+   "gallery": "dinov2:facebook/dinov2-small@ed25f3a31f01#3ab064159054efcf",
+   "template": "sift-homography-v1",
+   "barcode": "zxing-cpp",
+   "ocr": "unavailable"
+  },
+  "thresholds": "thr-dev-0.5",
+  "catalogue": "fixture-r1",
+  "ground_truth": "data/sealed/scenes/ground_truth_first20.json",
+  "ground_truth_sha256": "c9616e4764c0f1612e9e7c4078291cda34becc66f66cb50c5284ddbdbb2cef26",
+  "input_sha256": [
+   "d9458e328a5000e22bbd91f485c5c9d9272269a0b9e817fc678de056cdaea85c",
+   "ae550b78120959698da45fe20943453678393026db0709fee46e964db509d9db",
+   "053668d35ff03dcdff4d3b3b47bac43b5369b76d7687d328a39ac7156a80865f",
+   "..."
+  ],
+  "n_scenes": 20,
+  "timing_method": "time.perf_counter around Pipeline.process (processing-only; no capture delay)",
+  "processing_ms": {
+   "metric": "processing_ms",
+   "status": "measured",
+   "n": 20,
+   "value": 13305.50874284993,
+   "max": 13526.030396999886,
+   "mean": 12405.042765400005,
+   "median": 12623.175210499994
+  },
+  "env": {
+   "python": "3.13.18",
+   "platform": "Linux-6.18.44-fc-v726-x86_64-with-glibc2.39",
+   "machine": "x86_64",
+   "cpu_count": 2,
+   "implementation_commit": "473b608060c541231f73b3809db2af8b1dca0459",
+   "onnxruntime": "1.32.0",
+   "torch": "2.15.0+cpu",
+   "cuda": false
+  },
+  "caveat": "synthetic scenes; not real 5 Star presentations"
+ },
+ "summary": {
+  "localisation_recall": {
+   "k": 25,
+   "n": 33,
+   "value": 0.7575757575757576,
+   "gate": "fail (>=0.97)"
+  },
+  "exact_sku_precision": {
+   "k": 11,
+   "n": 11,
+   "value": 1.0,
+   "gate": "pass (>=0.99)"
+  },
+  "exact_sku_recall": {
+   "k": 11,
+   "n": 21,
+   "value": 0.5238095238095238,
+   "gate": "fail (>=0.95)"
+  },
+  "exact_sku_recall_identity_observable": {
+   "k": 11,
+   "n": 13,
+   "value": 0.8461538461538461,
+   "gate": "fail (>=0.95)"
+  },
+  "false_target_acceptance": {
+   "k": 0,
+   "n": 12,
+   "value": 0.0,
+   "gate": "insufficient_evidence (point=0.0000, upper95=0.2209 > 0.01; need >=299 clean independent negatives)"
+  },
+  "axis_coverage": {
+   "k": 25,
+   "n": 33,
+   "value": 0.7575757575757576,
+   "gate": "fail (>=0.95)"
+  },
+  "axis_p95_err_deg": {
+   "k": null,
+   "n": 25,
+   "value": 0.5153499351447436,
+   "gate": "pass (<=10.0)"
+  },
+  "heading_coverage": {
+   "k": 13,
+   "n": 13,
+   "value": 1.0,
+   "gate": "pass (>=0.9)"
+  },
+  "heading_p95_err_deg": {
+   "k": null,
+   "n": 13,
+   "value": 0.017247332253418787,
+   "gate": "pass (<=15.0)"
+  },
+  "heading_reversal_rate": {
+   "k": 0,
+   "n": 13,
+   "value": 0.0,
+   "gate": "pass (<0.01)"
+  }
+ }
+}

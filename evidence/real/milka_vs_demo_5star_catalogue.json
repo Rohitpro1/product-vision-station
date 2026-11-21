@@ -1,0 +1,269 @@
+{
+ "schema_version": "1.0",
+ "status": "ok",
+ "reason": "ok",
+ "profile": "pretrained",
+ "backend": {
+  "detector": "grounding-dino:IDEA-Research/grounding-dino-tiny@a2bb814dd30d",
+  "masks": "sam2:facebook/sam2.1-hiera-tiny@de431c404385",
+  "embedder": "dinov2:facebook/dinov2-small@ed25f3a31f01",
+  "gallery": "dinov2:facebook/dinov2-small@ed25f3a31f01#b5a2a0a51b45314e",
+  "template": "sift-homography-v1",
+  "barcode": "zxing-cpp",
+  "ocr": "unavailable"
+ },
+ "model_bundle": "pretrained-dev",
+ "catalogue_revision": "demo5star-r2",
+ "thresholds_version": "thr-dev-0.5",
+ "fusion_rules_version": "fusion-v1.5",
+ "camera": "photo",
+ "stream_epoch": 0,
+ "frame_id": 0,
+ "captured_at": "2026-11-21T09:48:39.959Z",
+ "processed_at": "2026-11-21T10:00:10.758Z",
+ "source": "realdata/milka_wrapper.jpg",
+ "image_size_px": [
+  1920,
+  1080
+ ],
+ "coordinate_frame": "image_rectified",
+ "quality": {
+  "status": "ok",
+  "mean_luma": 191.407,
+  "saturated_frac": 0.475,
+  "sharpness": 1154.128
+ },
+ "timing_ms": {
+  "quality": 4.45,
+  "detect": 11549.93,
+  "masks": 2437.18,
+  "identity": 287.45,
+  "orientation": 461.18,
+  "barcode": 85.31,
+  "total": 14839.34
+ },
+ "instances": [
+  {
+   "instance_id": "photo:0:0:0",
+   "track_id": null,
+   "bbox_xyxy_px": [
+    147.8,
+    125.6,
+    1785.5,
+    751.5
+   ],
+   "det_score": 0.7037,
+   "det_source": "grounding-dino:IDEA-Research/grounding-dino-tiny@a2bb814dd30d",
+   "mask_source": "segmentation",
+   "identity": {
+    "level": "unknown",
+    "family": null,
+    "sku": null,
+    "gtin": null,
+    "score": 0.3285,
+    "score_type": "raw_cosine_uncalibrated",
+    "margin": 0.21,
+    "rule": "R7_unknown",
+    "reason": "below_threshold",
+    "evidence": [
+     {
+      "kind": "gallery",
+      "value": "demo:cadbury-5star-18g-unverified",
+      "score": 0.3285,
+      "score_type": "raw_cosine_uncalibrated",
+      "frame_id": 0,
+      "observed_at": "2026-11-21T09:48:39.959Z",
+      "age_ms": null,
+      "polygon_px": null
+     }
+    ],
+    "candidates": [
+     {
+      "sku": "demo:cadbury-5star-18g-unverified",
+      "family": "cadbury:5star",
+      "side": "front",
+      "score": 0.3284533619880676,
+      "reference_revision": "observed-off-1"
+     }
+    ],
+    "observed_at": "2026-11-21T09:48:39.959Z",
+    "age_ms": 0.0
+   },
+   "pose": {
+    "frame": "image_rectified",
+    "face": "unknown",
+    "face_score": null,
+    "face_reason": "face_unknown",
+    "axis": {
+     "value_deg": 179.52,
+     "period_deg": 180,
+     "available": true,
+     "score": 0.853,
+     "reason": "ok",
+     "source": "mask:segmentation",
+     "observed_at": "2026-11-21T09:48:39.959Z",
+     "age_ms": 0.0
+    },
+    "heading": {
+     "value_deg": null,
+     "period_deg": 360,
+     "available": false,
+     "score": null,
+     "reason": "endpoint_hidden",
+     "source": null,
+     "observed_at": null,
+     "age_ms": null
+    },
+    "endpoints_px": null
+   }
+  },
+  {
+   "instance_id": "photo:0:0:1",
+   "track_id": null,
+   "bbox_xyxy_px": [
+    961.6,
+    350.6,
+    1631.8,
+    1013.7
+   ],
+   "det_score": 0.609,
+   "det_source": "grounding-dino:IDEA-Research/grounding-dino-tiny@a2bb814dd30d",
+   "mask_source": "segmentation",
+   "identity": {
+    "level": "unknown",
+    "family": null,
+    "sku": null,
+    "gtin": null,
+    "score": 0.1705,
+    "score_type": "raw_cosine_uncalibrated",
+    "margin": 0.0571,
+    "rule": "R7_unknown",
+    "reason": "below_threshold",
+    "evidence": [
+     {
+      "kind": "gallery",
+      "value": "demo:cadbury-5star-18g-unverified",
+      "score": 0.1705,
+      "score_type": "raw_cosine_uncalibrated",
+      "frame_id": 0,
+      "observed_at": "2026-11-21T09:48:39.959Z",
+      "age_ms": null,
+      "polygon_px": null
+     }
+    ],
+    "candidates": [
+     {
+      "sku": "demo:cadbury-5star-18g-unverified",
+      "family": "cadbury:5star",
+      "side": "front",
+      "score": 0.1705484688282013,
+      "reference_revision": "observed-off-1"
+     }
+    ],
+    "observed_at": "2026-11-21T09:48:39.959Z",
+    "age_ms": 0.0
+   },
+   "pose": {
+    "frame": "image_rectified",
+    "face": "unknown",
+    "face_score": null,
+    "face_reason": "face_unknown",
+    "axis": {
+     "value_deg": null,
+     "period_deg": 180,
+     "available": false,
+     "score": null,
+     "reason": "near_round",
+     "source": "mask:segmentation",
+     "observed_at": null,
+     "age_ms": null
+    },
+    "heading": {
+     "value_deg": null,
+     "period_deg": 360,
+     "available": false,
+     "score": null,
+     "reason": "endpoint_hidden",
+     "source": null,
+     "observed_at": null,
+     "age_ms": null
+    },
+    "endpoints_px": null
+   }
+  },
+  {
+   "instance_id": "photo:0:0:2",
+   "track_id": null,
+   "bbox_xyxy_px": [
+    653.7,
+    333.2,
+    1142.9,
+    837.8
+   ],
+   "det_score": 0.4564,
+   "det_source": "grounding-dino:IDEA-Research/grounding-dino-tiny@a2bb814dd30d",
+   "mask_source": "segmentation",
+   "identity": {
+    "level": "unknown",
+    "family": null,
+    "sku": null,
+    "gtin": null,
+    "score": 0.2663,
+    "score_type": "raw_cosine_uncalibrated",
+    "margin": 0.1386,
+    "rule": "R7_unknown",
+    "reason": "below_threshold",
+    "evidence": [
+     {
+      "kind": "gallery",
+      "value": "demo:cadbury-5star-18g-unverified",
+      "score": 0.2663,
+      "score_type": "raw_cosine_uncalibrated",
+      "frame_id": 0,
+      "observed_at": "2026-11-21T09:48:39.959Z",
+      "age_ms": null,
+      "polygon_px": null
+     }
+    ],
+    "candidates": [
+     {
+      "sku": "demo:cadbury-5star-18g-unverified",
+      "family": "cadbury:5star",
+      "side": "front",
+      "score": 0.2663368880748749,
+      "reference_revision": "observed-off-1"
+     }
+    ],
+    "observed_at": "2026-11-21T09:48:39.959Z",
+    "age_ms": 0.0
+   },
+   "pose": {
+    "frame": "image_rectified",
+    "face": "unknown",
+    "face_score": null,
+    "face_reason": "face_unknown",
+    "axis": {
+     "value_deg": 134.96,
+     "period_deg": 180,
+     "available": true,
+     "score": 0.523,
+     "reason": "ok",
+     "source": "mask:segmentation",
+     "observed_at": "2026-11-21T09:48:39.959Z",
+     "age_ms": 0.0
+    },
+    "heading": {
+     "value_deg": null,
+     "period_deg": 360,
+     "available": false,
+     "score": null,
+     "reason": "endpoint_hidden",
+     "source": null,
+     "observed_at": null,
+     "age_ms": null
+    },
+    "endpoints_px": null
+   }
+  }
+ ]
+}
