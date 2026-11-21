@@ -15,8 +15,11 @@ observation age. Specification: *Product Recognition & Orientation — ADR-01* (
 > reached test recall **0.964** and precision **0.967**. 5 Star identity on the same public data **failed**:
 > 0/3 exact SKU and 6/357 false accepts. See `evidence/training/real5star_kaggle_t4x2/README.md`.
 >
-> **Web front end:** https://pack-station-psi.vercel.app (static; connect it to a running API from the page).
-> The API is not hosted yet: `render.yaml` is ready but has not been deployed.
+>
+> **Live demo:**
+> - Site: https://pack-station-psi.vercel.app
+> - API: https://pack-station-api.vercel.app (`/readyz`, `POST /v1/detect`). It runs on the Vercel Hobby plan from `deploy/vercel-api`, using the trained ONNX detector.
+> - The demo catalogue is synthetic, so real packs come back as `unknown`.
 
 ## Quick start (tested commands)
 
@@ -70,7 +73,7 @@ load, results report `model_failed`; fixture output is never substituted for rea
 | Signed bundles, outbox, Postgres registry | yes | tests (local PG 16) | `tests/test_outbox_bundle_eval.py` | operator signing keys |
 | Live camera, 15 fps / 150 ms, 8-h soak | code path + runbook | **not run** | `docs/VERIFICATION.md` §4 | camera + NVIDIA station |
 | Docker image | Dockerfile | **not built** | — | Docker daemon |
-| Web front end | static site (Vercel) | deployed; examples render; not yet connected to a hosted API | `frontend/` | hosted API (`render.yaml`) |
+| Web front end + hosted API | Vercel static site + Vercel Python function | live upload end to end (headless Chrome): photo → API → box and axis drawn; ~2.3 s per request when warm | `frontend/`, `deploy/vercel-api/` | — |
 
 ## Layout
 

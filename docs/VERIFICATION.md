@@ -154,6 +154,17 @@ pvs --profile station --config /etc/pvs/station.yaml serve --device /dev/video0 
 TensorRT/FP16 comparison and INT8 quantisation: not run (no NVIDIA hardware). Docker image: Dockerfile
 written, **not built** (no Docker daemon in the sandbox).
 
+## Hosted demo check (2026-11-21)
+
+Site: https://pack-station-psi.vercel.app. API: https://pack-station-api.vercel.app (Vercel deployment `dpl_AgNhtw3Y76PExG1b7z6sk2RYknoA`, package at `7453926`, bundle sha256 `8ba6fdaa…6787`).
+
+| Check | Result |
+|---|---|
+| `GET /readyz` | `{"ready":true,"profile":"station","bundle":"hosted-onnx-demo"}` |
+| CORS preflight from the site's origin | 200, `access-control-allow-origin: https://pack-station-psi.vercel.app` |
+| `POST /v1/detect`, 1280 px real 5 Star photo | 200, `ok`, 1 pack, same box as the local run, ~2.3 s per request (1.4 s pipeline) |
+| Headless Chrome: open the site, upload the photo through the page | "Connected · station"; the box and a 4.6° axis are drawn; identity `unknown` (expected: synthetic demo catalogue) |
+
 ## 5. Gates not yet supported by evidence
 
 Every PDF p.8 gate on **real station** data (the public-data detector figures above are not station presentations); runtime/latency gates; Docker build; TensorRT; OCR (backend

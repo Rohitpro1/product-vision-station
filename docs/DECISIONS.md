@@ -18,7 +18,10 @@
 | D14 | GPU training on Kaggle (2 × T4, DDP via torchrun) instead of CyFuture | CyFuture V100 VMs stuck at "initiated" / failed and other GPUs were out of stock; Kaggle is free and had T4 × 2 | `scripts/gpu_train_5star.sh` runs on any CUDA 12 host |
 | D15 | torch 2.6.0+cu124 (not the CPU lock's 2.15) for GPU runs | newer wheels dropped sm_60/sm_70; 2.6 covers P100/V100/T4 | edit runner pins |
 | D16 | Public Roboflow exports used for the generic detector only; 5 Star images and gallery not committed or published | many 5 Star images are watermarked web renders | — |
-| D17 | Front end deployed to Vercel; API not deployed (Render blueprint ready) | owner chose to deploy the backend later | `render.yaml` |
+| D17 | Front end and API both hosted on Vercel's free Hobby plan; Render not used | Render's free tier (512 MB) is too small. Hugging Face Spaces would have needed a browser sign-in. A Vercel Python function (1 vCPU / 2 GB) fits a torch-free profile. | `render.yaml` remains for a paid Render plan |
+| D18 | The hosted profile uses the trained ONNX detector + crop GrabCut + colour-histogram gallery (no torch) | keeps the function bundle at about 480 MB and cold starts short | `configs/station.onnx.yaml` (DINOv2) for GPU or large hosts |
+| D19 | The runtime bundle (75 MB) lives on the orphan branch `model-assets`, is SHA-256 pinned in `deploy/vercel-api/app.py`, and is fetched to `/tmp` on cold start | release creation was not permitted from the build session; the branch keeps `main` clones small | re-host anywhere and set `PVS_BUNDLE_URL` + `PVS_BUNDLE_SHA256` |
+| D20 | GrabCut fallback runs on a padded ROI downscaled to ≤384 px | full-frame GrabCut took 3.6–4.4 s per pack; the ROI version takes 0.1–0.3 s, with axes within 1° on the real photos | `ThresholdMaskFallback(work_side=...)` |
 
 ## Model-selection status
 
