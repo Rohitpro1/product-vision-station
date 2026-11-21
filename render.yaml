@@ -1,0 +1,17 @@
+# Render blueprint for the backend (NOT deployed yet: needs >=2 GB RAM, i.e. a paid Standard plan).
+# Deploy later with: Render dashboard > Blueprints > New, or the Render MCP/CLI, then set PVS_API_TOKEN
+# and PVS_CORS_ORIGINS=https://<your-vercel-domain>. The frontend connects via its "Backend URL" setting.
+services:
+  - type: web
+    name: pack-station-api
+    runtime: docker
+    dockerfilePath: deploy/Dockerfile
+    plan: standard
+    healthCheckPath: /healthz
+    envVars:
+      - key: PVS_API_TOKEN
+        sync: false
+      - key: PVS_CORS_ORIGINS
+        sync: false
+      - key: HF_HUB_OFFLINE
+        value: "0"

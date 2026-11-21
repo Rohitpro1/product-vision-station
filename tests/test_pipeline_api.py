@@ -236,3 +236,15 @@ def test_turnover_clears_arrow_and_removal_then_nontarget_never_inherits(tmp_pat
     tids = {i["track_id"] for r, t in zip(rows, truths) for i in r["instances"] if t.instances and t.instances[0].sku == "unknown"}
     target_tids = {i["track_id"] for r, t in zip(rows, truths) for i in r["instances"] if t.instances and t.instances[0].in_catalogue}
     assert tids and not (tids & target_tids)  # the non-target after removal never reuses the target's track ID
+
+
+def test_api_cors_only_for_configured_origins(repo_root, fixture_set, monkeypatch):
+    from pvs.api import create_app
+    _, gt = fixture_set
+    cfg = load_station(repo_root / "configs/station.fixture.yaml")
+    monkeypatch.setenv("PVS_CORS_ORIGINS", "https://pack-station.vercel.app")
+    c = TestClient(create_app(_pipe(repo_root, json.loads(gt.read_text())), cfg))
+    ok = c.options("/v1/detect", headers={"Origin": "https://pack-station.vercel.app", "Access-Control-Request-Method": "POST"})
+    assert ok.headers.get("access-control-allow-origin") == "https://pack-station.vercel.app"
+    bad = c.get("/readyz", headers={"Origin": "https://evil.example"})
+    assert "access-control-allow-origin" not in bad.headers

@@ -1,0 +1,38 @@
+[
+ {
+  "id": "exact_sku_visual",
+  "title": "Exact SKU from artwork",
+  "image": "examples/exact_sku_visual.png",
+  "result": "examples/exact_sku_visual.json"
+ },
+ {
+  "id": "barcode_back_face",
+  "title": "Back face: barcode resolves the SKU",
+  "image": "examples/barcode_back_face.png",
+  "result": "examples/barcode_back_face.json"
+ },
+ {
+  "id": "family_cue_hidden",
+  "title": "Thumb hides the variant cue: family only",
+  "image": "examples/family_cue_hidden.png",
+  "result": "examples/family_cue_hidden.json"
+ },
+ {
+  "id": "unknown_lookalike",
+  "title": "Look-alike wrapper: unknown, axis only",
+  "image": "examples/unknown_lookalike.png",
+  "result": "examples/unknown_lookalike.json"
+ },
+ {
+  "id": "conflict_code",
+  "title": "Foreign barcode on a known pack: conflict",
+  "image": "examples/conflict_code.png",
+  "result": "examples/conflict_code.json"
+ },
+ {
+  "id": "three_packs",
+  "title": "Three packs at once",
+  "image": "examples/three_packs.png",
+  "result": "examples/three_packs.json"
+ }
+]

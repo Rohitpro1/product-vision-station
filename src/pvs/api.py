@@ -115,6 +115,12 @@ class LiveWorker:
 
 def create_app(pipeline, cfg: StationConfig, video: str | None = None, device: str | None = None) -> FastAPI:
     app = FastAPI(title="Product Vision Station", version="0.1.0")
+    origins = [o.strip() for o in os.environ.get("PVS_CORS_ORIGINS", "").split(",") if o.strip()]
+    if origins:  # e.g. the Vercel frontend origin; never "*" together with a bearer token in production
+        from fastapi.middleware.cors import CORSMiddleware
+
+        app.add_middleware(CORSMiddleware, allow_origins=origins, allow_methods=["GET", "POST"],
+                           allow_headers=["Authorization", "Content-Type"], max_age=600)
     sem = asyncio.Semaphore(cfg.limits.max_concurrency)
     token = os.environ.get(cfg.api_token_env) if cfg.api_token_env else None
     MODEL_OK.set(0 if pipeline.failed else 1)
