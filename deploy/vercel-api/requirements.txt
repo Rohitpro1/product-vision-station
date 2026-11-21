@@ -1,0 +1,32 @@
+# Runtime pins (requirements/runtime.lock) + the pvs package at a fixed commit.
+annotated-doc==0.0.7
+annotated-types==0.8.0
+anyio==4.16.0
+cffi==2.1.1
+click==8.5.1
+cryptography==50.0.2
+fastapi==0.165.0
+flatbuffers==25.12.19
+h11==0.16.0
+idna==3.20
+mpmath==1.3.0
+numpy==2.5.4
+onnxruntime==1.32.0
+opencv-python-headless==5.1.0.95
+packaging==26.3
+pillow==13.0.0
+prometheus_client==0.26.0
+protobuf==7.36.2
+pycparser==3.12
+pydantic==2.14.4
+pydantic_core==2.50.5
+python-multipart==0.0.34
+PyYAML==6.0.4
+scipy==1.18.1
+starlette==1.10.0
+sympy==1.14.0
+typing-inspection==0.4.5
+typing_extensions==4.16.0
+uvicorn==0.54.0
+zxing-cpp==3.1.1
+product-vision-station @ https://github.com/Rohitpro1/product-vision-station/archive/74539262989feaaec6743b160d21244d8bd93ac1.tar.gz

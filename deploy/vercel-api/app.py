@@ -2,7 +2,7 @@
 
 The deployment holds only this file, requirements.txt and vercel.json. The `pvs` package is installed from
 a pinned GitHub commit (requirements.txt). On a cold start the runtime bundle (trained ONNX detector,
-hosted config, thresholds, demo catalogue) is downloaded from a GitHub release asset, SHA-256 verified,
+hosted config, thresholds, demo catalogue) is downloaded from the `model-assets` branch, SHA-256 verified,
 and unpacked under /tmp, which is the only writable path on Vercel.
 
 Profile: RT-DETR-R18 package detector (Kaggle 2xT4 run) + crop GrabCut masks + colour-histogram gallery.
@@ -19,8 +19,8 @@ from pathlib import Path
 
 BUNDLE_URL = os.environ.get(
     "PVS_BUNDLE_URL",
-    "https://github.com/Rohitpro1/product-vision-station/releases/download/model-v1/pvs-hosted-bundle.tgz")
-BUNDLE_SHA256 = os.environ.get("PVS_BUNDLE_SHA256", "@BUNDLE_SHA256@")
+    "https://raw.githubusercontent.com/Rohitpro1/product-vision-station/model-assets/pvs-hosted-bundle.tgz")
+BUNDLE_SHA256 = os.environ.get("PVS_BUNDLE_SHA256", "8ba6fdaa22773af1dd0e144b239ec825689f8cad10e844f8912cfcdd11fc6787")
 ROOT = Path(os.environ.get("PVS_ROOT", "/tmp/pvs"))
 os.environ.setdefault("PVS_CORS_ORIGINS", "https://pack-station-psi.vercel.app")
 
