@@ -101,8 +101,9 @@ class Tracker:
     def update(self, boxes: list[list[float]], scores: list[float], t: float, frame_id: int,
                content_hash: str | None = None) -> list[Track | None]:
         """Returns the track for each input box (None for unconfirmed low-score boxes)."""
-        # expire stale tracks
-        self.tracks = [tr for tr in self.tracks if t - tr.last_t <= self.max_gap_s]
+        # expire stale tracks; a track unseen for longer than evidence_gap_s is not re-associated:
+        # whatever appears after a removal/long gap starts a new track (PDF p.2 "reinitialise after a long gap")
+        self.tracks = [tr for tr in self.tracks if t - tr.last_t <= min(self.max_gap_s, self.evidence_gap_s)]
         hi = [j for j, s in enumerate(scores) if s >= self.high]
         lo = [j for j, s in enumerate(scores) if self.low <= s < self.high]
         out: list[Track | None] = [None] * len(boxes)
@@ -123,10 +124,6 @@ class Tracker:
             diag = float(np.hypot(tr.box[2] - tr.box[0], tr.box[3] - tr.box[1]))
             jump = float(np.hypot((b[0] + b[2] - tr.box[0] - tr.box[2]) / 2, (b[1] + b[3] - tr.box[1] - tr.box[3]) / 2))
             if jump > self.max_jump * diag:
-                self._invalidate(tr, frame_id)
-            elif t - tr.last_t > self.evidence_gap_s:
-                # re-association after a detection gap (removal / long occlusion): the object may not be
-                # the same one, so its identity and direction evidence must not carry over
                 self._invalidate(tr, frame_id)
             dt = max(t - tr.last_t, 1e-3)
             tr.velocity = 0.5 * tr.velocity + 0.5 * (np.array(b) - np.array(tr.box)) / dt

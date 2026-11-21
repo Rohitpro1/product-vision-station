@@ -233,3 +233,6 @@ def test_turnover_clears_arrow_and_removal_then_nontarget_never_inherits(tmp_pat
                 assert i["identity"]["level"] != "sku", (r["frame_id"], i["identity"])  # never inherits the target
         if not t.instances:
             assert r["status"] == "no_packages" and r["instances"] == []
+    tids = {i["track_id"] for r, t in zip(rows, truths) for i in r["instances"] if t.instances and t.instances[0].sku == "unknown"}
+    target_tids = {i["track_id"] for r, t in zip(rows, truths) for i in r["instances"] if t.instances and t.instances[0].in_catalogue}
+    assert tids and not (tids & target_tids)  # the non-target after removal never reuses the target's track ID

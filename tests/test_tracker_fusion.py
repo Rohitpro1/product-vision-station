@@ -90,6 +90,15 @@ def test_stale_tracks_expire():
     assert a.tid != b.tid
 
 
+def test_reappearance_after_gap_is_a_new_track_but_short_occlusion_keeps_id():
+    tr = Tracker("cam", evidence_gap_s=0.25)
+    (a,) = tr.update([[0, 0, 100, 50]], [0.9], 0.0, 0)
+    (a2,) = tr.update([[1, 0, 101, 50]], [0.9], 0.2, 3)  # 3 missed frames: same object
+    assert a2.tid == a.tid
+    (c,) = tr.update([[1, 0, 101, 50]], [0.9], 0.75, 11)  # removed for 0.55 s, something reappears
+    assert c.tid != a.tid and not c.evidence
+
+
 # ---------------------------------------------------------------- fusion
 THR = None
 
