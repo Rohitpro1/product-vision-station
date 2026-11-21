@@ -138,21 +138,23 @@ const escapeHtml = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", 
 
 function show(imgSrc, res, provenance) {
   const img = new Image();
+  img.crossOrigin = "anonymous";
   img.onload = () => { drawResult(img, res); $("#drop").classList.add("hidden"); renderList(res); renderMeta(res, provenance); };
   img.src = imgSrc;
 }
 
 // ------------------------------------------------------------------ examples
+const EX = (p) => (cfg.examplesBase || "") + p;
 async function loadExamples() {
-  const list = await fetch("examples/index.json").then((r) => r.json());
+  const list = await fetch(EX("examples/index.json")).then((r) => r.json());
   const grid = $("#examples");
-  grid.innerHTML = list.map((e) => `<button class="ex" data-id="${e.id}" aria-pressed="false"><img src="${e.image}" alt="" loading="lazy"><span>${escapeHtml(e.title)}</span></button>`).join("");
+  grid.innerHTML = list.map((e) => `<button class="ex" data-id="${e.id}" aria-pressed="false"><img src="${EX(e.image)}" alt="" loading="lazy" crossorigin="anonymous"><span>${escapeHtml(e.title)}</span></button>`).join("");
   grid.addEventListener("click", async (ev) => {
     const b = ev.target.closest(".ex"); if (!b) return;
     grid.querySelectorAll(".ex").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
     const e = list.find((x) => x.id === b.dataset.id);
-    const res = await fetch(e.result).then((r) => r.json());
-    show(e.image, res, `Example (synthetic): ${e.title}`);
+    const res = await fetch(EX(e.result)).then((r) => r.json());
+    show(EX(e.image), res, `Example (synthetic): ${e.title}`);
   });
 }
 
