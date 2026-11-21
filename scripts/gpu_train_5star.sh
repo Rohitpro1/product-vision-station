@@ -23,7 +23,7 @@ uv venv -q -p 3.13 .venv-gpu
 . .venv-gpu/bin/activate
 # V100 = sm_70: newest PyTorch CUDA builds dropped Volta, so pin torch 2.6.0 built for CUDA 12.4 (includes sm_70)
 uv pip install -q --index-url https://download.pytorch.org/whl/cu124 torch==2.6.0 torchvision==0.21.0
-grep -vE '^(torch|torchvision)==' requirements/models.lock > /tmp/models-nottorch.lock
+grep -vE '^(torch|torchvision|sympy)==' requirements/models.lock > /tmp/models-nottorch.lock
 uv pip install -q -r requirements/runtime.lock -r /tmp/models-nottorch.lock sympy==1.13.1
 uv pip install -q --no-deps -e .
 python - <<'PY'
