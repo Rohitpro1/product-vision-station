@@ -100,6 +100,23 @@ pvs --profile pretrained --config configs/station.pretrained.yaml eval --ground-
 # acceptance: PDF p.8 gates; false acceptance needs ≥299 independent negatives with 0 errors for ≤1%
 ```
 
+## Clean-clone verification
+
+From a fresh `git clone` of tip `28b68ce` (local clone; see the publication status below):
+
+| Step | Result |
+|---|---|
+| `./scripts/bootstrap.sh` (venv, pinned locks, editable install, fixtures, tests) | exit 0 in 58 s (pip cache warm); 101 passed, 1 skipped, 1 deselected |
+| `pvs detect data/fixtures/scenes/fx-001000.png --ground-truth …` | 2 instances, exact SKUs, headings 51.28° / 166.15° |
+| `python scripts/fetch_models.py` | 4/4 weights OK against pinned SHA-256 (served from the local Hugging Face cache) |
+| `pvs --profile pretrained … detect data/fixtures/scenes/fx-001002.png` | real models: exact SKU, heading 26.55° (truth 26.5°), 14.9 s |
+| `PVS_RUN_MODELS=1 pytest tests/test_models.py` | 2 passed |
+| `ruff check src tests scripts` | clean |
+
+GitHub publication was blocked: this session can push to repositories attached to it but cannot create
+one (`POST /user/repos` → 403 for the integration; the session git proxy only allows repository-scoped
+endpoints). CI therefore has not run on GitHub yet; `.github/workflows/ci.yml` is ready.
+
 ## 4. Named deployment hardware — not run
 
 Prerequisites: 1080p camera with locked exposure/focus, NVIDIA GPU host (≈16 GB VRAM class), the trained
