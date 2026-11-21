@@ -8,6 +8,8 @@ forced into one split before training, and a leakage check must pass.
 
     python -m pvs.training.real5star prepare --exports data/rf/sct data/rf/scancart --out data/real5star
     python -m pvs.training.real5star train   --data data/real5star --out runs/real5star --epochs 30 --device cuda
+    # all GPUs (DDP; --batch is the global batch):
+    torchrun --standalone --nproc_per_node=2 -m pvs.training.real5star train --data ... --run ... --batch 32
     python -m pvs.training.real5star evaluate --data data/real5star --run runs/real5star --device cuda
 
 Identity metrics count one decision per annotated test box (independent presentations are NOT known for
@@ -18,6 +20,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import random
 import re
 import shutil
@@ -149,12 +152,52 @@ def _load(data: Path):
     return m["items"], m["stats"]
 
 
+class _TrainSet:
+    """Map-style dataset: decoding + augmentation run in DataLoader workers, not on the GPU's critical path."""
+
+    def __init__(self, data: Path, items: list[dict], size: int):
+        self.data, self.items, self.size = data, items, size
+
+    def __len__(self):
+        return len(self.items)
+
+    def __getitem__(self, i):
+        x, y = _batch(self.data, [self.items[i]], self.size, "cpu", augment=True)
+        return x[0], y[0]
+
+
+def _collate(b):
+    import torch
+
+    return torch.stack([x for x, _ in b]), [y for _, y in b]
+
+
+def _dist_setup(device: str):
+    """torchrun sets WORLD_SIZE/RANK/LOCAL_RANK; without them this is a plain single-process run."""
+    import torch
+    import torch.distributed as dist
+
+    world = int(os.environ.get("WORLD_SIZE", "1"))
+    if world <= 1:
+        return 1, 0, device
+    rank, local = int(os.environ["RANK"]), int(os.environ["LOCAL_RANK"])
+    if device.startswith("cuda"):
+        torch.cuda.set_device(local)
+        device = f"cuda:{local}"
+    dist.init_process_group("nccl" if device.startswith("cuda") else "gloo")
+    return world, rank, device
+
+
 def train(a) -> dict:
     import torch
+    import torch.distributed as dist
     from transformers import RTDetrForObjectDetection
 
+    world, rank, dev = _dist_setup(a.device)
+    a.device = dev
+    main_proc = rank == 0
     torch.manual_seed(a.seed)
-    random.seed(a.seed)
+    random.seed(a.seed + rank)
     data, out = Path(a.data), Path(a.run)
     out.mkdir(parents=True, exist_ok=True)
     items, stats = _load(data)
@@ -167,6 +210,9 @@ def train(a) -> dict:
     opt = torch.optim.AdamW([{"params": [p for n, p in model.named_parameters() if "backbone" in n], "lr": a.lr * 0.1},
                              {"params": [p for n, p in model.named_parameters() if "backbone" not in n], "lr": a.lr}],
                             weight_decay=1e-4)
+    if a.batch % world:
+        raise SystemExit(f"--batch {a.batch} must be divisible by the {world} processes")
+    per_rank = a.batch // world  # --batch is the global batch, split evenly across GPUs
     steps_per_epoch = max(1, len(tr) // a.batch)
     if a.max_steps:
         steps_per_epoch = min(steps_per_epoch, a.max_steps)
@@ -188,39 +234,68 @@ def train(a) -> dict:
         opt.load_state_dict(st["opt"])
         sched.load_state_dict(st["sched"])
         start, log, best = st["epoch"], st["log"], tuple(st["best"])
+    core = model
+    if world > 1:
+        # RT-DETR's denoising/aux heads do not touch every parameter on every step
+        model = torch.nn.parallel.DistributedDataParallel(
+            core, device_ids=[int(a.device.split(":")[1])] if a.device.startswith("cuda") else None,
+            find_unused_parameters=True)
+    cuda = a.device.startswith("cuda")
+    workers = 0 if a.workers < 0 else a.workers
     t0 = time.time()
     for ep in range(start, a.epochs):
         model.train()
-        random.shuffle(tr)
+        order = list(tr)
+        random.Random(a.seed + ep).shuffle(order)  # identical order on every rank ...
+        order = order[:steps_per_epoch * a.batch]
+        shard = order[rank::world]  # ... then each rank takes its own disjoint slice
+        dl = torch.utils.data.DataLoader(_TrainSet(data, shard, a.size), batch_size=per_rank, shuffle=False,
+                                         num_workers=workers, collate_fn=_collate, pin_memory=cuda,
+                                         drop_last=True, persistent_workers=False,
+                                         prefetch_factor=4 if workers else None)
         losses = []
-        for b in range(steps_per_epoch):
-            batch = tr[b * a.batch:(b + 1) * a.batch]
-            x, y = _batch(data, batch, a.size, a.device, augment=True)
-            with torch.autocast(device_type="cuda" if a.device.startswith("cuda") else "cpu",
-                                enabled=a.device.startswith("cuda")):
+        for x, y in dl:
+            x = x.to(a.device, non_blocking=True)
+            y = [{k: v.to(a.device, non_blocking=True) for k, v in t.items()} for t in y]
+            with torch.autocast(device_type="cuda" if cuda else "cpu", enabled=cuda):
                 loss = model(pixel_values=x, labels=y).loss
-            opt.zero_grad()
+            opt.zero_grad(set_to_none=True)
             scaler.scale(loss).backward()
             scaler.unscale_(opt)
             torch.nn.utils.clip_grad_norm_(model.parameters(), 0.1)
             scaler.step(opt)
             scaler.update()
             sched.step()
-            losses.append(float(loss))
-        rec = detection_recall(model, data, va, a.size, a.device, limit=a.val_limit)
-        log.append({"epoch": ep + 1, "loss": float(np.mean(losses)), "val_recall@0.5": rec["recall"],
-                    "val_precision@0.5": rec["precision"], "elapsed_s": round(time.time() - t0, 1)})
-        print(json.dumps(log[-1]), flush=True)
-        if rec["recall"] + rec["precision"] > best[0]:
-            best = (rec["recall"] + rec["precision"], ep + 1)
-            model.save_pretrained(out / "best")
-        torch.save({"model": model.state_dict(), "opt": opt.state_dict(), "sched": sched.state_dict(),
-                    "epoch": ep + 1, "log": log, "best": list(best)}, ck)
+            losses.append(loss.detach().item())
+        if world > 1:  # average the epoch loss over ranks for the log
+            t = torch.tensor([float(np.sum(losses)), len(losses)], device=a.device, dtype=torch.float64)
+            dist.all_reduce(t)
+            ep_loss = float(t[0] / max(1.0, float(t[1])))
+        else:
+            ep_loss = float(np.mean(losses)) if losses else float("nan")
+        if main_proc:
+            rec = detection_recall(core, data, va, a.size, a.device, limit=a.val_limit)
+            log.append({"epoch": ep + 1, "loss": ep_loss, "val_recall@0.5": rec["recall"],
+                        "val_precision@0.5": rec["precision"], "elapsed_s": round(time.time() - t0, 1),
+                        "gpus": world})
+            print(json.dumps(log[-1]), flush=True)
+            if rec["recall"] + rec["precision"] > best[0]:
+                best = (rec["recall"] + rec["precision"], ep + 1)
+                core.save_pretrained(out / "best")
+            torch.save({"model": core.state_dict(), "opt": opt.state_dict(), "sched": sched.state_dict(),
+                        "epoch": ep + 1, "log": log, "best": list(best)}, ck)
+        if world > 1:
+            dist.barrier()  # other ranks wait while rank 0 validates/saves
     rep = {"epochs": a.epochs, "best_epoch": best[1], "log": log, "train_images": len(tr), "val_images": len(va),
            "init": f"{man['repo']}@{man['revision'][:12]}", "size": a.size, "batch": a.batch, "lr": a.lr,
-           "device": a.device, "gpu": torch.cuda.get_device_name(0) if a.device.startswith("cuda") else None,
-           "data_stats": stats}
-    (out / "train_report.json").write_text(json.dumps(rep, indent=1))
+           "processes": world, "batch_per_process": per_rank, "device": a.device.split(":")[0],
+           "gpu": torch.cuda.get_device_name(0) if cuda else None,
+           "gpu_count": torch.cuda.device_count() if cuda else 0, "data_stats": stats}
+    if main_proc:
+        (out / "train_report.json").write_text(json.dumps(rep, indent=1))
+    if world > 1:
+        dist.barrier()
+        dist.destroy_process_group()
     return rep
 
 
@@ -473,6 +548,7 @@ def main(argv=None) -> int:
             s.add_argument("--seed", type=int, default=0)
             s.add_argument("--max-steps", type=int, default=0, help="smoke: cap steps per epoch")
             s.add_argument("--val-limit", type=int, default=None)
+            s.add_argument("--workers", type=int, default=4, help="DataLoader workers per process")
         else:
             s.add_argument("--refs-per-class", type=int, default=40)
     a = ap.parse_args(argv)
