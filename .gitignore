@@ -26,3 +26,4 @@ tests/_bad_manifest.json
 deploy/trust/local-test.pub
 # third-party photographs are fetched by scripts/fetch_real_examples.py, not committed
 realdata/
+.venv-gpu/
