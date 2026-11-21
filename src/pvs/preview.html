@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Product Vision Station — preview</title>
+<style>
+body{font:14px system-ui,sans-serif;margin:0;background:#111;color:#eee}
+header{padding:8px 12px;background:#1c2b36}#wrap{display:flex;gap:12px;padding:12px}
+img{max-width:70vw;border:1px solid #333}table{border-collapse:collapse}td,th{padding:3px 8px;border-bottom:1px solid #333;text-align:left}
+.stale{color:#f55;font-weight:bold}.sku{color:#4c4}.family{color:#fc0}.unknown{color:#aaa}.conflict{color:#f44}.ambiguous{color:#f80}
+</style></head><body>
+<header id="hdr">connecting…</header>
+<div id="wrap"><img id="img" alt="live overlay"><div>
+<h3>Instances</h3><table><thead><tr><th>track</th><th>identity</th><th>face</th><th>axis°</th><th>heading°</th><th>reason</th></tr></thead><tbody id="rows"></tbody></table>
+<p>Still upload: <input type="file" id="f" accept="image/*"></p><pre id="still"></pre></div></div>
+<script>
+async function tick(){
+  try{
+    const r=await fetch('/v1/live/latest');
+    if(r.ok){const d=await r.json();
+      document.getElementById('hdr').innerHTML=`profile <b>${d.profile}</b> · detector ${d.backend.detector} · bundle ${d.model_bundle} · frame ${d.frame_id} · status ${d.status}`+(d.camera_stale?' · <span class="stale">CAMERA STALE</span>':'');
+      document.getElementById('img').src='/v1/live/latest.jpg?'+Date.now();
+      document.getElementById('rows').innerHTML=d.instances.map(i=>`<tr><td>${i.track_id||i.instance_id}</td><td class="${i.identity.level}">${i.identity.level} ${i.identity.sku||i.identity.family||''}</td><td>${i.pose.face}</td><td>${i.pose.axis.available?i.pose.axis.value_deg.toFixed(1):'—'}</td><td>${i.pose.heading.available?i.pose.heading.value_deg.toFixed(1):'—'}</td><td>${i.identity.reason}/${i.pose.heading.reason}</td></tr>`).join('');
+    } else {document.getElementById('hdr').textContent='no live source (still upload only)';}
+  }catch(e){document.getElementById('hdr').textContent='disconnected';}
+  setTimeout(tick,200);
+}
+document.getElementById('f').onchange=async e=>{const fd=new FormData();fd.append('file',e.target.files[0]);
+  const r=await fetch('/v1/detect',{method:'POST',body:fd});document.getElementById('still').textContent=JSON.stringify(await r.json(),null,1).slice(0,4000);};
+tick();
+</script></body></html>

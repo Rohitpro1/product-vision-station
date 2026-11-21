@@ -1,0 +1,24 @@
+# Pretrained profile: real Grounding DINO proposals, SAM 2 masks, DINOv2 gallery.
+station_id: dev-pretrained
+camera_id: station-01
+capture:
+  device: "0"            # /dev/video0 when a camera exists
+  width: 1920
+  height: 1080
+  sample_hz: 15
+  mirror_preview: false
+models:
+  detector: grounding_dino
+  masks: sam2
+  embedder: dinov2
+  prompts: ["wrapped chocolate bar", "snack package"]
+  box_threshold: 0.30
+  text_threshold: 0.25
+  detector_max_side: 800
+catalogue: catalogues/fixture/catalogue.json   # replace with the enrolled station catalogue
+thresholds: configs/thresholds.yaml
+bundle_id: pretrained-dev
+# calibration: {fov_deg: null, working_distance_mm: null}  # log when a station is measured
+outbox_path: var/outbox.sqlite
+bind: 127.0.0.1
+port: 8000

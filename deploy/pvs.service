@@ -1,0 +1,23 @@
+# Single-station systemd unit with watchdog-style restart. Install: see docs/OPERATOR_GUIDE.md
+[Unit]
+Description=Product Vision Station
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=pvs
+WorkingDirectory=/opt/pvs
+Environment=HF_HUB_OFFLINE=1
+EnvironmentFile=-/etc/pvs/env
+ExecStartPre=/opt/pvs/.venv/bin/pvs bundle verify --src /opt/pvs/var/station/current --trust /opt/pvs/deploy/trust
+ExecStart=/opt/pvs/.venv/bin/pvs --profile station --config /etc/pvs/station.yaml --station-dir /opt/pvs/var/station serve --device /dev/video0
+Restart=always
+RestartSec=3
+StartLimitIntervalSec=0
+MemoryMax=12G
+ProtectSystem=strict
+ReadWritePaths=/opt/pvs/var
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

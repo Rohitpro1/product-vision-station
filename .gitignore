@@ -1,0 +1,28 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.egg-info/
+build/
+dist/
+# generated / large / local state
+var/
+out/
+runs/
+data/
+*.onnx
+*.pt
+*.npz
+*.mp4
+!evidence/**/*.mp4
+catalogues/**/.history/
+tests/_bad_manifest.json
+# secrets and keys: never commit
+*.key
+*.pem
+.env
+deploy/trust/local-test.pub
+# third-party photographs are fetched by scripts/fetch_real_examples.py, not committed
+realdata/

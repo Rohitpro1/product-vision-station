@@ -1,0 +1,12 @@
+# Fixture profile: scripted detections from generated ground truth + real
+# classical identity/orientation algorithms. Deterministic plumbing only.
+station_id: dev-fixture
+camera_id: fixture-cam
+capture: {device: file, width: 960, height: 540, sample_hz: 15}
+models: {detector: scripted, masks: scripted, embedder: colour_hist}
+catalogue: catalogues/fixture/catalogue.json
+thresholds: configs/thresholds.yaml
+bundle_id: dev-unbundled
+outbox_path: var/outbox.sqlite
+bind: 127.0.0.1
+port: 8000

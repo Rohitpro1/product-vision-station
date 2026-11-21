@@ -1,0 +1,28 @@
+# Versioned decision thresholds. Values are development defaults chosen on the
+# fixture/dev split only; they are NOT calibrated on real 5 Star validation data
+# (calibrated: false). Freeze a new version before any sealed evaluation.
+version: thr-dev-0.5
+calibrated: false
+# gallery (raw cosine, uncalibrated)
+sku_score: 0.80
+sku_margin: 0.03
+family_score: 0.70
+tie_margin: 0.01
+# template direction gates
+template_min_inliers: 14
+template_min_spread: 0.12      # inlier hull area / reference area
+template_max_reproj_px: 4.0
+cue_margin: 0.08               # variant-cue region similarity margin (reference frame)
+# temporal
+track_hold_s: 1.0              # brief tested interval during which prior identity may be shown
+evidence_ttl_s: 0.6            # direction/face evidence expiry
+smoother_window_s: 0.5
+smoother_min_resultant: 0.8
+# axis gate
+axis_min_elongation: 1.6
+axis_min_extent_px: 40
+axis_max_residual: 0.35
+# frame quality
+quality_min_luma: 25
+quality_max_saturated: 0.35
+quality_min_sharpness: 8.0

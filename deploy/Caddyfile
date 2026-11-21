@@ -1,0 +1,5 @@
+# TLS termination for a shared station. Replace the host and provide certificates per site policy.
+station-01.local {
+    tls internal
+    reverse_proxy pvs:8000
+}

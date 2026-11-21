@@ -1,0 +1,74 @@
+name: ci
+on:
+  push: {branches: [main]}
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      allow_model_download:
+        description: "Download pinned Apache-2.0 weights from Hugging Face and run real-model inference"
+        type: boolean
+        default: false
+permissions: {contents: read}
+jobs:
+  deterministic:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - run: pip install -r requirements/runtime.lock -r requirements/dev.lock && pip install --no-deps -e .
+      - run: ruff check src tests scripts
+      - run: python -m pytest -q -m "not models and not postgres"
+      - name: fixture vertical slice through the CLI
+        run: |
+          pvs fixtures scenes --n 20 --seed 9000 --out data/ci
+          pvs detect data/ci/scenes/fx-009000.png --ground-truth data/ci/scenes/ground_truth.json --out out/ci
+          pvs eval --ground-truth data/ci/scenes/ground_truth.json --out out/ci-eval
+      - uses: actions/upload-artifact@v4
+        with: {name: fixture-eval, path: out/ci-eval}
+
+  train-smoke:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - run: |
+          pip install -r requirements/runtime.lock -r requirements/dev.lock
+          pip install --index-url https://download.pytorch.org/whl/cpu --extra-index-url https://pypi.org/simple -r requirements/models.lock
+          pip install --no-deps -e .
+      - run: python -m pytest -q tests/test_training_postgres.py -m "not postgres"
+
+  postgres-migrations:
+    runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: postgres:16
+        env: {POSTGRES_PASSWORD: ci, POSTGRES_DB: pvs}
+        ports: ["5432:5432"]
+        options: --health-cmd pg_isready --health-interval 5s --health-retries 10
+    env: {PVS_PG_DSN: "postgresql://postgres:ci@localhost:5432/pvs"}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - run: pip install -r requirements/runtime.lock -r requirements/dev.lock && pip install --no-deps -e .
+      - run: python scripts/migrate.py && python scripts/migrate.py --check
+      - run: python -m pytest -q -m postgres tests/test_training_postgres.py
+
+  real-models:
+    if: github.event_name == 'workflow_dispatch' && inputs.allow_model_download
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - run: |
+          pip install -r requirements/runtime.lock -r requirements/dev.lock
+          pip install --index-url https://download.pytorch.org/whl/cpu --extra-index-url https://pypi.org/simple -r requirements/models.lock
+          pip install --no-deps -e .
+      - run: python scripts/fetch_models.py   # verifies pinned revisions + SHA-256
+      - run: PVS_RUN_MODELS=1 python -m pytest -q tests/test_models.py
+
+  # Station qualification (camera, GPU, 8-hour soak) cannot run on hosted runners:
+  # see docs/VERIFICATION.md "Level 4" for the exact runbook commands.

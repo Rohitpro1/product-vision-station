@@ -1,0 +1,28 @@
+# Single station: inference service + TLS proxy (+ optional central Postgres for catalogue/releases).
+# Core inference does not depend on postgres; the station runs offline from its signed bundle.
+services:
+  pvs:
+    build: {context: .., dockerfile: deploy/Dockerfile}
+    restart: unless-stopped
+    environment:
+      HF_HOME: /models/hf
+      HF_HUB_OFFLINE: "1"            # weights are provisioned, never fetched at runtime
+      PVS_API_TOKEN: ${PVS_API_TOKEN:?set a bearer token for shared deployments}
+    volumes:
+      - models:/models
+      - station:/app/var
+      - ../configs/station.pretrained.yaml:/app/configs/station.pretrained.yaml:ro
+    devices: ["/dev/video0:/dev/video0"]
+    expose: ["8000"]
+  proxy:
+    image: caddy:2
+    restart: unless-stopped
+    ports: ["443:443"]
+    volumes: ["./Caddyfile:/etc/caddy/Caddyfile:ro"]
+    depends_on: [pvs]
+  postgres:
+    image: postgres:16
+    profiles: ["central"]
+    environment: {POSTGRES_PASSWORD: ${PG_PASSWORD:?}, POSTGRES_DB: pvs}
+    volumes: [pg:/var/lib/postgresql/data]
+volumes: {models: {}, station: {}, pg: {}}

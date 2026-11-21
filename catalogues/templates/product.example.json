@@ -1,0 +1,18 @@
+{
+  "sku": "cadbury:5star-<pack-size>-<market>",
+  "family": "cadbury:5star",
+  "display_name": "Cadbury 5 Star <pack size> (<market>)",
+  "gtins": [],
+  "quantity": "<net quantity as printed>",
+  "variant": "<variant>",
+  "artwork_revision": "<revision id from owner artwork master>",
+  "references": [
+    {"side": "front", "path": "refs/<file>.png", "sha256": "<sha256>", "A": [0, 0], "B": [0, 0], "variant_cues": [[0, 0, 0, 0]]},
+    {"side": "back",  "path": "refs/<file>.png", "sha256": "<sha256>", "A": [0, 0], "B": [0, 0], "variant_cues": [[0, 0, 0, 0]]}
+  ],
+  "physical_ends": {"A": "<feature>", "B": "<feature>", "definition": "docs/reference_drawing.md#cadbury-5-star"},
+  "supported_faces": ["front", "back", "edge"],
+  "provenance": "<who photographed which physical pack, lot, date>",
+  "usage_rights": "<authorisation for the reference photographs>",
+  "approval_state": "draft"
+}
