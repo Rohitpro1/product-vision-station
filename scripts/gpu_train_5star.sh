@@ -11,17 +11,27 @@ REPO=${REPO:-$HOME/product-vision-station}
 OUT=${OUT:-$HOME/pvs-run}
 DATA_ROOT=${DATA_ROOT:-$HOME/data}
 
+SUDO=""; [ "$(id -u)" -ne 0 ] && SUDO="sudo"
 nvidia-smi --query-gpu=name,memory.total,driver_version --format=csv
+$SUDO apt-get update -qq && $SUDO apt-get install -y -qq git unzip curl libgl1 libglib2.0-0 >/dev/null
 [ -d "$REPO" ] || git clone --depth 1 https://github.com/Rohitpro1/product-vision-station "$REPO"
 cd "$REPO"
-python3 -m venv .venv-gpu
+# Ubuntu 22.04 ships Python 3.10; the pinned locks need >= 3.11 -> uv-managed Python 3.13
+command -v uv >/dev/null || curl -LsSf https://astral.sh/uv/install.sh | sh
+export PATH="$HOME/.local/bin:$PATH"
+uv venv -q -p 3.13 .venv-gpu
 . .venv-gpu/bin/activate
-pip install -q --upgrade pip
-pip install -q --index-url https://download.pytorch.org/whl/cu124 torch torchvision
+# V100 = sm_70: newest PyTorch CUDA builds dropped Volta, so pin torch 2.6.0 built for CUDA 12.4 (includes sm_70)
+uv pip install -q --index-url https://download.pytorch.org/whl/cu124 torch==2.6.0 torchvision==0.21.0
 grep -vE '^(torch|torchvision)==' requirements/models.lock > /tmp/models-nottorch.lock
-pip install -q -r requirements/runtime.lock -r /tmp/models-nottorch.lock
-pip install -q --no-deps -e .
-python -c "import torch;print('cuda', torch.cuda.is_available(), torch.cuda.get_device_name(0))"
+uv pip install -q -r requirements/runtime.lock -r /tmp/models-nottorch.lock sympy==1.13.1
+uv pip install -q --no-deps -e .
+python - <<'PY'
+import torch
+assert torch.cuda.is_available(), "CUDA not available"
+print("gpu", torch.cuda.get_device_name(0), "arch list", torch.cuda.get_arch_list())
+x = torch.randn(512, 512, device="cuda"); print("matmul ok", float((x @ x).sum()) == float((x @ x).sum()))
+PY
 python scripts/fetch_models.py --only rtdetr_r18 dinov2
 
 mapfile -t EXPORTS < <(find "$DATA_ROOT" -name _annotations.coco.json -path '*/train/*' -printf '%h\n' | xargs -n1 dirname | sort -u)
