@@ -158,18 +158,32 @@ async function loadExamples() {
   });
 }
 
+// Phone photos are 10+ MB; the hosted API accepts at most 4.5 MB per request. Re-encode the
+// EXIF-oriented image with its long side <= maxSide; results are drawn on exactly the bytes sent.
+async function downscale(file, maxSide) {
+  const bmp = await createImageBitmap(file, { imageOrientation: "from-image" });
+  const s = Math.min(1, maxSide / Math.max(bmp.width, bmp.height));
+  const c = document.createElement("canvas");
+  c.width = Math.round(bmp.width * s); c.height = Math.round(bmp.height * s);
+  c.getContext("2d").drawImage(bmp, 0, 0, c.width, c.height);
+  bmp.close?.();
+  return await new Promise((ok, bad) => c.toBlob((b) => (b ? ok(b) : bad(new Error("encode"))), "image/jpeg", 0.9));
+}
+
 // ------------------------------------------------------------------ uploads
 async function analyse(file) {
   if (!api.url) {
     $("#connText").textContent = "Connect a backend first"; $("#conn").open = true; $("#apiUrl").focus(); return;
   }
-  const fd = new FormData(); fd.append("file", file);
-  $("#frameMeta").textContent = "Analysing…";
+  $("#frameMeta").textContent = "Analysing… (the first photo after a quiet spell can take ~20 s while the backend starts)";
+  let upload;
+  try { upload = await downscale(file, 1600); } catch { upload = file; }
+  const fd = new FormData(); fd.append("file", upload, file.name.replace(/\.[^.]+$/, "") + ".jpg");
   try {
     const r = await fetch(new URL("/v1/detect", api.url), { method: "POST", body: fd, headers: authHeaders() });
     const res = await r.json();
     if (!r.ok && res.error) { $("#frameMeta").textContent = `Not analysed: ${res.detail || res.error}`; return; }
-    show(URL.createObjectURL(file), res, `Your photo: ${file.name}`);
+    show(URL.createObjectURL(upload), res, `Your photo: ${file.name}`);
   } catch {
     $("#frameMeta").textContent = "Couldn't reach the backend. Check the connection settings.";
   }
