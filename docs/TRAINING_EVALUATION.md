@@ -40,6 +40,33 @@ with `inspect-aug` (committed example: `evidence/training/augmentation_check.png
 
 **Fixture-trained weights are pipeline evidence only and are excluded from any production bundle.**
 
+## Real-data GPU run (public Roboflow exports, all GPUs)
+
+`scripts/gpu_train_5star.sh` runs the whole flow on any Linux CUDA 12 host:
+1. It sets up a clean Python 3.13 environment with torch 2.6.0+cu124.
+2. It runs `prepare`, which merges the exports, groups near-duplicates and makes leak-checked splits.
+3. It runs `train`, which fine-tunes RT-DETR-R18 with one process per GPU (DDP); `--batch` is the global batch.
+4. It runs `evaluate`, which builds the DINOv2 gallery, sets thresholds on val, measures on test and exports to ONNX.
+
+Kaggle (GPU T4 × 2, Internet on, secret `ROBOFLOW_API_KEY`):
+
+```python
+!pip -q install roboflow
+from kaggle_secrets import UserSecretsClient
+from roboflow import Roboflow
+rf = Roboflow(api_key=UserSecretsClient().get_secret("ROBOFLOW_API_KEY"))
+rf.workspace("nano-b8y2n").project("sct-ufzbr").version(6).download("coco", location="/kaggle/working/data/sct")
+rf.workspace("nano-b8y2n").project("scancart").version(2).download("coco", location="/kaggle/working/data/scancart")
+```
+```bash
+git clone --depth 1 https://github.com/Rohitpro1/product-vision-station && cd product-vision-station
+REPO=$PWD OUT=/kaggle/working/pvs-run DATA_ROOT=/kaggle/working/data bash scripts/gpu_train_5star.sh 40
+# optional: NGPU=1, BATCH_PER_GPU=8 (out of memory), WORKERS=2
+```
+
+The runner calls uv and Python under `env -i`, so a host `PYTHONPATH`/`sitecustomize` cannot interfere.
+On 2 × T4 the 40 epochs took 42.5 min. The results are in `evidence/training/real5star_kaggle_t4x2/`.
+
 ## Evaluation
 
 ```bash

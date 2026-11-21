@@ -1,0 +1,52 @@
+[transformers] You passed `num_labels=1` which is incompatible to the `id2label` map of length `80`.
+[transformers] You passed `num_labels=1` which is incompatible to the `id2label` map of length `80`.
+[transformers] [1mRTDetrForObjectDetection LOAD REPORT[0m from: PekingU/rtdetr_r18vd
+Key                                        | Status   |                                                                                        
+-------------------------------------------+----------+----------------------------------------------------------------------------------------
+
+Notes:
+[transformers] [1mRTDetrForObjectDetection LOAD REPORT[0m from: PekingU/rtdetr_r18vd
+Key                                        | Status   |                                                                                        
+-------------------------------------------+----------+----------------------------------------------------------------------------------------
+
+Notes:
+{"epoch": 1, "loss": 197.34965639599298, "val_recall@0.5": 0.9454545454545454, "val_precision@0.5": 0.9669421487603306, "elapsed_s": 68.6, "gpus": 2}
+{"epoch": 2, "loss": 11.336354182938399, "val_recall@0.5": 0.9676767676767677, "val_precision@0.5": 0.952286282306163, "elapsed_s": 132.3, "gpus": 2}
+{"epoch": 3, "loss": 6.611807140253358, "val_recall@0.5": 0.9696969696969697, "val_precision@0.5": 0.9467455621301775, "elapsed_s": 196.3, "gpus": 2}
+{"epoch": 4, "loss": 6.128921229960555, "val_recall@0.5": 0.9737373737373738, "val_precision@0.5": 0.9698189134808853, "elapsed_s": 259.7, "gpus": 2}
+{"epoch": 5, "loss": 5.786088042340036, "val_recall@0.5": 0.9757575757575757, "val_precision@0.5": 0.943359375, "elapsed_s": 323.8, "gpus": 2}
+{"epoch": 6, "loss": 5.669355715735484, "val_recall@0.5": 0.9696969696969697, "val_precision@0.5": 0.9696969696969697, "elapsed_s": 387.2, "gpus": 2}
+{"epoch": 7, "loss": 5.560364472664009, "val_recall@0.5": 0.9818181818181818, "val_precision@0.5": 0.9700598802395209, "elapsed_s": 450.6, "gpus": 2}
+{"epoch": 8, "loss": 5.431340154954943, "val_recall@0.5": 0.9575757575757575, "val_precision@0.5": 0.9854469854469855, "elapsed_s": 514.8, "gpus": 2}
+{"epoch": 9, "loss": 5.4143933441679355, "val_recall@0.5": 0.9737373737373738, "val_precision@0.5": 0.9737373737373738, "elapsed_s": 578.0, "gpus": 2}
+{"epoch": 10, "loss": 5.201896202766289, "val_recall@0.5": 0.9777777777777777, "val_precision@0.5": 0.9453125, "elapsed_s": 641.1, "gpus": 2}
+{"epoch": 11, "loss": 5.151875897989434, "val_recall@0.5": 0.9737373737373738, "val_precision@0.5": 0.9897330595482546, "elapsed_s": 704.6, "gpus": 2}
+{"epoch": 12, "loss": 5.057364789106078, "val_recall@0.5": 0.9777777777777777, "val_precision@0.5": 0.9565217391304348, "elapsed_s": 768.3, "gpus": 2}
+{"epoch": 13, "loss": 5.037966417053998, "val_recall@0.5": 0.9757575757575757, "val_precision@0.5": 0.9640718562874252, "elapsed_s": 832.1, "gpus": 2}
+{"epoch": 14, "loss": 4.9701134087675705, "val_recall@0.5": 0.9818181818181818, "val_precision@0.5": 0.94921875, "elapsed_s": 895.8, "gpus": 2}
+{"epoch": 15, "loss": 4.8817344115952315, "val_recall@0.5": 0.9818181818181818, "val_precision@0.5": 0.9510763209393346, "elapsed_s": 959.6, "gpus": 2}
+{"epoch": 16, "loss": 4.796735438249879, "val_recall@0.5": 0.9797979797979798, "val_precision@0.5": 0.9603960396039604, "elapsed_s": 1023.1, "gpus": 2}
+{"epoch": 17, "loss": 4.79144058793278, "val_recall@0.5": 0.9797979797979798, "val_precision@0.5": 0.9381044487427466, "elapsed_s": 1086.9, "gpus": 2}
+{"epoch": 18, "loss": 4.730440412537527, "val_recall@0.5": 0.9818181818181818, "val_precision@0.5": 0.9346153846153846, "elapsed_s": 1150.7, "gpus": 2}
+{"epoch": 19, "loss": 4.6576040518485895, "val_recall@0.5": 0.9717171717171718, "val_precision@0.5": 0.9639278557114228, "elapsed_s": 1214.5, "gpus": 2}
+{"epoch": 20, "loss": 4.6534935357206955, "val_recall@0.5": 0.9797979797979798, "val_precision@0.5": 0.958498023715415, "elapsed_s": 1278.4, "gpus": 2}
+{"epoch": 21, "loss": 4.591191012980574, "val_recall@0.5": 0.9737373737373738, "val_precision@0.5": 0.9432485322896281, "elapsed_s": 1342.1, "gpus": 2}
+{"epoch": 22, "loss": 4.644301939818819, "val_recall@0.5": 0.9818181818181818, "val_precision@0.5": 0.9400386847195358, "elapsed_s": 1406.6, "gpus": 2}
+{"epoch": 23, "loss": 4.528012700000052, "val_recall@0.5": 0.9838383838383838, "val_precision@0.5": 0.9154135338345865, "elapsed_s": 1470.1, "gpus": 2}
+{"epoch": 24, "loss": 4.458617129568326, "val_recall@0.5": 0.9818181818181818, "val_precision@0.5": 0.9328214971209213, "elapsed_s": 1533.8, "gpus": 2}
+{"epoch": 25, "loss": 4.41058661169925, "val_recall@0.5": 0.9797979797979798, "val_precision@0.5": 0.941747572815534, "elapsed_s": 1597.1, "gpus": 2}
+{"epoch": 26, "loss": 4.341727131504124, "val_recall@0.5": 0.9797979797979798, "val_precision@0.5": 0.941747572815534, "elapsed_s": 1660.6, "gpus": 2}
+{"epoch": 27, "loss": 4.252146716845237, "val_recall@0.5": 0.9737373737373738, "val_precision@0.5": 0.9601593625498008, "elapsed_s": 1724.2, "gpus": 2}
+{"epoch": 28, "loss": 4.265199610742472, "val_recall@0.5": 0.9797979797979798, "val_precision@0.5": 0.9381044487427466, "elapsed_s": 1787.7, "gpus": 2}
+{"epoch": 29, "loss": 4.290774597960003, "val_recall@0.5": 0.9797979797979798, "val_precision@0.5": 0.943579766536965, "elapsed_s": 1850.9, "gpus": 2}
+{"epoch": 30, "loss": 4.172944347737199, "val_recall@0.5": 0.9757575757575757, "val_precision@0.5": 0.9526627218934911, "elapsed_s": 1914.2, "gpus": 2}
+{"epoch": 31, "loss": 4.197005431530839, "val_recall@0.5": 0.9818181818181818, "val_precision@0.5": 0.9455252918287937, "elapsed_s": 1977.6, "gpus": 2}
+{"epoch": 32, "loss": 4.125071002265154, "val_recall@0.5": 0.9818181818181818, "val_precision@0.5": 0.9473684210526315, "elapsed_s": 2041.1, "gpus": 2}
+{"epoch": 33, "loss": 4.081231301113711, "val_recall@0.5": 0.9818181818181818, "val_precision@0.5": 0.9436893203883495, "elapsed_s": 2104.6, "gpus": 2}
+{"epoch": 34, "loss": 4.071393326177436, "val_recall@0.5": 0.9797979797979798, "val_precision@0.5": 0.949119373776908, "elapsed_s": 2167.9, "gpus": 2}
+{"epoch": 35, "loss": 4.031611014220674, "val_recall@0.5": 0.9818181818181818, "val_precision@0.5": 0.9473684210526315, "elapsed_s": 2231.3, "gpus": 2}
+{"epoch": 36, "loss": 3.983082437919358, "val_recall@0.5": 0.9818181818181818, "val_precision@0.5": 0.9473684210526315, "elapsed_s": 2294.6, "gpus": 2}
+{"epoch": 37, "loss": 3.9812605401216925, "val_recall@0.5": 0.9797979797979798, "val_precision@0.5": 0.9454191033138402, "elapsed_s": 2358.4, "gpus": 2}
+{"epoch": 38, "loss": 3.9690882573693487, "val_recall@0.5": 0.9797979797979798, "val_precision@0.5": 0.9454191033138402, "elapsed_s": 2421.6, "gpus": 2}
+{"epoch": 39, "loss": 3.9442209975194125, "val_recall@0.5": 0.9797979797979798, "val_precision@0.5": 0.943579766536965, "elapsed_s": 2485.2, "gpus": 2}
+{"epoch": 40, "loss": 3.9301517413834395, "val_recall@0.5": 0.9818181818181818, "val_precision@0.5": 0.9510763209393346, "elapsed_s": 2548.4, "gpus": 2}

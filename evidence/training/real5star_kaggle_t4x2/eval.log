@@ -1,0 +1,70 @@
+  if num_channels != self.num_channels:
+  is_causal = q_length > 1 and attention_mask is None and is_causal
+  batch_size = len(source_flatten)
+  _check_with(error_type, cond._is_all_true().item(), message)  # type: ignore[arg-type]
+  if num_coordinates == 2:
+  elif num_coordinates == 4:
+{
+ "thresholds_selected_on_val": {
+  "score": 0.4,
+  "margin": 0.01,
+  "val_false_accepts": 0,
+  "val_correct_sku": 0
+ },
+ "test_identity_on_gt_crops": {
+  "exact_sku_precision": {
+   "k": 0,
+   "n": 7,
+   "value": 0.0,
+   "ci95": [
+    0.0,
+    0.40961639722500337
+   ]
+  },
+  "exact_sku_recall": {
+   "k": 0,
+   "n": 3,
+   "value": 0.0,
+   "ci95": [
+    0.0,
+    0.7075982261787133
+   ]
+  },
+  "family_or_better_recall": {
+   "k": 1,
+   "n": 3,
+   "value": 0.3333333333333333
+  },
+  "false_accept_non_5star_products": {
+   "k": 6,
+   "n": 357,
+   "value": 0.01680672268907563,
+   "one_sided_upper95": 0.03290100880031706
+  },
+  "confusion_5star": {
+   "cadbury:5star-classic -> unknown": 2,
+   "cadbury:5star-classic -> cadbury:5star-3d": 1
+  }
+ },
+ "test_detection": {
+  "recall": 0.9638888888888889,
+  "precision": 0.9665738161559888,
+  "tp": 347,
+  "gt": 360,
+  "pred": 359,
+  "ms_per_image": 34.2,
+  "recall_ci95": [
+   0.9390404689539595,
+   0.9806347914478036
+  ],
+  "five_star_recall": {
+   "tp": 3,
+   "gt": 3,
+   "value": 1.0,
+   "ci95": [
+    0.2924017738212866,
+    1.0
+   ]
+  }
+ }
+}

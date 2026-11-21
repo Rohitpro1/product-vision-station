@@ -18,7 +18,7 @@ cannot establish live capture-to-result delay; no camera/driver buffering was me
 |---|---|---|
 | 1 Deterministic software | lint, 100 tests + Postgres migration test, CLI slice, API server | **PASS** |
 | 2 Real pretrained inference | Grounding DINO + SAM 2 + DINOv2 on real photos and on unseen synthetic scenes | **PASS (runs)**: accuracy figures below; ~13 s/frame on CPU |
-| 3 Held-out product presentations | synthetic sealed set: measured. **Real 5 Star presentations: none available** | synthetic: measured · real: **INSUFFICIENT EVIDENCE — missing prerequisite** |
+| 3 Held-out product presentations | synthetic sealed set: measured. Public retail photos (Kaggle 2 × T4 run): detector and gallery measured. **Real 5 Star station presentations: none available** | synthetic: measured · public-data detector: **measured** · 5 Star identity on public data: **FAIL / insufficient** |
 | 4 Named deployment hardware | 15 fps, p95 ≤150 ms, 8-hour soak with reconnects | **NOT RUN — missing prerequisite** (no camera, no GPU station) |
 
 ## 1. Deterministic software tests
@@ -88,6 +88,23 @@ Burned set: seeds 9000–9149 were evaluated, then a rule-ordering defect was fo
 failures (variant-cue rule pre-empted by the gallery tie rule). They are kept under `evidence/eval/burned/`
 and no longer count as held-out.
 
+**Public-data GPU run** (`evidence/training/real5star_kaggle_t4x2`, commit `b5ee790`, Kaggle 2 × T4).
+The splits keep near-duplicate groups together, and the test split was used for nothing but this report.
+
+| Metric | k / n | Interval / gate |
+|---|---|---|
+| generic package detector recall @ IoU 0.5 | 347/360 = 0.964 | 95% CI 0.939–0.981 |
+| detector precision | 347/359 = 0.967 | — |
+| 5 Star exact-SKU recall (gallery, GT crops) | 0/3 | **fail**; n far below any gate |
+| 5 Star exact-SKU precision | 0/7 | **fail** |
+| false acceptance as 5 Star, other products | 6/357 | upper95 3.3% → **fail** (gate ≤ 1%) |
+
+Why identity fails here:
+- The validation split has no 5 Star boxes, so thresholds could only be set against false accepts.
+- The 27 reference crops are mostly watermarked web renders.
+
+This confirms that 5 Star recognition needs authorised references and physical presentations.
+
 **Real 5 Star held-out presentations: none.** No authorised reference set, physical packs, look-alike SKUs
 or capture sessions exist. Actual counts: physical packs 0, independent presentations 0, sessions 0,
 frames 0, lots 0, distractor SKUs 0 (the two real photographs above are single community images).
@@ -139,7 +156,7 @@ written, **not built** (no Docker daemon in the sandbox).
 
 ## 5. Gates not yet supported by evidence
 
-Every PDF p.8 gate on **real** data; runtime/latency gates; Docker build; TensorRT; OCR (backend
+Every PDF p.8 gate on **real station** data (the public-data detector figures above are not station presentations); runtime/latency gates; Docker build; TensorRT; OCR (backend
 `unavailable`); calibrated probabilities (scores are raw cosine); cluster-aware intervals (no grouped sessions yet).
 
 ## 6. Changes after the implementation commit

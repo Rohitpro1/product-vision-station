@@ -10,6 +10,13 @@ observation age. Specification: *Product Recognition & Orientation — ADR-01* (
 > **Status:** software, real pretrained inference and enrolment tooling work and are tested.
 > **Real Cadbury 5 Star recognition has not been validated**: no authorised reference set or physical
 > presentations exist yet. The station has **not** been qualified on hardware. See `docs/VERIFICATION.md`.
+>
+> **Real-data GPU run (Kaggle, 2 × T4):** a generic pack detector fine-tuned on 1,893 public retail photos
+> reached test recall **0.964** and precision **0.967**. 5 Star identity on the same public data **failed**:
+> 0/3 exact SKU and 6/357 false accepts. See `evidence/training/real5star_kaggle_t4x2/README.md`.
+>
+> **Web front end:** https://pack-station-psi.vercel.app (static; connect it to a running API from the page).
+> The API is not hosted yet: `render.yaml` is ready but has not been deployed.
 
 ## Quick start (tested commands)
 
@@ -55,13 +62,15 @@ load, results report `model_failed`; fixture output is never substituted for rea
 | Geometry contract, transforms, EXIF, mirror | yes | unit tests (hand-computed cases) | `tests/test_geometry.py`, `tests/test_transforms.py` | — |
 | Fixture vertical slice (still, replay, API) | yes | sealed synthetic set (150 scenes) | `evidence/eval/fixture_sealed150_seed12000`, `evidence/examples` | — |
 | Pretrained inference (GDINO + SAM 2 + DINOv2) | yes | real photos + 20 unseen synthetic scenes | `evidence/real`, `evidence/eval/pretrained_sealed20_seed12000` | GPU for speed |
-| Real 5 Star recognition | enrolment tooling only | **not validated** (same-photo self-consistency only) | `evidence/real/5star_*` | authorised references, 12–20 physical packs, look-alikes, sessions |
+| Real 5 Star recognition | enrolment tooling + DINOv2 gallery trained on public data | **not validated**: public-data test 0/3 exact SKU, false accept 6/357 | `evidence/real/5star_*`, `evidence/training/real5star_kaggle_t4x2` | authorised references, 12–20 physical packs, look-alikes, sessions |
 | Exact SKU via barcode / variant cues | yes | fixtures | `evidence/examples/exact_sku_*` | verified real GTIN (currently **unset**) |
 | Tracking, evidence expiry, crossing safety | yes | unit tests + synthetic replays | `evidence/replay` | physical crossing scene |
-| RT-DETR station detector, landmark head | training/export paths | smoke only (fixture data) | `evidence/training` | labelled real data |
+| RT-DETR generic package detector | trained (2 × T4, DDP), ONNX parity 1e-5 | public retail photos: test recall 0.964 [0.939–0.981], precision 0.967, 34 ms/img on T4 | `evidence/training/real5star_kaggle_t4x2` | station presentations |
+| Landmark (A→B heading) head | training/export paths | smoke only (fixture data) | `evidence/training` | A/B endpoint labels |
 | Signed bundles, outbox, Postgres registry | yes | tests (local PG 16) | `tests/test_outbox_bundle_eval.py` | operator signing keys |
 | Live camera, 15 fps / 150 ms, 8-h soak | code path + runbook | **not run** | `docs/VERIFICATION.md` §4 | camera + NVIDIA station |
 | Docker image | Dockerfile | **not built** | — | Docker daemon |
+| Web front end | static site (Vercel) | deployed; examples render; not yet connected to a hosted API | `frontend/` | hosted API (`render.yaml`) |
 
 ## Layout
 
