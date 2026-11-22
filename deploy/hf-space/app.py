@@ -44,6 +44,7 @@ def _ensure_bundle() -> None:
 def build():
     import cv2
     import gradio as gr
+
     from pvs.api import create_app
     from pvs.capture import frame_from_file
     from pvs.config import load_station
@@ -85,14 +86,38 @@ def build():
             out = gr.Image(label="Result")
         txt = gr.Code(language="json", label="Summary")
         gr.Button("Analyse").click(analyse, inp, [out, txt], api_name=False)
-    # the Gradio page takes "/" on the Space; the API keeps every other route
-    api.router.routes = [r for r in api.router.routes if getattr(r, "path", None) != "/"]
-    return gr.mount_gradio_app(api, demo, path="/")
+    return api, demo
 
 
-app = build()
+def attach_api(demo, api) -> None:
+    """Serve the REST API from Gradio's own server, however the Space runtime launches `demo`.
+
+    Gradio builds its FastAPI app in `App.create_app`; the wrapper below prepends one route per API path,
+    each forwarding to the pvs FastAPI app (which keeps its CORS middleware and handlers)."""
+    from gradio.routes import App
+    from starlette.middleware.cors import CORSMiddleware
+    from starlette.routing import Route
+
+    skip = {"/", "/openapi.json", "/docs", "/docs/oauth2-redirect", "/redoc"}
+    paths = sorted({r.path for r in api.router.routes if getattr(r, "path", "/") not in skip})
+    orig = App.create_app
+
+    def create_app(blocks, *args, **kwargs):
+        app = orig(blocks, *args, **kwargs)
+        if blocks is demo:
+            app.router.routes[0:0] = [Route(p, endpoint=api, methods=None) for p in paths]
+            # outermost, so cross-origin preflights from the website get the API's CORS policy
+            origins = [o.strip() for o in os.environ["PVS_CORS_ORIGINS"].split(",") if o.strip()]
+            app.add_middleware(CORSMiddleware, allow_origins=origins, allow_methods=["GET", "POST"],
+                               allow_headers=["Authorization", "Content-Type"])
+            print("API routes attached:", paths, flush=True)
+        return app
+
+    App.create_app = staticmethod(create_app)
+
+
+api, demo = build()
+attach_api(demo, api)
 
 if __name__ == "__main__":
-    import uvicorn
-
-    uvicorn.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", "7860")))
+    demo.launch(server_name="0.0.0.0", ssr_mode=False)
