@@ -43,7 +43,10 @@ def download(list_path: Path, out: Path, api_key: str) -> dict:
     from roboflow import Roboflow
 
     cfg = yaml.safe_load(list_path.read_text())
-    rf = Roboflow(api_key=api_key)
+    try:
+        rf = Roboflow(api_key=api_key)
+    except Exception as e:  # noqa: BLE001
+        raise SystemExit(f"Roboflow login failed ({type(e).__name__}: {e}); check the ROBOFLOW_API_KEY secret") from e
     out.mkdir(parents=True, exist_ok=True)
     report = []
     prog = Progress(stage_name("download"), len(cfg["projects"]), "projects", every_s=0)

@@ -71,8 +71,15 @@ trap on_exit EXIT
 "${UVPIP[@]}" --index-url https://download.pytorch.org/whl/cu124 torch==2.6.0 torchvision==0.21.0
 grep -vE '^(torch|torchvision|sympy)==' requirements/models.lock > /tmp/models-nottorch.lock
 grep -vE '^sympy==' requirements/runtime.lock > /tmp/runtime-nosympy.lock
-"${UVPIP[@]}" -r /tmp/runtime-nosympy.lock -r /tmp/models-nottorch.lock sympy==1.13.1 wrapt roboflow onnx
+"${UVPIP[@]}" -r /tmp/runtime-nosympy.lock -r /tmp/models-nottorch.lock sympy==1.13.1 wrapt onnx
 "${UVPIP[@]}" --no-deps -e .
+# roboflow (download only) gets its own venv: it needs typer<0.26 while the model stack pins typer 0.29, and
+# inside the main venv the resolver silently fell back to roboflow 0.1.1 (no deps, no API)
+VENV_RF="$REPO/.venv-rf"
+"${CLEAN[@]}" uv venv -q --python 3.13 --seed "$VENV_RF"
+"${CLEAN[@]}" uv pip install -q --python "$VENV_RF/bin/python" roboflow==1.7.3
+"${CLEAN[@]}" uv pip install -q --python "$VENV_RF/bin/python" --no-deps -e .
+"${CLEAN[@]}" "$VENV_RF/bin/python" -s -c "import roboflow, requests; print('roboflow', roboflow.__version__)"
 rm -f "$STATUS/.stop" "$STATUS/status.json"
 ev setup start
 "${PY[@]}" -c "import torch,sys;print('python',sys.version.split()[0],'torch',torch.__version__);assert torch.cuda.is_available();[print('gpu',i,torch.cuda.get_device_name(i)) for i in range(torch.cuda.device_count())]"
@@ -83,7 +90,7 @@ WATCH_PID=$!
 ev setup done
 
 STAGE=download; ev download start
-pyst download -m pvs.training.retail download --out "$WORK/rf"
+"${CLEAN[@]}" PVS_STAGE=download "$VENV_RF/bin/python" -s -m pvs.training.retail download --out "$WORK/rf"
 ev download done
 STAGE=prepare; ev prepare start
 pyst prepare -m pvs.training.retail prepare --exports "$WORK/rf" --out "$WORK/data"
