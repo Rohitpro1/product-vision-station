@@ -71,7 +71,7 @@ function drawResult(img, res) {
     const lvl = inst.identity.level, col = COLORS[lvl] || COLORS.unknown;
     const [x0, y0, x1, y1] = inst.bbox_xyxy_px;
     ctx.lineWidth = 3 * s; ctx.strokeStyle = col; ctx.strokeRect(x0, y0, x1 - x0, y1 - y0);
-    const label = `${shortTrack(inst)}  ${lvl}${inst.identity.sku ? " · " + tail(inst.identity.sku) : inst.identity.family ? " · " + tail(inst.identity.family) : ""}`;
+    const label = `${shortTrack(inst)}  ${lvl}${inst.identity.sku ? " · " + displayName(inst.identity.sku) : inst.identity.family ? " · " + displayName(inst.identity.family) : ""}`;
     ctx.font = `600 ${15 * s}px Archivo, sans-serif`;
     const w = ctx.measureText(label).width + 12 * s;
     ctx.fillStyle = col; ctx.fillRect(x0, Math.max(0, y0 - 24 * s), w, 22 * s);
@@ -95,6 +95,8 @@ function arrow(cx, cy, h, L, s) {
 }
 const rad = (d) => (d * Math.PI) / 180;
 const tail = (id) => (id || "").split(":").pop();
+// Readable name for a catalogue id (brand names come from config.js; anything else shows its short id).
+const displayName = (id) => ((window.PVS_CONFIG || {}).displayNames || {})[id] || tail(id);
 const shortTrack = (inst) => (inst.track_id || inst.instance_id).split(":").pop();
 
 // dial: image-plane angles, clockwise from +x (right), y down
@@ -136,7 +138,7 @@ function renderList(res) {
   }
   ol.innerHTML = inst.map((i) => {
     const id = i.identity, lvl = id.level;
-    const name = id.sku ? tail(id.sku) : id.family ? tail(id.family) : "Unrecognised pack";
+    const name = id.sku ? displayName(id.sku) : id.family ? displayName(id.family) : "Unrecognised pack";
     const ax = i.pose.axis.available ? `axis ${i.pose.axis.value_deg.toFixed(1)}°` : "no axis";
     const hd = i.pose.heading.available ? `heading ${i.pose.heading.value_deg.toFixed(1)}°` : "no arrow";
     const notes = [why(id.reason), i.pose.heading.available ? "" : why(i.pose.heading.reason)].filter(Boolean);
