@@ -58,6 +58,59 @@ class DinoV2Embedder:
         return v / (np.linalg.norm(v, axis=1, keepdims=True) + 1e-9)
 
 
+_IMNET_MEAN = np.array([0.485, 0.456, 0.406], np.float32)
+_IMNET_STD = np.array([0.229, 0.224, 0.225], np.float32)
+
+
+def dino_preprocess(crops: list[np.ndarray], size: int = 224) -> np.ndarray:
+    """BGR crops -> (N, 3, size, size) float32. Long side horizontal, letterboxed (whole pack kept, no centre
+    crop), ImageNet normalisation. Shared by training (torch) and serving (ONNX) so the two cannot drift."""
+    out = np.empty((len(crops), 3, size, size), np.float32)
+    pad = (_IMNET_MEAN[::-1] * 255).astype(np.uint8).tolist()  # BGR mean -> zero after normalisation
+    for i, c in enumerate(crops):
+        if c.shape[0] > c.shape[1]:
+            c = cv2.rotate(c, cv2.ROTATE_90_CLOCKWISE)
+        h, w = c.shape[:2]
+        s = size / max(h, w)
+        r = cv2.resize(c, (max(1, round(w * s)), max(1, round(h * s))), interpolation=cv2.INTER_AREA)
+        canvas = np.empty((size, size, 3), np.uint8)
+        canvas[:] = pad
+        y0, x0 = (size - r.shape[0]) // 2, (size - r.shape[1]) // 2
+        canvas[y0:y0 + r.shape[0], x0:x0 + r.shape[1]] = r
+        rgb = canvas[:, :, ::-1].astype(np.float32) / 255.0
+        out[i] = ((rgb - _IMNET_MEAN) / _IMNET_STD).transpose(2, 0, 1)
+    return out
+
+
+def dino_pool(last_hidden_state: np.ndarray) -> np.ndarray:
+    v = np.concatenate([last_hidden_state[:, 0], last_hidden_state[:, 1:].mean(1)], 1).astype(np.float32)
+    return v / (np.linalg.norm(v, axis=1, keepdims=True) + 1e-9)
+
+
+class DinoV2OnnxEmbedder:
+    """DINOv2 (exported to ONNX) on ONNX Runtime: same features as training, no torch needed at serving."""
+
+    def __init__(self, path: Path, provider: str = "CPUExecutionProvider", batch: int = 16) -> None:
+        try:
+            import onnxruntime as ort
+
+            self.sess = ort.InferenceSession(str(path), providers=[provider])
+        except Exception as e:  # noqa: BLE001
+            raise ModelUnavailable(f"dinov2 onnx load failed: {type(e).__name__}: {e}") from e
+        self.input = self.sess.get_inputs()[0].name
+        self.batch = batch
+        self.backend_id = f"dinov2-onnx:{hashlib.sha256(Path(path).read_bytes()).hexdigest()[:12]}"
+
+    def embed(self, crops: list[np.ndarray]) -> np.ndarray:
+        if not crops:
+            return np.zeros((0, 768), np.float32)
+        out = []
+        for i in range(0, len(crops), self.batch):
+            x = dino_preprocess(crops[i:i + self.batch])
+            out.append(dino_pool(self.sess.run(None, {self.input: x})[0]))
+        return np.concatenate(out)
+
+
 @dataclass
 class Ref:
     sku: str  # "negative:<name>" for explicit non-target references

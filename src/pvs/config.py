@@ -22,12 +22,13 @@ class CaptureCfg(BaseModel):
 class ModelsCfg(BaseModel):
     detector: str = "grounding_dino"  # grounding_dino | rtdetr_onnx | scripted
     masks: str = "sam2"  # sam2 | grabcut_fallback | scripted
-    embedder: str = "dinov2"  # dinov2 | colour_hist
+    embedder: str = "dinov2"  # dinov2 | dinov2_onnx | colour_hist
     prompts: list[str] = Field(default_factory=lambda: ["wrapped chocolate bar", "snack package"])
     box_threshold: float = 0.30
     text_threshold: float = 0.25
     detector_max_side: int = 800
     rtdetr_onnx: str | None = None
+    dinov2_onnx: str | None = None
     provider: str = "CPUExecutionProvider"
 
 

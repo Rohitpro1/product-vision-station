@@ -203,6 +203,7 @@ def train(a) -> dict:
     items, stats = _load(data)
     tr = [i for i in items if i["split"] == "train" and i["boxes"]]
     va = [i for i in items if i["split"] == "val" and i["boxes"]]
+    random.Random(1).shuffle(va)  # a --val-limit must sample every source, not the first in the manifest
     man = json.loads(Path(a.manifest).read_text())["models"]["rtdetr_r18"]
     model = RTDetrForObjectDetection.from_pretrained(man["repo"], revision=man["revision"], num_labels=1,
                                                      id2label={0: "package"}, label2id={"package": 0},

@@ -114,6 +114,12 @@ class Pipeline:
             if m.embedder == "dinov2":
                 d = manifest["dinov2"]
                 self.embedder = DinoV2Embedder(d["repo"], d["revision"])
+            elif m.embedder == "dinov2_onnx":
+                from .gallery import DinoV2OnnxEmbedder
+
+                if not m.dinov2_onnx:
+                    raise ModelUnavailable("dinov2_onnx selected but no exported model configured")
+                self.embedder = DinoV2OnnxEmbedder(self.root / m.dinov2_onnx, m.provider)
             else:
                 self.embedder = ColourHistEmbedder()
         self.backend.update({"detector": self.detector.backend_id,
