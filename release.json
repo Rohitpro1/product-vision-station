@@ -1,11 +1,21 @@
 {
-  "release": "v1-hosted-onnx-demo",
+  "release": "v2-retail-brands-keep5",
   "config": "configs/station.hosted.yaml",
   "files": [
     {
-      "url": "https://raw.githubusercontent.com/Rohitpro1/product-vision-station/model-assets/pvs-hosted-bundle.tgz",
-      "sha256": "8ba6fdaa22773af1dd0e144b239ec825689f8cad10e844f8912cfcdd11fc6787",
+      "url": "https://raw.githubusercontent.com/Rohitpro1/product-vision-station/model-assets/pvs-retail-v2-small.tgz",
+      "sha256": "cd10767e8b17a148d51b5ae157d26890deaf3c5e055927dc9bc78fb5ddb7763a",
       "extract": true
+    },
+    {
+      "url": "https://huggingface.co/Rohitpro1/pack-station-training/resolve/394f78830d29e6b780239f0f6fcfe6c7b8029dcf/bundle/models/trained/rtdetr_r18_package.onnx",
+      "sha256": "2cee7ae7aa5737638a841e185cd1cd61caa7fe98dd5136ad900c558220455047",
+      "path": "models/trained/rtdetr_r18_package.onnx"
+    },
+    {
+      "url": "https://huggingface.co/Rohitpro1/pack-station-training/resolve/394f78830d29e6b780239f0f6fcfe6c7b8029dcf/bundle/models/trained/dinov2_small.onnx",
+      "sha256": "c42c79ffec9592be22b1f7e6a6852c344ba4720ad303da903dfe5197265b8f01",
+      "path": "models/trained/dinov2_small.onnx"
     }
   ]
 }
