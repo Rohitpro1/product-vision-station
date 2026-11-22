@@ -21,6 +21,7 @@
 | D17 | Front end and API both hosted on Vercel's free Hobby plan; Render not used | Render's free tier (512 MB) is too small. Hugging Face Spaces would have needed a browser sign-in. A Vercel Python function (1 vCPU / 2 GB) fits a torch-free profile. | `render.yaml` remains for a paid Render plan |
 | D18 | The hosted profile uses the trained ONNX detector + crop GrabCut + colour-histogram gallery (no torch) | keeps the function bundle at about 480 MB and cold starts short | `configs/station.onnx.yaml` (DINOv2) for GPU or large hosts |
 | D19 | The runtime bundle (75 MB) lives on the orphan branch `model-assets`, is SHA-256 pinned in `deploy/vercel-api/app.py`, and is fetched to `/tmp` on cold start | release creation was not permitted from the build session; the branch keeps `main` clones small | re-host anywhere and set `PVS_BUNDLE_URL` + `PVS_BUNDLE_SHA256` |
+| D21 | Hugging Face Space as primary API, Vercel as fallback | Docker Spaces are now paid, so the Space uses the free Gradio SDK. Gradio owns the server, and the REST API is attached inside `App.create_app`. | edit `frontend/config.js` `apiUrls` |
 | D20 | GrabCut fallback runs on a padded ROI downscaled to ≤384 px | full-frame GrabCut took 3.6–4.4 s per pack; the ROI version takes 0.1–0.3 s, with axes within 1° on the real photos | `ThresholdMaskFallback(work_side=...)` |
 
 ## Model-selection status

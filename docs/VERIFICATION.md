@@ -165,6 +165,16 @@ Site: https://pack-station-psi.vercel.app. API: https://pack-station-api.vercel.
 | `POST /v1/detect`, 1280 px real 5 Star photo | 200, `ok`, 1 pack, same box as the local run, ~2.3 s per request (1.4 s pipeline) |
 | Headless Chrome: open the site, upload the photo through the page | "Connected · station"; the box and a 4.6° axis are drawn; identity `unknown` (expected: synthetic demo catalogue) |
 
+Hugging Face Space check (2026-11-22): https://rohitpro1-pack-station-api.hf.space, Space commit `e6b1…` + app from `5ffae01`.
+
+| Check | Result |
+|---|---|
+| `/readyz` | ready; `hosted-onnx-demo` |
+| `POST /v1/detect`, same photo | 200, identical box `[160.8, 682.4, 744.9, 885.2]`, ~3.3 s |
+| CORS preflight from the site | 200 with `access-control-allow-origin: https://pack-station-psi.vercel.app`; other origins get 400 |
+| Live site, headless Chrome | "Connected · Hugging Face", detection sent to `*.hf.space`, axis 4.7° |
+| Live site with `*.hf.space` blocked | "Connected · Vercel", detection sent to `pack-station-api.vercel.app`, axis 4.6° |
+
 ## 5. Gates not yet supported by evidence
 
 Every PDF p.8 gate on **real station** data (the public-data detector figures above are not station presentations); runtime/latency gates; Docker build; TensorRT; OCR (backend

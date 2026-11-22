@@ -18,7 +18,9 @@ observation age. Specification: *Product Recognition & Orientation — ADR-01* (
 >
 > **Live demo:**
 > - Site: https://pack-station-psi.vercel.app
-> - API: https://pack-station-api.vercel.app (`/readyz`, `POST /v1/detect`). It runs on the Vercel Hobby plan from `deploy/vercel-api`, using the trained ONNX detector.
+> - API, primary: https://rohitpro1-pack-station-api.hf.space, a Hugging Face Space (free Gradio/ZeroGPU tier) built from `deploy/hf-space`. It also has an upload page.
+> - API, fallback: https://pack-station-api.vercel.app (Vercel Hobby, from `deploy/vercel-api`).
+> - Both run the trained ONNX detector, and the site switches to Vercel automatically if the Space doesn't answer.
 > - The demo catalogue is synthetic, so real packs come back as `unknown`.
 
 ## Quick start (tested commands)
