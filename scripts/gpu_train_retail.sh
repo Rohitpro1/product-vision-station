@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # Retail detector + chocolate-brand gallery, end to end, on any CUDA 12 Linux host (built for Kaggle 2 x T4).
-#   ROBOFLOW_API_KEY=... REPO=... WORK=... OUT=... bash scripts/gpu_train_retail.sh [EPOCHS]   (default 24)
+#   ROBOFLOW_API_KEY=... REPO=... WORK=... OUT=... bash scripts/gpu_train_retail.sh [EPOCHS]   (default 20)
 #   SMOKE=1  -> full download + prepare, then 1 epoch x 30 steps and small evals, to prove the chain works
 # Optional: NGPU, BATCH_PER_GPU (16), WORKERS (4), E2E_WORKERS (4)
 # Output: $OUT/retail-v2-artifacts.tgz (reports + logs) and $OUT/bundle/ (models + config for the hosted API)
 set -euo pipefail
-EPOCHS=${1:-24}
+EPOCHS=${1:-20}
 REPO=${REPO:-$HOME/product-vision-station}
 WORK=${WORK:-/tmp/pvs-retail}          # large scratch (datasets); not kept
 OUT=${OUT:-$HOME/pvs-retail-out}       # small outputs to keep
@@ -50,16 +50,17 @@ echo "== prepare";  "${PY[@]}" -m pvs.training.retail prepare --exports "$WORK/r
 BATCH=$((BATCH_PER_GPU * NGPU))
 LR=$("${PY[@]}" -c "print(round(2e-4 * ($BATCH / 16) ** 0.5, 6))")
 EXTRA=(); EVAL_LIMIT=2000; E2E_B=300; E2E_O=200
-if [ "$SMOKE" = "1" ]; then EPOCHS=1; EXTRA=(--max-steps 30); EVAL_LIMIT=50; E2E_B=12; E2E_O=8; fi
+RUN="$RUN"
+if [ "$SMOKE" = "1" ]; then EPOCHS=1; EXTRA=(--max-steps 30); EVAL_LIMIT=50; E2E_B=12; E2E_O=8; RUN="$WORK/run-smoke"; rm -rf "$RUN"; fi
 if [ "$NGPU" -gt 1 ]; then LAUNCH=("${PY[@]}" -m torch.distributed.run --standalone --nproc_per_node="$NGPU"); else LAUNCH=("${PY[@]}"); fi
 echo "== train detector: $NGPU GPU(s), batch $BATCH, lr $LR, $EPOCHS epochs"
-"${LAUNCH[@]}" -m pvs.training.real5star train --data "$WORK/data" --run "$WORK/run" --device cuda --epochs "$EPOCHS" \
+"${LAUNCH[@]}" -m pvs.training.real5star train --data "$WORK/data" --run "$RUN" --device cuda --epochs "$EPOCHS" \
     --batch "$BATCH" --size 640 --lr "$LR" --workers "$WORKERS" --val-limit 400 "${EXTRA[@]}" 2>&1 \
     | grep -v -i -E 'warning|mismatch|detach' | tee "$L/train.log"
-[ -f "$WORK/run/train_report.json" ] || { echo "training failed"; exit 4; }
+[ -f "$RUN/train_report.json" ] || { echo "training failed"; exit 4; }
 
 echo "== export detector + test metrics"
-"${PY[@]}" -m pvs.training.retail export --data "$WORK/data" --run "$WORK/run" --out "$OUT/detector" \
+"${PY[@]}" -m pvs.training.retail export --data "$WORK/data" --run "$RUN" --out "$OUT/detector" \
     --test-limit "$EVAL_LIMIT" 2>&1 | grep -v -i warning | tee "$L/export.log"
 echo "== brand gallery"
 "${PY[@]}" -m pvs.training.brands build --data "$WORK/data" --out "$OUT/brands" --device cuda 2>&1 \
@@ -79,7 +80,7 @@ echo "== end-to-end on held-out test photos"
     --max-branded "$E2E_B" --max-other "$E2E_O" 2>&1 | grep -v -i warning | tee "$L/e2e.log"
 
 cp "$WORK/data/stats.json" "$OUT/data_stats.json"; cp "$WORK/rf/download_report.json" "$OUT/"
-cp "$WORK/run/train_report.json" "$OUT/detector/"
+cp "$RUN/train_report.json" "$OUT/detector/"
 tar -czf "$OUT/retail-v2-artifacts.tgz" -C "$OUT" data_stats.json download_report.json bundle_sha256.txt logs \
     detector/detector_report.json detector/train_report.json detector/rtdetr_r18_package.json \
     brands/brands_report.json brands/e2e_report.json brands/thresholds_brands.yaml brands/catalogue_brands.json
