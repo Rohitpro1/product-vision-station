@@ -244,7 +244,26 @@ def train(a) -> dict:
     cuda = a.device.startswith("cuda")
     workers = 0 if a.workers < 0 else a.workers
     t0 = time.time()
+    from .progress import Progress, stage_name
+
+    prog = Progress(stage_name("train"), (a.epochs - start) * steps_per_epoch, "steps", enabled=main_proc)
+    ep_times: list[float] = []
+    stopped_early = None
     for ep in range(start, a.epochs):
+        # time budget (e.g. Kaggle's 12 h limit): stop before an epoch that would not finish in time
+        stop = 0.0
+        if main_proc and a.stop_at and ep_times and time.time() + 1.15 * float(np.mean(ep_times)) > a.stop_at:
+            stop = 1.0
+        if world > 1:
+            flag = torch.tensor([stop], device=a.device)
+            dist.all_reduce(flag)
+            stop = float(flag.item())
+        if stop:
+            stopped_early = {"at_epoch": ep, "reason": "time budget (--stop-at)"}
+            if main_proc:
+                print(f"[train] stopping before epoch {ep + 1}: time budget reached; keeping best checkpoint", flush=True)
+            break
+        te = time.time()
         model.train()
         order = list(tr)
         random.Random(a.seed + ep).shuffle(order)  # identical order on every rank ...
@@ -268,6 +287,8 @@ def train(a) -> dict:
             scaler.update()
             sched.step()
             losses.append(loss.detach().item())
+            prog.update(epoch=f"{ep + 1}/{a.epochs}", loss=float(np.mean(losses[-50:])),
+                        imgs_per_s=round(a.batch * prog.done / max(1e-9, time.time() - prog.t0), 1))
         if world > 1:  # average the epoch loss over ranks for the log
             t = torch.tensor([float(np.sum(losses)), len(losses)], device=a.device, dtype=torch.float64)
             dist.all_reduce(t)
@@ -280,6 +301,11 @@ def train(a) -> dict:
                         "val_precision@0.5": rec["precision"], "elapsed_s": round(time.time() - t0, 1),
                         "gpus": world})
             print(json.dumps(log[-1]), flush=True)
+            from .progress import read_status, write_status
+
+            st = read_status()
+            st["epochs"] = log[-1:] if not st.get("epochs") else (st["epochs"] + log[-1:])[-40:]
+            write_status(st)
             if rec["recall"] + rec["precision"] > best[0]:
                 best = (rec["recall"] + rec["precision"], ep + 1)
                 core.save_pretrained(out / "best")
@@ -287,7 +313,8 @@ def train(a) -> dict:
                         "epoch": ep + 1, "log": log, "best": list(best)}, ck)
         if world > 1:
             dist.barrier()  # other ranks wait while rank 0 validates/saves
-    rep = {"epochs": a.epochs, "best_epoch": best[1], "log": log, "train_images": len(tr), "val_images": len(va),
+        ep_times.append(time.time() - te)
+    rep = {"epochs": a.epochs, "stopped_early": stopped_early, "best_epoch": best[1], "log": log, "train_images": len(tr), "val_images": len(va),
            "init": f"{man['repo']}@{man['revision'][:12]}", "size": a.size, "batch": a.batch, "lr": a.lr,
            "processes": world, "batch_per_process": per_rank, "device": a.device.split(":")[0],
            "gpu": torch.cuda.get_device_name(0) if cuda else None,
@@ -550,6 +577,7 @@ def main(argv=None) -> int:
             s.add_argument("--max-steps", type=int, default=0, help="smoke: cap steps per epoch")
             s.add_argument("--val-limit", type=int, default=None)
             s.add_argument("--workers", type=int, default=4, help="DataLoader workers per process")
+            s.add_argument("--stop-at", type=float, default=0.0, help="unix time; no epoch starts that would end after it")
         else:
             s.add_argument("--refs-per-class", type=int, default=40)
     a = ap.parse_args(argv)

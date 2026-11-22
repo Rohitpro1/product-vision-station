@@ -26,6 +26,7 @@ import cv2
 import yaml
 
 from .brand_map import brand_for
+from .progress import Progress, stage_name
 
 
 def _licence(export: Path) -> str:
@@ -45,6 +46,7 @@ def download(list_path: Path, out: Path, api_key: str) -> dict:
     rf = Roboflow(api_key=api_key)
     out.mkdir(parents=True, exist_ok=True)
     report = []
+    prog = Progress(stage_name("download"), len(cfg["projects"]), "projects", every_s=0)
     for p in cfg["projects"]:
         ws, name = p["ws"], p["project"]
         dest = out / f"{ws}__{name}"
@@ -66,6 +68,7 @@ def download(list_path: Path, out: Path, api_key: str) -> dict:
             rec.update(ok=False, skip=f"{type(e).__name__}: {e}"[:200])
         print(json.dumps(rec), flush=True)
         report.append(rec)
+        prog.update(ok=sum(r.get("ok", False) for r in report), skipped=sum(not r.get("ok", False) for r in report))
     (out / "download_report.json").write_text(json.dumps(report, indent=1))
     return {"ok": sum(r["ok"] for r in report), "skipped": [r for r in report if not r["ok"]]}
 
@@ -120,7 +123,9 @@ def prepare(exports_root: Path, list_path: Path, out: Path, ham: int = 6, seed: 
         items += mine
     # near-duplicate grouping incl. mirrored copies (union-find over sorted dHash neighbours)
     keep, hashes = [], []
+    prog = Progress(stage_name("prepare") + ":hash", len(items), "images")
     for it in items:
+        prog.update()
         h = _dhash_both(Path(it["src"]))
         if h is not None:
             keep.append(it)
@@ -160,7 +165,9 @@ def prepare(exports_root: Path, list_path: Path, out: Path, ham: int = 6, seed: 
     out.mkdir(parents=True, exist_ok=True)
     img_dir = out / "images"
     img_dir.mkdir(exist_ok=True)
+    prog = Progress(stage_name("prepare") + ":write", len(items), "images")
     for it in items:
+        prog.update()
         src = Path(it.pop("src"))
         h = hashlib.sha256(src.read_bytes()).hexdigest()
         img = cv2.imread(str(src))
@@ -213,11 +220,20 @@ def export(data: Path, run: Path, out: Path, size: int, device: str, test_limit:
     random.Random(2).shuffle(test)  # a limit must sample every project, not the first ones in the manifest
     model = RTDetrForObjectDetection.from_pretrained(run / "best").to(device).eval()
     t = time.time()
-    rec = detection_recall(model, data, test, size, device, limit=test_limit)
-    per_img_ms = (time.time() - t) * 1000 / max(1, min(len(test), test_limit or len(test)))
+    test = test[:test_limit] if test_limit else test
+    prog = Progress(stage_name("export") + ":test", len(test), "images")
+    rec = {"tp": 0, "gt": 0, "pred": 0}
+    for i in range(0, len(test), 50):
+        r = detection_recall(model, data, test[i:i + 50], size, device)
+        for k in rec:
+            rec[k] += r[k]
+        prog.update(len(test[i:i + 50]), recall=rec["tp"] / max(1, rec["gt"]))
+    rec["recall"] = rec["tp"] / rec["gt"] if rec["gt"] else 0.0
+    rec["precision"] = rec["tp"] / rec["pred"] if rec["pred"] else 0.0
+    per_img_ms = (time.time() - t) * 1000 / max(1, len(test))
     out.mkdir(parents=True, exist_ok=True)
     info = export_onnx(model, out / "rtdetr_r18_package.onnx", size)
-    rep = {"test_images": min(len(test), test_limit or len(test)), **rec,
+    rep = {"test_images": len(test), **rec,
            "recall_ci95": clopper_pearson(rec["tp"], rec["gt"]) if rec.get("gt") else None,
            "ms_per_image_incl_decode": round(per_img_ms, 1), "onnx": info,
            "train_report": json.loads((run / "train_report.json").read_text()) if (run / "train_report.json").exists() else None}

@@ -24,15 +24,19 @@ import yaml
 
 from ..gallery import Gallery, Ref, dino_pool, dino_preprocess
 from .brand_map import BRANDS
+from .progress import Progress, stage_name
 
 NEG = "negative:other-product"
 
 
-def _crops(data: Path, items: list[dict], split: str, max_other_per_class: int, rng: random.Random):
+def _crops(data: Path, items: list[dict], split: str, max_other_per_class: int, rng: random.Random,
+           limit: int | None = None):
     out, labels, per = [], [], Counter()
     sel = [it for it in items if it["split"] == split]
     rng.shuffle(sel)
     for it in sel:
+        if limit and len(out) >= limit:
+            break
         img = None
         for b in it["boxes"]:
             lab = b["brand"] or f"other:{b['class']}"
@@ -69,10 +73,12 @@ class _TorchDino:
                 h = self.model(pixel_values=t).last_hidden_state
             return h.float().cpu().numpy()
 
-    def embed(self, crops: list[np.ndarray], batch: int = 128) -> np.ndarray:
+    def embed(self, crops: list[np.ndarray], batch: int = 128, what: str = "crops") -> np.ndarray:
         out = []
+        prog = Progress(stage_name("brands") + f":embed-{what}", len(crops), "crops")
         for i in range(0, len(crops), batch):
             out.append(dino_pool(self.hidden(dino_preprocess(crops[i:i + batch]))))
+            prog.update(len(crops[i:i + batch]))
         return np.concatenate(out) if out else np.zeros((0, 768), np.float32)
 
     def export_onnx(self, path: Path) -> None:
@@ -126,9 +132,9 @@ def build(a) -> dict:
     t0 = time.time()
     dino = _TorchDino(man["repo"], man["revision"], a.device)
 
-    tr_c, tr_l = _crops(data, items, "train", a.neg_per_class, rng)
-    va_c, va_l = _crops(data, items, "val", a.neg_per_class, rng)
-    te_c, te_l = _crops(data, items, "test", a.neg_per_class, rng)
+    tr_c, tr_l = _crops(data, items, "train", a.neg_per_class, rng, a.max_crops)
+    va_c, va_l = _crops(data, items, "val", a.neg_per_class, rng, a.max_crops)
+    te_c, te_l = _crops(data, items, "test", a.neg_per_class, rng, a.max_crops)
     counts = {s: Counter(lab if not lab.startswith("other:") else "other" for lab in L)
               for s, L in (("train", tr_l), ("val", va_l), ("test", te_l))}
     keep = [b for b in BRANDS if counts["train"][b] >= a.min_train and counts["val"][b] + counts["test"][b] >= 1]
@@ -149,17 +155,17 @@ def build(a) -> dict:
         sel_l += [lab] * min(cap, len(cs))
     views = sel_c + [cv2.rotate(c, cv2.ROTATE_180) for c in sel_c]
     view_l = sel_l + sel_l
-    G = dino.embed(views)
+    G = dino.embed(views, what="gallery")
     labels = sorted(set(view_l))
     gl = np.array([labels.index(x) for x in view_l])
 
-    def run(crops, labs):
-        V = dino.embed(crops)
+    def run(crops, labs, what):
+        V = dino.embed(crops, what=what)
         truth = [lab_of(x) for x in labs]
         return V, truth, _search(V, G, gl, labels)
 
-    Vv, tv, (topv, s0v, mv, _) = run(va_c, va_l)
-    Vt, tt, (topt, s0t, mt, compt) = run(te_c, te_l)
+    Vv, tv, (topv, s0v, mv, _) = run(va_c, va_l, "val")
+    Vt, tt, (topt, s0t, mt, compt) = run(te_c, te_l, "test")
 
     # threshold choice on VALIDATION: maximise correct brand accepts with wrong accepts <= max_wrong_rate
     tv_a = np.array(tv)
@@ -177,7 +183,10 @@ def build(a) -> dict:
                 best = {"family_score": float(fs), "tie_margin": float(tm), "correct": correct, "neg_fa": neg_fa,
                         "wrong_brand": wrong_brand, "n_neg": n_neg, "n_brand": n_brand}
     if best is None:
-        raise SystemExit("no threshold meets the validation false-accept limit")
+        if not a.max_crops:
+            raise SystemExit("no threshold meets the validation false-accept limit")
+        best = {"family_score": 0.99, "tie_margin": 0.05, "correct": 0, "neg_fa": 0, "wrong_brand": 0,
+                "n_neg": 0, "n_brand": 0, "note": "smoke run: no feasible threshold on the tiny sample"}
 
     # thresholds file for the hosted profile (production rules read it); sku_score > 1 disables SKU-level claims
     base = yaml.safe_load((Path(a.base_thresholds)).read_text())
@@ -270,20 +279,33 @@ def build(a) -> dict:
     return rep
 
 
-def _e2e_worker(args):
-    bundle, data, chunk = args
+_P = None
+_KEPT: set = set()
+
+
+def _e2e_init(bundle):
+    global _P, _KEPT
     import os
 
     os.chdir(bundle)
-    from ..capture import frame_from_file
     from ..config import load_station
-    from ..evaluation import match
     from ..pipeline import Pipeline
     from ..schema import Profile
 
     cfg = load_station(Path(bundle) / "configs/station.hosted.yaml")
-    p = Pipeline(cfg, Profile.STATION, root=Path(bundle))
-    kept = {x["family"] for x in json.loads((Path(bundle) / cfg.catalogue).read_text())["products"]}
+    _P = Pipeline(cfg, Profile.STATION, root=Path(bundle))
+    _KEPT = {x["family"] for x in json.loads((Path(bundle) / cfg.catalogue).read_text())["products"]}
+
+
+def _e2e_one(args):
+    data, it = args
+    return _e2e_rows(_P, _KEPT, data, [it])[0]
+
+
+def _e2e_rows(p, kept, data, chunk):
+    from ..capture import frame_from_file
+    from ..evaluation import match
+
     rows = []
     for it in chunk:
         r = p.process(frame_from_file(str(Path(data) / it["image"])))
@@ -309,9 +331,12 @@ def e2e(a) -> dict:
     rng.shuffle(branded)
     rng.shuffle(other)
     sel = branded[:a.max_branded] + other[:a.max_other]
-    chunks = [(str(bundle), str(data), sel[i::a.workers]) for i in range(a.workers)]
-    with get_context("spawn").Pool(a.workers) as pool:
-        rows = [r for part in pool.map(_e2e_worker, chunks) for r in part]
+    prog = Progress(stage_name("e2e"), len(sel), "images")
+    rows = []
+    with get_context("spawn").Pool(a.workers, initializer=_e2e_init, initargs=(str(bundle.resolve()),)) as pool:
+        for row in pool.imap_unordered(_e2e_one, [(str(data.resolve()), it) for it in sel]):
+            rows.append(row)
+            prog.update()
     gt = sum(r["gt"] for r in rows)
     matched = sum(len(r["pairs"]) for r in rows)
     pairs = [p for r in rows for p in r["pairs"]]
@@ -350,6 +375,7 @@ def main(argv=None) -> int:
     b.add_argument("--neg-per-class", type=int, default=25)
     b.add_argument("--min-train", type=int, default=15)
     b.add_argument("--max-wrong-rate", type=float, default=0.01)
+    b.add_argument("--max-crops", type=int, default=None, help="smoke: cap crops per split")
     e = sub.add_parser("e2e")
     e.add_argument("--data", required=True)
     e.add_argument("--bundle", required=True)
