@@ -105,8 +105,8 @@ On top of the station software:
 | **Website** | https://pack-station-psi.vercel.app | Static site on Vercel (project `pack-station`). Upload a photo and see boxes, axis lines and identity. |
 | **API, primary** | https://rohitpro1-pack-station-api.hf.space | HF Space `Rohitpro1/pack-station-api` (Gradio 6.32 SDK, free ZeroGPU tier, CPU inference). It also serves an upload page at `/`. |
 | **API, fallback** | https://pack-station-api.vercel.app | Vercel Python function (project `pack-station-api`). |
-| **Training progress + results** | https://huggingface.co/Rohitpro1/pack-station-training | Public model repo. The README is a live progress page refreshed every 4 min; results are uploaded at the end. |
-| **Source** | https://github.com/Rohitpro1/product-vision-station | Public repo, branch `main`. Model bundle v1 is on the orphan branch `model-assets`. |
+| **Training results** | https://huggingface.co/Rohitpro1/pack-station-training | Public model repo: run 2 reports and bundle (its ONNX files are served from here). The README was the live progress page during training. |
+| **Source** | https://github.com/Rohitpro1/product-vision-station | Public repo, branch `main`. The orphan branch `model-assets` holds `release.json` (which model is live) and the small release files. |
 
 **What the live model does today (release `v2-retail-brands-keep5`):**
 
@@ -230,8 +230,8 @@ sequenceDiagram
     U->>FE: choose photo
     FE->>FE: EXIF-rotate + downscale to ≤1600 px JPEG (body < 4.5 MB)
     FE->>HF: POST /v1/detect (multipart file)
-    Note over HF,VA: on cold start the API downloads pvs-hosted-bundle.tgz,<br/>verifies SHA-256, unpacks to /tmp, builds the Pipeline
-    HF->>GH: (cold start only) fetch bundle
+    Note over HF,VA: the API serves the release named in release.json:<br/>files downloaded, SHA-256 verified, unpacked to /tmp, Pipeline built<br/>(Space: at start-up + every 10 min; Vercel: each cold start)
+    HF->>GH: (start-up / poll) read release.json
     HF-->>FE: FrameResult JSON (instances: box, identity, axis, heading, face, timings)
     FE->>U: canvas overlay (box, dashed axis, gold heading arrow) + per-pack dials
 ```
@@ -370,8 +370,8 @@ Each field has its own evidence, availability, reason code and observation age.
 | `fixture` | scripted from ground truth | scripted | colour histogram | deterministic tests |
 | `pretrained` | Grounding DINO tiny | SAM 2.1 tiny | DINOv2-small (torch) | real inference before training (about 13–20 s per frame on CPU) |
 | `station` (`station.onnx.yaml`) | trained RT-DETR ONNX | ROI GrabCut | DINOv2 (torch) | GPU or large hosts |
-| `station` (`station.hosted.yaml`), **live v1** | trained RT-DETR ONNX | ROI GrabCut | colour histogram, synthetic catalogue | torch-free hosting; `max_instances` 3 |
-| `station` (`station.hosted-brands.yaml`), **v2 pending** | retail v2 RT-DETR ONNX | ROI GrabCut | **DINOv2-small ONNX** + brand gallery | brand naming; `max_instances` 30 |
+| `station` (`station.hosted.yaml` in release v1) | run 1 RT-DETR ONNX | ROI GrabCut | colour histogram, synthetic catalogue | torch-free hosting; `max_instances` 3; now the rollback release |
+| `station` (`station.hosted.yaml` in release v2, from `station.hosted-brands.yaml`), **live** | retail v2 RT-DETR ONNX | ROI GrabCut | **DINOv2-small ONNX** + 5-brand gallery | brand naming; `max_instances` 30 |
 
 ### 7.3 Speed work done
 
@@ -692,9 +692,9 @@ Files are in `frontend/`.
     `localStorage` (`pvs.api`, `pvs.token`).
 - **Uploads:** EXIF-oriented and downscaled to ≤1600 px JPEG (quality 0.9) in the browser, and the result is drawn
   on exactly the bytes sent. The page warns that the first request after idle can take about 20 s.
-- **Copy:**
-  - The status note says the detector was trained on public retail photos (96% of packs found in held-out tests).
-  - It says identity isn't trained, so expect "unknown", and that 5 Star recognition isn't validated.
+- **Copy:** the status note gives the v2 detector result (81% of packs on 2,000 held-out shelf photos), lists the 5
+  brands it can name (about 19 in 20 names right on test shelf crops), says close-ups usually come back "unknown",
+  and says 5 Star and other brands are not named yet.
 
 ---
 
