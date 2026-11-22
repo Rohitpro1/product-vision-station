@@ -29,4 +29,4 @@ typing-inspection
 typing_extensions
 uvicorn
 zxing-cpp==3.1.1
-product-vision-station @ https://github.com/Rohitpro1/product-vision-station/archive/0118de26480d048557c6e7d3b99d2ea1f495b176.tar.gz
+product-vision-station @ https://github.com/Rohitpro1/product-vision-station/archive/97efb663b70fb818740682bd9741b807b713a383.tar.gz
