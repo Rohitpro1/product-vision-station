@@ -28,4 +28,4 @@ typing-inspection==0.4.5
 typing_extensions==4.16.0
 uvicorn==0.54.0
 zxing-cpp==3.1.1
-product-vision-station @ https://github.com/Rohitpro1/product-vision-station/archive/18c057bae9c673d827299e30b93e53f18b1968af.tar.gz
+product-vision-station @ https://github.com/Rohitpro1/product-vision-station/archive/cf3992bcd89e07b4ea3577d9d73cd1746c2e3614.tar.gz
