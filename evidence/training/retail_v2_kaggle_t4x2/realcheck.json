@@ -1,0 +1,127 @@
+{
+ "what": "Sanity check before deploying release v2-retail-brands-keep5. Public Wikimedia Commons photos of chocolate packs (fetched for this test only; images not committed). Full hosted pipeline run locally on CPU with v1 and v2 releases.",
+ "date": "2026-11-22",
+ "photos": [
+  {
+   "file": "dm1",
+   "commons": "File:Cadbury_Dairy_Milk_Oreo.jpg",
+   "brand": "cadbury:dairy-milk",
+   "v1_packs": 1,
+   "v2_packs": 1,
+   "v2_identity": [
+    "unknown"
+   ]
+  },
+  {
+   "file": "dm2",
+   "commons": "File:Cadbury-Dairy-Milk-Caramel-Bar.jpg",
+   "brand": "cadbury:dairy-milk",
+   "v1_packs": 0,
+   "v2_packs": 0,
+   "v2_identity": []
+  },
+  {
+   "file": "dm3",
+   "commons": "File:Cadbury_Dairy_Milk's_'Thodi_Thodi_Hindi'_Wrapper.jpg",
+   "brand": "cadbury:dairy-milk",
+   "v1_packs": 1,
+   "v2_packs": 1,
+   "v2_identity": [
+    "unknown"
+   ]
+  },
+  {
+   "file": "dm_store",
+   "commons": "File:Cadburys_Chocolate_in_Coimbatore,INDIA.jpg",
+   "brand": "cadbury:dairy-milk (shelf)",
+   "v1_packs": 2,
+   "v2_packs": 3,
+   "v2_identity": [
+    "unknown",
+    "unknown",
+    "unknown"
+   ]
+  },
+  {
+   "file": "kk2",
+   "commons": "File:2020-03-14_05_53_23_A_Kit_Kat_bar_in_the_Franklin_Farm_section_of_Oak_Hill,_Fairfax_County,_Virginia.jpg",
+   "brand": "nestle:kitkat",
+   "v1_packs": 1,
+   "v2_packs": 1,
+   "v2_identity": [
+    "unknown"
+   ]
+  },
+  {
+   "file": "bo1",
+   "commons": "File:Bounty.jpg",
+   "brand": "mars:bounty",
+   "v1_packs": 1,
+   "v2_packs": 1,
+   "v2_identity": [
+    "unknown"
+   ]
+  },
+  {
+   "file": "bo2",
+   "commons": "File:Bounty-Split.jpg",
+   "brand": "mars:bounty",
+   "v1_packs": 1,
+   "v2_packs": 1,
+   "v2_identity": [
+    "unknown"
+   ]
+  },
+  {
+   "file": "ki1",
+   "commons": "File:Kinderchocolate.jpg",
+   "brand": "ferrero:kinder (wrapped + unwrapped)",
+   "v1_packs": 0,
+   "v2_packs": 2,
+   "v2_identity": [
+    "unknown",
+    "unknown"
+   ]
+  },
+  {
+   "file": "ki2",
+   "commons": "File:KinderSchokolade.jpg",
+   "brand": "ferrero:kinder",
+   "v1_packs": 2,
+   "v2_packs": 1,
+   "v2_identity": [
+    "unknown"
+   ]
+  },
+  {
+   "file": "sn1",
+   "commons": "File:2019-01-28_19_55_14_A_Snickers_bar_with_the_wrapper_still_intact_in_the_Dulles_section_of_Sterling,_Loudoun_County,_Virginia.jpg",
+   "brand": "mars:snickers (retired)",
+   "v1_packs": 1,
+   "v2_packs": 1,
+   "v2_identity": [
+    "unknown"
+   ]
+  },
+  {
+   "file": "sn2",
+   "commons": "File:2020-03-06_07_31_28_An_intact_Snickers_bar_in_the_Franklin_Farm_section_of_Oak_Hill,_Fairfax_County,_Virginia.jpg",
+   "brand": "mars:snickers (retired)",
+   "v1_packs": 1,
+   "v2_packs": 1,
+   "v2_identity": [
+    "unknown"
+   ]
+  }
+ ],
+ "synthetic_examples": {
+  "three_packs.png": {
+   "v1_packs": 1,
+   "v2_packs": 3,
+   "packs_in_image": 3
+  },
+  "other five examples": "1 pack each in v1 and v2, all unknown in v2"
+ },
+ "summary": "No wrong brand names. No correct names either: 0 of 9 photos of kept brands were named (one Dairy Milk photo had no pack detected by either version) (close-up web photos differ from the shelf crops the gallery was built from). v2 finds more packs in multi-pack scenes (three_packs 3 vs 1, Kinder 2 vs 0, shelf 3 vs 2).",
+ "bournville_retirement": "With 6 brands kept, the synthetic three_packs.png example had one plain-coloured pack named cadbury:bournville (score 0.81, margin 0.10). Bournville was retired as well; with 5 brands no example or photo was named."
+}

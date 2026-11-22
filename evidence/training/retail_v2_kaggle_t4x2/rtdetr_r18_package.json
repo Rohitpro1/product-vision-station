@@ -1,0 +1,5 @@
+{
+ "onnx": "rtdetr_r18_package.onnx",
+ "sha256": "2cee7ae7aa5737638a841e185cd1cd61caa7fe98dd5136ad900c558220455047",
+ "max_abs_diff": 3.3855438232421875e-05
+}

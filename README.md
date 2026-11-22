@@ -11,17 +11,24 @@ observation age. Specification: *Product Recognition & Orientation — ADR-01* (
 > **Real Cadbury 5 Star recognition has not been validated**: no authorised reference set or physical
 > presentations exist yet. The station has **not** been qualified on hardware. See `docs/VERIFICATION.md`.
 >
-> **Real-data GPU run (Kaggle, 2 × T4):** a generic pack detector fine-tuned on 1,893 public retail photos
-> reached test recall **0.964** and precision **0.967**. 5 Star identity on the same public data **failed**:
-> 0/3 exact SKU and 6/357 false accepts. See `evidence/training/real5star_kaggle_t4x2/README.md`.
->
+> **Real-data GPU runs (Kaggle, 2 × T4):**
+> - Run 1: a pack detector fine-tuned on 1,893 public 5 Star/retail photos reached test recall **0.964** and precision
+>   **0.967**. 5 Star identity on the same public data **failed**: 0/3 exact SKU and 6/357 false accepts.
+>   See `evidence/training/real5star_kaggle_t4x2/README.md`.
+> - Run 2 (live since 23 Nov 2026): a retail pack detector trained on 56,000 photos from 36 public projects reached test
+>   recall **0.808** and precision **0.801** on 2,000 dense shelf photos. A brand gallery names **5 chocolate brands**
+>   (Cadbury Dairy Milk, Cadbury Gems, KitKat, Bounty, Kinder); about 19 in 20 names it gave on test shelf crops were
+>   right. 16 other brands, including 5 Star, were retired because they too often gave wrong names. See
+>   `evidence/training/retail_v2_kaggle_t4x2/README.md`.
 >
 > **Live demo:**
 > - Site: https://pack-station-psi.vercel.app
 > - API, primary: https://rohitpro1-pack-station-api.hf.space, a Hugging Face Space (free Gradio/ZeroGPU tier) built from `deploy/hf-space`. It also has an upload page.
 > - API, fallback: https://pack-station-api.vercel.app (Vercel Hobby, from `deploy/vercel-api`).
-> - Both run the trained ONNX detector, and the site switches to Vercel automatically if the Space doesn't answer.
-> - The demo catalogue is synthetic, so real packs come back as `unknown`.
+> - Both serve the model release named in `release.json` on the `model-assets` branch, and the site switches to
+>   Vercel automatically if the Space doesn't answer. To deploy or roll back a model, change that one file
+>   (`docs/HANDOFF.md` §13).
+> - Close-up product photos usually come back as `unknown`; brand names appear on shelf-style photos.
 
 ## Documentation
 
@@ -79,15 +86,16 @@ load, results report `model_failed`; fixture output is never substituted for rea
 | Geometry contract, transforms, EXIF, mirror | yes | unit tests (hand-computed cases) | `tests/test_geometry.py`, `tests/test_transforms.py` | — |
 | Fixture vertical slice (still, replay, API) | yes | sealed synthetic set (150 scenes) | `evidence/eval/fixture_sealed150_seed12000`, `evidence/examples` | — |
 | Pretrained inference (GDINO + SAM 2 + DINOv2) | yes | real photos + 20 unseen synthetic scenes | `evidence/real`, `evidence/eval/pretrained_sealed20_seed12000` | GPU for speed |
-| Real 5 Star recognition | enrolment tooling + DINOv2 gallery trained on public data | **not validated**: public-data test 0/3 exact SKU, false accept 6/357 | `evidence/real/5star_*`, `evidence/training/real5star_kaggle_t4x2` | authorised references, 12–20 physical packs, look-alikes, sessions |
+| Real 5 Star recognition | enrolment tooling + DINOv2 galleries trained on public data | **not validated**: run 1 public-data test 0/3 exact SKU, false accept 6/357; run 2 brand gallery named 5 Star 12 times, right 3, so retired from the hosted model | `evidence/real/5star_*`, `evidence/training/real5star_kaggle_t4x2`, `evidence/training/retail_v2_kaggle_t4x2` | authorised references, 12–20 physical packs, look-alikes, sessions |
 | Exact SKU via barcode / variant cues | yes | fixtures | `evidence/examples/exact_sku_*` | verified real GTIN (currently **unset**) |
 | Tracking, evidence expiry, crossing safety | yes | unit tests + synthetic replays | `evidence/replay` | physical crossing scene |
-| RT-DETR generic package detector | trained (2 × T4, DDP), ONNX parity 1e-5 | public retail photos: test recall 0.964 [0.939–0.981], precision 0.967, 34 ms/img on T4 | `evidence/training/real5star_kaggle_t4x2` | station presentations |
+| RT-DETR generic package detector | trained twice (2 × T4, DDP), ONNX parity ≤ 6e-5 | **live (v2):** 36 public retail projects, test recall 0.808 [0.799–0.816], precision 0.801 on 2,000 dense shelf photos, 37 ms/img on T4. Run 1 (5 Star photos only): recall 0.964, precision 0.967 | `evidence/training/retail_v2_kaggle_t4x2`, `evidence/training/real5star_kaggle_t4x2` | station presentations |
+| Chocolate brand naming (hosted) | DINOv2-small ONNX gallery from public data; 5 of 21 brands kept (Dairy Milk, Gems, KitKat, Bounty, Kinder) | test (shelf crops): about 19 in 20 names right (estimate 0.944 [0.911–0.968]), recall 0.42; close-up web photos: 0 of 9 named, 0 wrong | `evidence/training/retail_v2_kaggle_t4x2` | photos at the station; pack-size and flavour variants |
 | Landmark (A→B heading) head | training/export paths | smoke only (fixture data) | `evidence/training` | A/B endpoint labels |
 | Signed bundles, outbox, Postgres registry | yes | tests (local PG 16) | `tests/test_outbox_bundle_eval.py` | operator signing keys |
 | Live camera, 15 fps / 150 ms, 8-h soak | code path + runbook | **not run** | `docs/VERIFICATION.md` §4 | camera + NVIDIA station |
 | Docker image | Dockerfile | **not built** | — | Docker daemon |
-| Web front end + hosted API | Vercel static site + Vercel Python function | live upload end to end (headless Chrome): photo → API → box and axis drawn; ~2.3 s per request when warm | `frontend/`, `deploy/vercel-api/` | — |
+| Web front end + hosted API | Vercel static site; API on a Hugging Face Space (primary) and a Vercel Python function (fallback), both serving the model release named in `model-assets/release.json` | live upload end to end; release v2 checked on both hosts: 2.7–7.3 s per photo | `frontend/`, `deploy/hf-space/`, `deploy/vercel-api/`, `evidence/training/retail_v2_kaggle_t4x2/README.md` | — |
 
 ## Layout
 

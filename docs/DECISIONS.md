@@ -23,6 +23,12 @@
 | D19 | The runtime bundle (75 MB) lives on the orphan branch `model-assets`, is SHA-256 pinned in `deploy/vercel-api/app.py`, and is fetched to `/tmp` on cold start | release creation was not permitted from the build session; the branch keeps `main` clones small | re-host anywhere and set `PVS_BUNDLE_URL` + `PVS_BUNDLE_SHA256` |
 | D21 | Hugging Face Space as primary API, Vercel as fallback | Docker Spaces are now paid, so the Space uses the free Gradio SDK. Gradio owns the server, and the REST API is attached inside `App.create_app`. | edit `frontend/config.js` `apiUrls` |
 | D20 | GrabCut fallback runs on a padded ROI downscaled to ≤384 px | full-frame GrabCut took 3.6–4.4 s per pack; the ROI version takes 0.1–0.3 s, with axes within 1° on the real photos | `ThresholdMaskFallback(work_side=...)` |
+| D22 | The model each API serves is named in `release.json` on `model-assets` (files listed with SHA-256). The HF Space re-reads it every 10 min and hot-swaps; Vercel reads it on each cold start | lets a model be deployed or rolled back by pushing one file, with no Space edit or PC/browser session; a broken release is rejected and the current one keeps serving (tested locally and on the live Space) | supersedes the fixed pin in D19; built-in v1 release is the fallback |
+| D23 | Deploy run 2 (`v2-retail-brands-keep5`) to both APIs | its detector finds more packs in multi-pack scenes than v1 (synthetic three-pack 3 vs 1); test recall 0.808 / precision 0.801 on 2,000 dense shelf photos (not comparable with v1's 5 Star-only test) | set `release.json` back to the v1 entry |
+| D24 | A brand stays only with ≥ 10 test crops and test precision ≥ 0.85; retired brands' gallery refs become negatives, so those packs read "unknown" | a wrong brand name is worse than "unknown"; 5 Star was right on only 3 of 12 names | `evidence/training/retail_v2_kaggle_t4x2/brands_report.json` |
+| D25 | Cadbury Bournville retired despite 17/17 on test | it named a synthetic plain-coloured pack with score 0.81: an out-of-distribution false positive on the website's own example | re-add once checked on station photos |
+| D26 | Model files over GitHub's size limit (two ONNX, about 170 MB) are served from the HF model repo at a fixed revision; small files (gallery, catalogue, configs) from `model-assets` | GitHub's 100 MB file limit; both sources are pinned by SHA-256 in `release.json` | — |
+| D27 | Hugging Face's front proxy echoes any `Origin` in CORS headers for the Space; accepted as a known limitation | the header is added by the platform, not the app; the API is public, unauthenticated and keeps no cookies. Vercel enforces the site-only policy | put a proxy in front if the API ever needs auth |
 
 ## Model-selection status
 
@@ -33,6 +39,8 @@ Measured so far:
 - The pretrained route takes about 13–20 s/frame on 2 CPU cores. That is far outside the 150 ms budget, which is expected without a GPU.
 - The RT-DETR-R18 ONNX export matches PyTorch to within 5.5e-5.
 - On public retail photos (`evidence/training/real5star_kaggle_t4x2`), the fine-tuned RT-DETR-R18 package detector reaches test recall 0.964 and precision 0.967 at 34 ms/image on a T4.
+
+- Run 2 (`evidence/training/retail_v2_kaggle_t4x2`): trained on 36 public retail projects, test recall 0.808 / precision 0.801 on 2,000 dense shelf photos; DINOv2 brand gallery precision about 0.94 for the 5 kept brands on test crops (estimate).
 
 This favours the trained single-stage detector for **localisation**. Identity still needs a reference set, and the comparison still has to be repeated on station presentations.
 

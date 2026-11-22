@@ -1,0 +1,127 @@
+{
+ "catalogue": "brands",
+ "revision": "brands-c42c79ff-13156-keep5",
+ "created_at": "2026-11-22T21:01:24Z",
+ "products": [
+  {
+   "sku": "cadbury:dairy-milk",
+   "family": "cadbury:dairy-milk",
+   "display_name": "Cadbury Dairy Milk",
+   "gtins": [],
+   "quantity": null,
+   "variant": null,
+   "artwork_revision": "public-data-1",
+   "references": [],
+   "physical_ends": {},
+   "supported_faces": [
+    "front",
+    "back"
+   ],
+   "provenance": "embedding references from public Roboflow Universe datasets (see brands_report.json)",
+   "usage_rights": "derived embeddings only; source images not redistributed",
+   "approval_state": "approved"
+  },
+  {
+   "sku": "cadbury:gems",
+   "family": "cadbury:gems",
+   "display_name": "Cadbury Gems",
+   "gtins": [],
+   "quantity": null,
+   "variant": null,
+   "artwork_revision": "public-data-1",
+   "references": [],
+   "physical_ends": {},
+   "supported_faces": [
+    "front",
+    "back"
+   ],
+   "provenance": "embedding references from public Roboflow Universe datasets (see brands_report.json)",
+   "usage_rights": "derived embeddings only; source images not redistributed",
+   "approval_state": "approved"
+  },
+  {
+   "sku": "nestle:kitkat",
+   "family": "nestle:kitkat",
+   "display_name": "Nestl\u00e9 KitKat",
+   "gtins": [],
+   "quantity": null,
+   "variant": null,
+   "artwork_revision": "public-data-1",
+   "references": [],
+   "physical_ends": {},
+   "supported_faces": [
+    "front",
+    "back"
+   ],
+   "provenance": "embedding references from public Roboflow Universe datasets (see brands_report.json)",
+   "usage_rights": "derived embeddings only; source images not redistributed",
+   "approval_state": "approved"
+  },
+  {
+   "sku": "mars:bounty",
+   "family": "mars:bounty",
+   "display_name": "Bounty",
+   "gtins": [],
+   "quantity": null,
+   "variant": null,
+   "artwork_revision": "public-data-1",
+   "references": [],
+   "physical_ends": {},
+   "supported_faces": [
+    "front",
+    "back"
+   ],
+   "provenance": "embedding references from public Roboflow Universe datasets (see brands_report.json)",
+   "usage_rights": "derived embeddings only; source images not redistributed",
+   "approval_state": "approved"
+  },
+  {
+   "sku": "ferrero:kinder",
+   "family": "ferrero:kinder",
+   "display_name": "Kinder",
+   "gtins": [],
+   "quantity": null,
+   "variant": null,
+   "artwork_revision": "public-data-1",
+   "references": [],
+   "physical_ends": {},
+   "supported_faces": [
+    "front",
+    "back"
+   ],
+   "provenance": "embedding references from public Roboflow Universe datasets (see brands_report.json)",
+   "usage_rights": "derived embeddings only; source images not redistributed",
+   "approval_state": "approved"
+  }
+ ],
+ "negatives": [],
+ "history": [
+  {
+   "revision": "brands-c42c79ff-13156",
+   "change": "built by pvs.training.brands"
+  },
+  {
+   "at": "2026-11-22T22:30:00Z",
+   "action": "retire",
+   "skus": [
+    "cadbury:5-star",
+    "cadbury:perk",
+    "cadbury:eclairs",
+    "cadbury:fuse",
+    "nestle:munch",
+    "nestle:milkybar",
+    "mars:snickers",
+    "mars:mars",
+    "mars:twix",
+    "mars:galaxy",
+    "amul:chocolate",
+    "ferrero:rocher",
+    "mondelez:toblerone",
+    "mondelez:milka",
+    "hersheys:chocolate",
+    "cadbury:bournville"
+   ],
+   "reason": "held-out test precision below 0.85 or fewer than 10 test crops (see evidence/training/retail_v2_kaggle_t4x2/README.md); their gallery references are kept as negatives so those packs are reported as unknown; cadbury:bournville additionally retired after it named a synthetic plain-coloured demo pack with score 0.81 (out-of-distribution false positive)"
+  }
+ ]
+}

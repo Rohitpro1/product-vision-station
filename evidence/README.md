@@ -26,6 +26,7 @@ come from fixture ground truth · **REAL-MODEL** real pretrained weights ran · 
 | `training/` | SYN | landmark + RT-DETR smoke runs, ONNX parity, augmentation grid |
 | `api/` | SYN, SCRIPTED | live server smoke transcript, live overlay, generated JSON Schema |
 | `training/real5star_kaggle_t4x2/` | REAL-PHOTO (public Roboflow, CC BY 4.0), REAL-MODEL | run 1 on Kaggle 2 × T4: package detector test recall 0.964 / precision 0.967; 5 Star identity 0/3 (reports and logs only; no images, ONNX or gallery) |
+| `training/retail_v2_kaggle_t4x2/` | REAL-PHOTO (public Roboflow, CC BY 4.0 / public domain), REAL-MODEL | run 2 on Kaggle 2 × T4: retail package detector test recall 0.808 / precision 0.801 on 2,000 shelf photos; 21-brand gallery, 5 brands kept for deployment; pre-deploy check on public photos (reports only) |
 
 Overlays under `real/` are adaptations of CC BY-SA photographs and carry the same licence; the source photos
 themselves are not committed (`scripts/fetch_real_examples.py`).

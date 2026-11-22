@@ -1,0 +1,24 @@
+{
+ "note": "DERIVED from the per-brand test counts in brands_report.json, assuming that retiring a brand (its gallery refs relabelled as negatives) turns every crop previously named as that brand into 'unknown' and leaves other decisions unchanged. Tie-margin decisions can shift slightly, so these are estimates, not a re-measurement.",
+ "kept": [
+  "cadbury:dairy-milk",
+  "cadbury:gems",
+  "nestle:kitkat",
+  "mars:bounty",
+  "ferrero:kinder"
+ ],
+ "names_given": 287,
+ "names_correct": 271,
+ "names_wrong": 16,
+ "precision": 0.9443,
+ "precision_ci95": [
+  0.911,
+  0.9678
+ ],
+ "kept_brand_test_crops": 646,
+ "kept_brand_recall": 0.4195,
+ "kept_brand_recall_ci95": [
+  0.3811,
+  0.4586
+ ]
+}

@@ -1,0 +1,27 @@
+# Hosted profile v2: retail package detector (RT-DETR-R18, public Indian retail data) + chocolate-brand
+# identity (DINOv2-small ONNX gallery built from public data, thresholds chosen on validation; brand level only).
+# Bundle layout is produced by scripts/gpu_train_retail.sh; evidence in evidence/training/retail_v2*.
+station_id: hosted-demo
+camera_id: upload
+capture:
+  device: "0"
+  width: 1920
+  height: 1080
+  sample_hz: 15
+  mirror_preview: false
+models:
+  detector: rtdetr_onnx
+  rtdetr_onnx: models/trained/rtdetr_r18_package.onnx
+  dinov2_onnx: models/trained/dinov2_small.onnx
+  provider: CPUExecutionProvider
+  masks: grabcut_fallback
+  embedder: dinov2_onnx
+limits:
+  max_instances: 30
+catalogue: catalogues/brands/catalogue.json
+gallery: models/trained/gallery_brands.npz
+thresholds: configs/thresholds_brands.yaml
+bundle_id: hosted-retail-brands-v2
+outbox_path: var/outbox.sqlite
+bind: 0.0.0.0
+port: 7860

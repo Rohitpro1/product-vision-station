@@ -1,0 +1,50 @@
+{
+ "images": 500,
+ "branded_images": 300,
+ "detection_recall_iou50": {
+  "k": 1725,
+  "n": 2543,
+  "rate": 0.6783326779394416,
+  "ci95": [
+   0.6597833488994327,
+   0.696470502944467
+  ],
+  "upper95": 0.6936080812275575
+ },
+ "pred_boxes": 2083,
+ "unmatched_pred_boxes": 358,
+ "brand_gt_boxes": 617,
+ "brand_correct_end_to_end": {
+  "k": 252,
+  "n": 617,
+  "rate": 0.40842787682333875,
+  "ci95": [
+   0.36935087821515267,
+   0.44838546416682934
+  ],
+  "upper95": 0.44206369446864324
+ },
+ "brand_wrong_end_to_end": {
+  "k": 9,
+  "n": 519,
+  "rate": 0.017341040462427744,
+  "ci95": [
+   0.007959313071611154,
+   0.032662605897679504
+  ],
+  "upper95": 0.030065132727597955
+ },
+ "other_products_called_a_brand": {
+  "k": 17,
+  "n": 1206,
+  "rate": 0.014096185737976783,
+  "ci95": [
+   0.008232416368241426,
+   0.02247369584284887
+  ],
+  "upper95": 0.021069067906811022
+ },
+ "unmatched_boxes_called_a_brand": 33,
+ "median_ms": 3669.57,
+ "note": "full hosted Pipeline (trained detector + GrabCut + DINOv2-ONNX gallery + fusion rules) on held-out test photos; boxes matched to ground truth at IoU >= 0.5; brands not in the gallery count as other."
+}

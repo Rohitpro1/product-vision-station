@@ -1,0 +1,7 @@
+efe29b548460c624fc4113100ce05bc20767fd0a1ad2a4cc51fb6f944cbb73ab  ./catalogues/brands/catalogue.json
+31bc48de208929af3f0bdf926f98d6e50d5d93c87e8d0d29a15949897db69643  ./configs/station.hosted.yaml
+de548a1bda35ca49fb2b01540820c71e5db89d5f9ba77737d50951d0dbbccd7b  ./configs/thresholds_brands.yaml
+f49c7c262307aec524dda49d473eb44ccb0d068a33a8a9b8090124bc8c1cb3f1  ./models/manifest.json
+c42c79ffec9592be22b1f7e6a6852c344ba4720ad303da903dfe5197265b8f01  ./models/trained/dinov2_small.onnx
+36d3562eaf91ba26e069573ec13dda2ad3b978ef0cc9546de64c24b995de9efc  ./models/trained/gallery_brands.npz
+2cee7ae7aa5737638a841e185cd1cd61caa7fe98dd5136ad900c558220455047  ./models/trained/rtdetr_r18_package.onnx

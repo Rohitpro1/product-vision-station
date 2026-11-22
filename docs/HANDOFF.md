@@ -1,12 +1,12 @@
 # Product Vision Station — Complete Project Handoff
 
 > **Purpose of this document.** This is the full context for another engineer or AI agent to take over documentation or
-> development. It covers everything requested, everything built, what is live, what is training, the datasets used,
+> development. It covers everything requested, everything built, what is live, how training went, the datasets used,
 > architecture diagrams, scripts, repositories, hosting, decisions, failures and fixes, and open items.
 >
-> **Snapshot time:** 22 Nov 2026, 20:38 IST (15:08 UTC). Facts below were taken from the repository at commit
-> `6d864f6` plus the live status page at that time. Anything not directly measured is marked *(estimate)* or
-> *(derived)*.
+> **Snapshot time:** 23 Nov 2026, about 04:30 IST (23:00 UTC on 22 Nov), after release v2 went live. Facts were
+> taken from the repository and the live services at that time; the first version of this document was written at
+> 22 Nov 20:38 IST, while run 2 was training. Anything not directly measured is marked *(estimate)* or *(derived)*.
 >
 > **Owner:** Rohit (GitHub `Rohitpro1`, Hugging Face `Rohitpro1`, Kaggle `rohitkumarp`, Vercel team
 > `rohitpro1s-projects`).
@@ -26,14 +26,14 @@
 1. [One-paragraph summary](#1-one-paragraph-summary)
 2. [What was asked (chronological)](#2-what-was-asked-chronological)
 3. [What is live right now (public)](#3-what-is-live-right-now-public)
-4. [What is training right now](#4-what-is-training-right-now)
+4. [Training status](#4-training-status)
 5. [Repositories and where everything lives](#5-repositories-and-where-everything-lives)
 6. [System architecture (diagrams)](#6-system-architecture-diagrams)
 7. [The recognition pipeline in detail](#7-the-recognition-pipeline-in-detail)
 8. [Code map: every module](#8-code-map-every-module)
 9. [Scripts explained](#9-scripts-explained)
 10. [Training run 1: 5 Star / public retail (finished)](#10-training-run-1-5-star--public-retail-finished)
-11. [Training run 2: retail v2 + chocolate brands (in progress)](#11-training-run-2-retail-v2--chocolate-brands-in-progress)
+11. [Training run 2: retail v2 + chocolate brands (finished, live)](#11-training-run-2-retail-v2--chocolate-brands-finished-live)
 12. [Datasets](#12-datasets)
 13. [Hosting and deployment](#13-hosting-and-deployment)
 14. [Frontend (website)](#14-frontend-website)
@@ -58,13 +58,16 @@ an offline-safe outbox, signed model bundles, evaluation with exact confidence i
 
 On top of the station software:
 
-- A generic pack detector (RT-DETR-R18) was trained on public retail data on Kaggle's free 2 × T4 GPUs. Its held-out
-  test recall is 0.964 and precision 0.967.
-- That detector is **live** behind two free backends: a Hugging Face Space (primary) and Vercel (fallback). A public
-  website at https://pack-station-psi.vercel.app uploads photos to them.
-- A second, much larger training run is in progress on Kaggle. It uses about 40 public Indian retail and chocolate
-  datasets to improve detection of any packaged product and to add chocolate brand naming (5 Star, Dairy Milk,
-  KitKat, Munch, Perk, …).
+- Two RT-DETR-R18 pack detectors were trained on Kaggle's free 2 × T4 GPUs:
+  - Run 1 used public 5 Star/retail photos: test recall 0.964, precision 0.967.
+  - Run 2 used 36 public Indian retail and chocolate projects (56k training images): test recall 0.808, precision 0.801 on
+    2,000 much harder shelf photos. It also produced a DINOv2 chocolate-brand gallery.
+- **Run 2 is live** (since 23 Nov 2026, 03:51 IST) behind two free backends: a Hugging Face Space (primary) and Vercel
+  (fallback). A public website at https://pack-station-psi.vercel.app uploads photos to them.
+- The live model names **5 brands** when confident: Cadbury Dairy Milk, Cadbury Gems, KitKat, Bounty, Kinder. About
+  19 in 20 names it gave on test shelf crops were right. 16 brands, including 5 Star, were retired because they too
+  often gave wrong names.
+- Which model both backends serve is set by one file, `release.json` on the `model-assets` branch (§13).
 - **Real 5 Star recognition is still not validated**: public data gave 0/3 test hits. That needs real photographs
   of physical packs.
 
@@ -85,9 +88,13 @@ On top of the station software:
 | 9 | "It says unknown for 5 Star, why?" | Explained: the detector is trained, but identity has no real 5 Star references. |
 | 10 | "Improve training with public datasets; detect any retail / Indian product; categorise chocolates; use any site" | **Retail v2 pipeline**: about 40 Roboflow projects, licence-filtered; multi-dataset detector; DINOv2 brand gallery; end-to-end evaluation. |
 | 11 | "Show live progress + ETA, push results somewhere automatically" | Progress lines with ETA (IST), a live Hugging Face progress page, auto-upload of results to `Rohitpro1/pack-station-training`. |
-| 12 | Kaggle errors (`requests` missing); queued-run questions | `roboflow` moved into its own venv. Run 2 started 17:55 IST and is in progress. |
+| 12 | Kaggle errors (`requests` missing); queued-run questions | `roboflow` moved into its own venv. Run 2 ran 17:55 → 02:44 IST. |
 | 13 | Make the progress page public for the team | Rohit made the HF repo public (verified: `private: false`). |
 | 14 | This document | You are reading it. |
+| 15 | Unzip the engineering submission pack into the repo and update every README | `docs/submission/2026-11-22/` (checksummed, frozen), `docs/README.md`, `docs/submission/README.md`. |
+| 16 | Remove the AI assistant's name everywhere: files, authors, commit messages | Files scrubbed. History rewritten so every commit is authored by Rohit, with no trailer lines. Backends re-pinned and redeployed; old→new IDs in `docs/COMMIT_ID_MAP.md`. |
+| 17 | Deploy run 2 overnight without the PC on, and without sharing an HF token | The Space now reads `release.json` from GitHub and hot-swaps (no Space edit or browser needed); Vercel deploys through its connector. |
+| 18 | Run 2 finished → review, deploy, test, document | Release `v2-retail-brands-keep5` live on both hosts; evidence in `evidence/training/retail_v2_kaggle_t4x2/`. |
 
 ---
 
@@ -101,72 +108,37 @@ On top of the station software:
 | **Training progress + results** | https://huggingface.co/Rohitpro1/pack-station-training | Public model repo. The README is a live progress page refreshed every 4 min; results are uploaded at the end. |
 | **Source** | https://github.com/Rohitpro1/product-vision-station | Public repo, branch `main`. Model bundle v1 is on the orphan branch `model-assets`. |
 
-**What the live model does today (v1):** it finds packs with the trained RT-DETR-R18 detector. Training data was
-public Indian retail photos, with a test recall of 0.964. The live model measures each pack's axis with GrabCut plus
-a PCA axis fit. It returns identity `unknown` for real products, because the demo catalogue on the server is
-synthetic. That is correct behaviour, not a bug.
+**What the live model does today (release `v2-retail-brands-keep5`):**
+
+- **Finding packs:** the run 2 RT-DETR-R18 detector, trained on 36 public retail projects, finds packs of any kind.
+- **Axis:** each pack's axis is measured with GrabCut plus a PCA axis fit.
+- **Brand:** a DINOv2-small ONNX embedding of each pack is matched against a gallery of public-data references. Only 5 brands can be
+  named. Everything else, retired brands included, is `unknown`. Close-up product photos usually come back
+  `unknown` because the gallery was built from shelf crops (`evidence/training/retail_v2_kaggle_t4x2/realcheck.json`).
 
 **Live API endpoints (both hosts):**
 
-- `GET /readyz` returns `{"ready":true,"profile":"station","bundle":"hosted-onnx-demo"}`.
+- `GET /readyz` returns `{"ready":true,"profile":"station","bundle":"hosted-retail-brands-v2"}`.
 - `GET /healthz`.
 - `POST /v1/detect` takes multipart `file` and returns a `FrameResult` JSON. The schema version is 1.0; see
   `docs/API.md` and `GET /v1/schema`.
-- CORS allows only `https://pack-station-psi.vercel.app`. No API token is required; the endpoints are read-only and
-  store nothing.
+- **CORS:** the app allows only `https://pack-station-psi.vercel.app`. Vercel enforces this, but on the Space, Hugging Face's front
+  proxy echoes any origin (D27). No API token is required; the endpoints are read-only and store nothing.
 
-**Measured live latency:**
+**Measured live latency (23 Nov, release v2):**
 
-| Host | Warm request | Cold start |
+| Host | Request | Cold start |
 |---|---|---|
-| HF Space | about 3.3 s per request | the Space sleeps after about 48 h idle; waking takes minutes |
-| Vercel | about 2.3 s per request | about 20 s after 5 min idle |
+| HF Space | 7–8.5 s for 3-pack photos | the Space sleeps after about 48 h idle; waking takes minutes |
+| Vercel | 2.7–6.2 s | about 10 s (downloads the 190 MB release to `/tmp`) |
 
 ---
 
-## 4. What is training right now
+## 4. Training status
 
-**Kaggle notebook** `rohitkumarp/notebooka22cc96417`, saved version (commit run), **GPU T4 × 2**, started
-**17:55 IST (12:25 UTC)**.
-
-**Status at 20:38 IST, from the live page:**
-
-```
-[train] 9,695/35,080 steps (27.6%) | 1.21 steps/s | stage ETA 5h48m (02:24 IST) | run ETA 6h37m (03:13 IST)
-| epoch 6/20 | loss 7.561 | imgs_per_s 38.8
-```
-
-| Stage | Took | Status |
-|---|---|---|
-| setup | 13 s | done (both T4s, torch 2.6.0+cu124, Python 3.13.16) |
-| download | 6 min | done (Roboflow, licence-filtered) |
-| prepare | 18 min | done (merge, dHash de-dup, leakage check, ≤1280 px) |
-| smoke check | about 2.5 min total (train 72 s, export 17 s, brands 25 s, bundle 1 s, e2e 40 s) | **passed every stage** |
-| full train | about 8.3 h *(estimate)* | in progress: epoch 6 of 20, about 24 min per epoch, both GPUs |
-| export / brands / bundle / e2e / upload | about 50 min *(estimate)* | pending |
-
-Expected finish: **about 03:15 IST on 23 Nov**. The Kaggle 12 h cutoff is about 05:55 IST; the training safety stop
-(`--stop-at`) is 04:25 IST.
-
-**Validation during training.** Each epoch is checked on a random sample of 400 validation images at IoU 0.5:
-
-| Epoch | Loss | Recall | Precision |
-|---|---|---|---|
-| 1 | 17.59 | 0.766 | 0.612 |
-| 2 | 8.76 | 0.779 | 0.690 |
-| 3 | 8.18 | 0.792 | 0.678 |
-| 4 | 7.84 | 0.665 | 0.838 |
-| 5 | 7.55 | 0.816 | 0.699 |
-
-These are lower than run 1's 0.964, but the two aren't comparable: run 2's validation set is far harder (about
-40 sources, dense shelves, many packs per image). The figures that count will be the held-out **test** numbers in
-the final reports.
-
-**Size *(derived)*:** 35,080 steps / 20 epochs = 1,754 steps per epoch × global batch 32 ≈ **56k training images**
-after caps and de-duplication.
-
-**Follow-up scheduled:** a check at **03:40 IST on 23 Nov** will pull the results from the HF repo, review the test
-metrics, and deploy only if they hold up; otherwise it reports. The trigger is `trig_01EPMXx41229jCzJJzunAUKK`.
+Nothing is training. Run 2 finished on 23 Nov at 02:44 IST: all stages passed, and results were uploaded to
+https://huggingface.co/Rohitpro1/pack-station-training (revision `394f78830d29e6b780239f0f6fcfe6c7b8029dcf`). §11
+has the results and what was deployed.
 
 ---
 
@@ -176,11 +148,11 @@ metrics, and deploy only if they hold up; otherwise it reports. The trigger is `
 flowchart LR
     subgraph GH["GitHub: Rohitpro1/product-vision-station (public)"]
       MAIN["main: code, docs, evidence,<br/>frontend, deploy, scripts"]
-      MA["model-assets (orphan): pvs-hosted-bundle.tgz<br/>model v1, 75 MB, sha256 8ba6fdaa…6787"]
+      MA["model-assets (orphan): release.json (which model is live),<br/>pvs-retail-v2-small.tgz (v2 gallery + configs),<br/>pvs-hosted-bundle.tgz (v1, rollback)"]
     end
     subgraph HF["Hugging Face"]
       SP["Space Rohitpro1/pack-station-api<br/>(Gradio SDK, free) = API primary"]
-      TR["Model repo Rohitpro1/pack-station-training (public)<br/>live progress README + results/ + bundle/"]
+      TR["Model repo Rohitpro1/pack-station-training (public)<br/>progress README + results/ + bundle/ (v2 ONNX files)"]
     end
     subgraph VC["Vercel team rohitpro1s-projects (Hobby)"]
       FE["project pack-station<br/>pack-station-psi.vercel.app (frontend)"]
@@ -193,8 +165,10 @@ flowchart LR
     MAIN -->|git deploy, rootDirectory frontend| FE
     MAIN -->|pip install archive at pinned commit| API
     MAIN -->|pip install archive at pinned commit| SP
-    MA -->|bundle fetched on cold start, SHA-256 checked| API
-    MA -->|bundle fetched on cold start| SP
+    MA -->|release.json read on cold start; files SHA-256 checked| API
+    MA -->|release.json polled every 10 min; hot-swap| SP
+    TR -->|v2 ONNX files at a fixed revision| API
+    TR -->|v2 ONNX files at a fixed revision| SP
     NB -->|clone main| MAIN
     RF -->|download COCO exports| NB
     NB -->|progress every 4 min + results| TR
@@ -336,7 +310,8 @@ flowchart TD
     G["brands build (GPU 0)<br/>DINOv2-small → ONNX (parity)<br/>gallery from TRAIN crops (≤250/brand, ≤3000 negatives, + rot180 views)<br/>thresholds chosen on VAL (≤1% wrong accepts)<br/>TEST metrics through fusion.decide"] --> H
     H["bundle<br/>configs + catalogue + thresholds +<br/>rtdetr ONNX + dinov2 ONNX + gallery npz"] --> I
     I["brands e2e (CPU, 4 workers)<br/>full hosted Pipeline on held-out test photos"] --> J
-    J["upload → HF repo Rohitpro1/pack-station-training<br/>results/*.json, artifacts tgz, bundle/"]
+    J["upload → HF repo Rohitpro1/pack-station-training<br/>results/*.json, artifacts tgz, bundle/"] --> K
+    K["review on test → retire weak brands → release.json<br/>(manual, D22–D26)"]
 ```
 
 ### 6.5 Multi-GPU training layout (DDP)
@@ -515,11 +490,12 @@ Evidence: `evidence/training/real5star_kaggle_t4x2/` (README, train/eval reports
 | 5 Star precision | 0/7 |
 | False accept as 5 Star (other products) | **6/357 = 1.7%** (upper95 3.3%; gate ≤ 1% → **FAIL**) |
 
-This model, packaged in `pvs-hosted-bundle.tgz` (model v1), is what is **live** today.
+This model, packaged in `pvs-hosted-bundle.tgz` (model v1), was live until 23 Nov 2026. It is kept on `model-assets` as
+the rollback release (built into both API apps as the fallback).
 
 ---
 
-## 11. Training run 2: retail v2 + chocolate brands (in progress)
+## 11. Training run 2: retail v2 + chocolate brands (finished, live)
 
 **Goal (Rohit's request):** find products of any kind, whether retail or Indian products, and categorise
 chocolates. Use public datasets and fine-tune again.
@@ -550,9 +526,9 @@ chocolates. Use public datasets and fine-tune again.
 - Mars: Snickers, Bounty, Mars, Twix, Galaxy, M&M's
 - Others: Amul Chocolate, Ferrero Rocher, Kinder, Toblerone, Milka, Hershey's
 
-Only brands with enough data survive; the list will be in `brands_report.json`.
+21 brands had enough data to enter the gallery (M&M's did not).
 
-**Outputs (on the HF repo when done):**
+**Outputs (HF repo `Rohitpro1/pack-station-training`, revision `394f7883…`):**
 
 - `results/detector/detector_report.json`, `results/detector/train_report.json`
 - `results/brands/brands_report.json`, `results/brands/e2e_report.json`
@@ -564,13 +540,37 @@ Only brands with enough data survive; the list will be in `brands_report.json`.
   - `models/trained/rtdetr_r18_package.onnx`, `dinov2_small.onnx`, `gallery_brands.npz`
   - `models/manifest.json`
 
-**Deploy plan after results** (the 03:40 IST check will do this if the metrics hold up):
+**Run:** 22 Nov 17:55 → 23 Nov 02:44 IST, 2 × T4. All stages passed (train 8.0 h, best epoch 20, export, brands,
+bundle, end-to-end, upload). Data: 36 projects, 65,034 images after de-duplication (train 56,155 / val 5,382 / test
+3,497), no leakage. Evidence: `evidence/training/retail_v2_kaggle_t4x2/`.
 
-1. Host the model files from the HF repo, because GitHub limits files to 100 MB. Pin each file's SHA-256 in both
-   API apps.
-2. Switch both backends to the `hosted-brands` profile.
-3. Map family IDs to display names in the frontend.
-4. Live checks, then evidence and docs.
+**Held-out test results:**
+
+| What | Result |
+|---|---|
+| Package detector recall @ IoU 0.5 (2,000 test images, 8,990 packs) | **0.808** [0.799–0.816] |
+| Precision | **0.801** |
+| Speed (T4, incl. decode) / ONNX parity | 37 ms/img / 3.4e-5 |
+| Brands, all 21: named correctly / named wrongly (out of 1,027 brand crops) | 0.434 / 0.019 |
+| Other products called a brand (out of 8,166) | 0.009 |
+| End to end, 500 photos: brand packs named correctly / named wrongly | 0.41 / 0.017; median 3.7 s/photo (CPU) |
+
+**What was deployed (release `v2-retail-brands-keep5`):**
+
+- The detector, as trained.
+- **5 brands kept.** The rule was at least 10 test crops and test precision ≥ 0.85 (D24), giving Dairy Milk, Gems, KitKat,
+  Bounty, Kinder.
+  - Derived estimate for the 5: 271 of 287 names right (0.944 [0.911–0.968]), recall 0.42.
+- **16 retired.** Their gallery refs were relabelled `negative:retired:<brand>`, so those packs read "unknown". 5 Star was
+  right on only 3 of 12 names. Bournville passed the bar but named a synthetic demo pack (D25).
+- **Pre-deploy check:** 11 Wikimedia Commons photos.
+  - No wrong names, and no right names on close-ups: 0 of 9 kept-brand photos were named.
+  - v2 finds more packs in multi-pack scenes than v1 (`realcheck.json`).
+- **How it was deployed:**
+  - The new gallery, catalogue and configs are in `pvs-retail-v2-small.tgz` on `model-assets`; the ONNX files come from
+    the HF repo at a fixed revision.
+  - `release.json` points at all of them with SHA-256 pins (§13).
+  - Live checks are in `docs/VERIFICATION.md` ("Hosted release v2 check").
 
 ---
 
@@ -609,19 +609,19 @@ once as a test input and never stored in the project.
 
 **Frontend, project `pack-station`** (`pack-station-psi.vercel.app`):
 
-- Deployed from GitHub (`gitSource` at a pinned SHA, `rootDirectory: frontend`).
-- Latest deployment: `dpl_GFBZZJn3TeZj8fzXMqX1rFyG2E8e` at `b4fc787`.
+- Deployed from GitHub (`gitSource` at a pinned SHA). **Always pass `projectSettings.rootDirectory: "frontend"`**:
+  a deploy without it served the repo root and the site returned 404 for about 3 minutes on 23 Nov.
+- Latest deployment: `dpl_2TzGja5k8sg2KEojKb2qXtL3J5Tn` at `0fd61a8`.
 - The Vercel team-scope access was approved by Rohit.
 
 **API, project `pack-station-api`** (`pack-station-api.vercel.app`):
 
-- Deployed inline from 4 files: `app.py`, `requirements.txt`, `vercel.json`, `.python-version` = 3.13.
-- `requirements.txt` holds the runtime lock pins plus `product-vision-station @ …/archive/817ad2f….tar.gz`.
-- Bundle size 483 MB, which uses Vercel's large-function path. `maxDuration` is 120 s.
-- On cold start the app downloads the bundle from `raw.githubusercontent.com/.../model-assets/pvs-hosted-bundle.tgz`,
-  verifies SHA-256 `8ba6fdaa22773af1dd0e144b239ec825689f8cad10e844f8912cfcdd11fc6787`, unpacks it to `/tmp/pvs`
-  and builds the Pipeline.
-- Deployment: `dpl_AgNhtw3Y76PExG1b7z6sk2RYknoA`.
+- Deployed inline from 4 files in `deploy/vercel-api/`: `app.py`, `requirements.txt`, `vercel.json`, `.python-version` = 3.13.
+- `requirements.txt` holds the runtime lock pins plus `product-vision-station @ …/archive/adb4daf….tar.gz`.
+- Bundle size about 480 MB, which uses Vercel's large-function path. `maxDuration` is 120 s.
+- **On cold start** the app reads `release.json` and downloads every file it lists to `/tmp/pvs`, checking each
+  SHA-256. That's about 190 MB for v2 and takes about 10 s. Warm instances keep the release they started with.
+- Deployment: `dpl_FoNTgV3EkhKoqh2YM5xnVJCgDxpD` (code `ac4b7cb`).
 - Team-scoped URLs (`*-rohitpro1s-projects.vercel.app`) sit behind Vercel Authentication; the production domain is
   public.
 
@@ -630,12 +630,38 @@ once as a test input and never stored in the project.
 - **Docker Spaces are now paid**, so it uses the **Gradio SDK 6.32**, Python 3.12, on free ZeroGPU hardware;
   inference runs on CPU.
 - `requirements.txt` keeps the vision pins and leaves the web/pydantic stack to Gradio's resolver
-  (`gradio[mcp]` needs `pydantic ≤ 2.12.5`).
+  (`gradio[mcp]` needs `pydantic ≤ 2.12.5`). pvs is pinned to `97efb66` (has the DINOv2 ONNX brand pipeline).
 - Hugging Face's runtime already owns port 7860. So the app launches through `demo.launch()` and injects the REST
-  routes plus an outermost CORS middleware inside `gradio.routes.App.create_app`.
-- A small Gradio upload page sits at `/`.
-- Files were committed to the Space through Rohit's signed-in browser session, from repo commits `8ac8914`
-  (requirements) and `f09d395` (`app.py`).
+  routes plus an outermost CORS middleware inside `gradio.routes.App.create_app`. The routes forward to whichever
+  release is current.
+- **Self-updating:** a thread re-reads `release.json` every 10 min (`PVS_POLL_S`). A new release name triggers
+  download, SHA-256 checks and a new pipeline, and requests switch over only when it is ready. A failed release is
+  logged, skipped, and its partial folder removed; the current one keeps serving.
+- **No Space edits needed to change the model.** Files were last committed to the Space on 22 Nov through Rohit's signed-in browser
+  (repo `adb4daf`: `app.py`, `requirements.txt`). The Space's own README card on Hugging Face still shows the
+  run 1 numbers; the updated text is in `deploy/hf-space/README.md`.
+- Hugging Face's front proxy echoes any `Origin` in CORS headers (D27).
+
+### Deploying or rolling back a model (`release.json`)
+
+The `model-assets` branch holds `release.json`:
+
+```json
+{"release": "v2-retail-brands-keep5", "config": "configs/station.hosted.yaml",
+ "files": [{"url": "https://raw.githubusercontent.com/.../model-assets/pvs-retail-v2-small.tgz", "sha256": "cd10767e…", "extract": true},
+           {"url": "https://huggingface.co/Rohitpro1/pack-station-training/resolve/394f7883…/bundle/models/trained/rtdetr_r18_package.onnx", "sha256": "2cee7ae7…", "path": "models/trained/rtdetr_r18_package.onnx"},
+           {"url": "…/dinov2_small.onnx", "sha256": "c42c79ff…", "path": "models/trained/dinov2_small.onnx"}]}
+```
+
+1. Put the new files somewhere stable: small ones on `model-assets`, large ones in an HF repo at a fixed revision.
+2. Push a `release.json` with a **new release name**, the config path and every file's SHA-256.
+3. The Space switches within 10 min. Check `GET /readyz` → `bundle`.
+4. Vercel picks it up on new instances. To force it, redeploy the same 4 files.
+5. **Rollback:** push the previous `release.json`. The v1 entry is in `deploy/hf-space/app.py` (`BUILTIN_RELEASE`)
+   and git history on `model-assets`.
+
+Run the full pipeline locally on the release files before publishing: the new release is only checked for
+loading, not for accuracy.
 
 ### Other
 
@@ -656,6 +682,8 @@ Files are in `frontend/`.
 - **Results view:** the result is drawn on a canvas (box, dashed axis line, gold heading arrow). Each pack also gets
   an SVG dial for axis and heading.
 - **Examples:** synthetic, labelled as such, and loaded from GitHub raw via `examplesBase`.
+- **Brand names:** `config.js` `displayNames` maps the 5 live brand IDs to readable names; any other ID shows its
+  short form. The status note describes release v2 and its limits.
 - **Backend connection:**
   - `config.js` `apiUrls` tries `[HF Space, Vercel]` in order. The first one whose `/readyz` answers within 15 s
     wins.
@@ -700,6 +728,9 @@ Postgres without a DSN. The Postgres registry tests were run once against a loca
   - CORS, readyz and detection were checked on both hosts.
   - A headless-Chrome upload test passed on both, including the fallback when `*.hf.space` was blocked.
   - Results are in `docs/VERIFICATION.md`.
+- **Release v2 (23 Nov):** a live switch test of `release.json` (test release in about 8 min, then reverted) and readyz/detect/CORS on
+  both hosts after the v2 switch. Pre-deploy brand and photo checks are in
+  `evidence/training/retail_v2_kaggle_t4x2/`. `docs/VERIFICATION.md` has "Hosted release v2 check".
 - **Not run:** live camera at 15 fps / p95 ≤ 150 ms / 8 h soak (no camera or GPU station), and the Docker image
   build (no daemon in the build environment).
 
@@ -725,12 +756,19 @@ Full table in `docs/DECISIONS.md`.
 | D14–D16 | Kaggle instead of CyFuture. torch 2.6 for GPU runs. Public data used for the generic detector only. |
 | D17–D21 | Hosting: Vercel for the front end and fallback API; torch-free hosted profile; bundle on the `model-assets` branch; ROI GrabCut; HF Space primary with Vercel fallback. |
 
-**Run 2 choices** (not yet in DECISIONS.md):
+**Run 2 and release v2:**
 
-- SKU-110K excluded for licence reasons.
-- Roboflow gets its own venv.
-- The HF repo is the results store.
-- Brand identity is family-level only.
+| # | Decision |
+|---|---|
+| D22 | `release.json` on `model-assets` names the model both APIs serve; the Space hot-swaps, Vercel reads it on cold start |
+| D23 | Run 2 deployed (`v2-retail-brands-keep5`); rollback = previous `release.json` |
+| D24 | A brand stays only with ≥ 10 test crops and precision ≥ 0.85; retired brands become negatives ("unknown") |
+| D25 | Bournville retired after naming a synthetic demo pack |
+| D26 | Large ONNX files from the HF repo at a fixed revision, small files from `model-assets`, all SHA-256 pinned |
+| D27 | HF's proxy echoes any CORS origin on the Space; accepted (public, unauthenticated API) |
+
+Also not in the table: SKU-110K excluded for licence reasons; Roboflow gets its own venv; the HF repo is the results
+store; brand identity is family-level only.
 
 ---
 
@@ -756,6 +794,9 @@ Full table in `docs/DECISIONS.md`.
 | Kaggle run 2: `No module named 'requests'` | uv picked roboflow 0.1.1 (typer < 0.26 vs typer 0.29.2) | separate `.venv-rf` with roboflow 1.7.3 |
 | Smoke checkpoint would be resumed by the full run | shared run dir | separate `run-smoke` dir |
 | `grep -v` + pipefail could kill the run | grep exits 1 when every line is filtered | `filt()` wrapper that never fails |
+| Overnight deploy needed Rohit's PC (Space edits went through his browser) | Space files could only be changed by a signed-in user | the Space reads `release.json` from GitHub and hot-swaps (D22) |
+| A demo example was named "Cadbury Bournville" | gallery match on a synthetic plain pack (out of distribution) | Bournville retired (D25) |
+| Site returned 404 after a frontend deploy | `gitSource` deploy without `rootDirectory` served the repo root | redeployed with `projectSettings.rootDirectory: "frontend"` (about 3 min down) |
 | Remaining harmless warning | Kaggle `sitecustomize` inside `.venv-rf` | none needed: "Error in sitecustomize … wrapt" is printed and the run continues |
 
 ---
@@ -772,25 +813,31 @@ Full table in `docs/DECISIONS.md`.
   excluded.
 - **Repo visibility** was not changed by the agent. Rohit created the GitHub repo public and made the HF training
   repo public himself.
-- **Publication caveat:** because the HF training repo is public, the run 2 bundle will be **public** too, including
+- **Publication caveat:** because the HF training repo is public, the run 2 bundle is **public** too, including
   the brand gallery embeddings derived from training images. These are fingerprints, not images, so the risk is low,
-  but Rohit has been told.
-- **API exposure:** the hosted API has **no auth**. It is read-only and stores nothing, with CORS limited to the
-  site. Optional hardening: set `PVS_API_TOKEN`.
+  and Rohit was told before the run.
+- **No assistant names:** no file, commit message or author in the repo names the AI assistant (history rewritten on 22 Nov;
+  `docs/COMMIT_ID_MAP.md`). Commits are authored as `Rohit Kumar P <160228227+Rohitpro1@users.noreply.github.com>` with
+  no trailer lines. Old commit IDs can still be opened directly on GitHub until GitHub support purges them. Old
+  Vercel deployment records keep the commit messages they were built from.
+- **API exposure:** the hosted API has **no auth**. It is read-only and stores nothing. The app limits CORS to the
+  site; Vercel enforces it, but Hugging Face's proxy echoes any origin for the Space (D27). Optional hardening:
+  set `PVS_API_TOKEN`.
 
 ---
 
 ## 19. Open items, risks and next steps
 
+**Done on 23 Nov:** run 2 reviewed and deployed as release `v2-retail-brands-keep5`; weak brands retired; brand
+names on the site; DECISIONS, README, evidence and VERIFICATION updated.
+
 **Immediate:**
 
-1. **Finish run 2** (about 03:15 IST), then the 03:40 check (scheduled):
-   - Review the test metrics.
-   - If good: deploy the `hosted-brands` profile to the HF Space and Vercel. Model files are hosted from the HF repo
-     with SHA-256 pins, because of GitHub's 100 MB file limit.
-   - Update the frontend to show brand display names.
-   - Record the evidence and docs.
-2. If a brand performs badly on test, **drop it from the gallery** rather than show wrong names.
+1. **Brand naming on real photos:** close-up web photos came back "unknown" (0 of 9). Adding a few hundred
+   close-up/front-of-pack references per brand to the gallery is cheap (no retraining). Validate on held-out photos
+   before publishing a new `release.json`.
+2. **The Space's README card** on Hugging Face still shows the run 1 numbers. Paste `deploy/hf-space/README.md`
+   into it, or leave it as is.
 
 **Data and validation:**
 
@@ -804,15 +851,14 @@ Full table in `docs/DECISIONS.md`.
 **Housekeeping:**
 
 6. **Delete the CyFuture VMs** `pvstrain5star` and `pvstrain` if they still exist.
-7. **Docs fixes:**
-   - Add the run 2 decisions to DECISIONS.md. (D1 now says the repo is public.)
-   - Update the README capability table after run 2.
+7. **Scheduled tasks:** two one-off check-ins for 23 Nov 03:40 IST (`trig_01EPMXx41229jCzJJzunAUKK`,
+   `trig_016yCxVkKSEFHgriLk1Uv1gG`) have fired and need no action.
 
 **Hosting and limits:**
 
 8. **HF Space sleeps** after about 48 h idle. Vercel covers in the meantime. Consider a keep-alive ping or a paid
    tier.
-9. **Hosted v1 shows at most 3 packs per photo** (`max_instances: 3`); v2 raises this to 30.
+9. **Speed:** v2 allows up to 30 packs per photo and runs DINOv2 on each one, so dense shelf photos take 6–9 s on the free hosts.
 10. **Kaggle limits:** 30 GPU-hours a week and 12 h per session. Run 2 uses about 9.5 h.
 11. **Docker image** never built here; build and test it on a machine with Docker.
 
@@ -838,9 +884,10 @@ gantt
     section Retail v2
     Dataset research + v2 pipeline + progress/HF :done, r1, 2026-11-22 12:30, 1h
     Kaggle run 2 (download, prepare, smoke)      :done, r2, 2026-11-22 17:55, 35m
-    Kaggle run 2 full training (20 epochs)       :active, r3, 2026-11-22 18:30, 8h
-    Export, brands, e2e, upload                  :r4, after r3, 50m
-    Review + deploy (scheduled 03:40)            :r5, 2026-11-23 03:40, 1h
+    Kaggle run 2 full training (20 epochs)       :done, r3, 2026-11-22 18:30, 8h
+    Export, brands, e2e, upload                  :done, r4, after r3, 20m
+    Self-updating Space (release.json)           :done, r6, 2026-11-22 23:10, 1h
+    Review, deploy v2, checks, docs              :done, r5, 2026-11-23 03:40, 1h
 ```
 
 Times before 22 Nov are approximate *(estimate)*. Commit times in git are UTC.
@@ -860,7 +907,11 @@ Times before 22 Nov are approximate *(estimate)*. Commit times in git are UTC.
 | `b4fc787` | HF primary + Vercel fallback |
 | `0d253b1` | Retail v2 pipeline |
 | `e87713c` | Live progress / HF publisher |
-| `6d864f6` | Roboflow venv fix (latest) |
+| `6d864f6` | Roboflow venv fix |
+| `97efb66` / `adb4daf` | HF Space serves `release.json` and hot-swaps |
+| `ac4b7cb` | Vercel API serves `release.json` |
+| `0fd61a8` | Frontend brand names + status note for release v2 |
+| `ec5613e` (`model-assets`) | `release.json` → `v2-retail-brands-keep5` |
 
 ---
 

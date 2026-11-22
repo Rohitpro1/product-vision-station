@@ -1,0 +1,747 @@
+{
+ "brands": [
+  "cadbury:5-star",
+  "cadbury:dairy-milk",
+  "cadbury:perk",
+  "cadbury:bournville",
+  "cadbury:gems",
+  "cadbury:eclairs",
+  "cadbury:fuse",
+  "nestle:kitkat",
+  "nestle:munch",
+  "nestle:milkybar",
+  "mars:snickers",
+  "mars:bounty",
+  "mars:mars",
+  "mars:twix",
+  "mars:galaxy",
+  "amul:chocolate",
+  "ferrero:rocher",
+  "ferrero:kinder",
+  "mondelez:toblerone",
+  "mondelez:milka",
+  "hersheys:chocolate"
+ ],
+ "display_names": {
+  "cadbury:5-star": "Cadbury 5 Star",
+  "cadbury:dairy-milk": "Cadbury Dairy Milk",
+  "cadbury:perk": "Cadbury Perk",
+  "cadbury:bournville": "Cadbury Bournville",
+  "cadbury:gems": "Cadbury Gems",
+  "cadbury:eclairs": "Cadbury Eclairs",
+  "cadbury:fuse": "Cadbury Fuse",
+  "nestle:kitkat": "Nestl\u00e9 KitKat",
+  "nestle:munch": "Nestl\u00e9 Munch",
+  "nestle:milkybar": "Nestl\u00e9 Milkybar",
+  "mars:snickers": "Snickers",
+  "mars:bounty": "Bounty",
+  "mars:mars": "Mars",
+  "mars:twix": "Twix",
+  "mars:galaxy": "Galaxy",
+  "amul:chocolate": "Amul Chocolate",
+  "ferrero:rocher": "Ferrero Rocher",
+  "ferrero:kinder": "Kinder",
+  "mondelez:toblerone": "Toblerone",
+  "mondelez:milka": "Milka",
+  "hersheys:chocolate": "Hershey's"
+ },
+ "crop_counts": {
+  "train": {
+   "other": 36090,
+   "nestle:kitkat": 12527,
+   "nestle:munch": 1977,
+   "cadbury:dairy-milk": 4062,
+   "ferrero:kinder": 1230,
+   "mars:snickers": 779,
+   "cadbury:perk": 140,
+   "mondelez:milka": 295,
+   "mars:bounty": 575,
+   "mars:twix": 481,
+   "nestle:milkybar": 1628,
+   "hersheys:chocolate": 1219,
+   "cadbury:bournville": 106,
+   "cadbury:5-star": 378,
+   "cadbury:gems": 46,
+   "mondelez:toblerone": 101,
+   "mars:mars": 47,
+   "amul:chocolate": 58,
+   "cadbury:eclairs": 93,
+   "cadbury:fuse": 23,
+   "ferrero:rocher": 141,
+   "mars:galaxy": 73
+  },
+  "val": {
+   "other": 10369,
+   "hersheys:chocolate": 184,
+   "cadbury:dairy-milk": 478,
+   "cadbury:perk": 32,
+   "nestle:milkybar": 127,
+   "nestle:kitkat": 731,
+   "cadbury:eclairs": 26,
+   "nestle:munch": 327,
+   "ferrero:kinder": 83,
+   "mars:snickers": 154,
+   "mars:bounty": 59,
+   "mars:twix": 62,
+   "amul:chocolate": 9,
+   "ferrero:rocher": 19,
+   "mars:galaxy": 11,
+   "mars:mars": 27,
+   "cadbury:bournville": 15,
+   "cadbury:gems": 8,
+   "mondelez:toblerone": 61,
+   "cadbury:fuse": 2,
+   "cadbury:5-star": 12,
+   "mondelez:milka": 11
+  },
+  "test": {
+   "other": 8166,
+   "nestle:kitkat": 233,
+   "nestle:munch": 35,
+   "ferrero:kinder": 35,
+   "mars:twix": 46,
+   "cadbury:dairy-milk": 312,
+   "cadbury:bournville": 26,
+   "cadbury:gems": 15,
+   "cadbury:5-star": 4,
+   "ferrero:rocher": 4,
+   "cadbury:perk": 11,
+   "hersheys:chocolate": 76,
+   "mars:bounty": 51,
+   "mondelez:milka": 29,
+   "cadbury:eclairs": 7,
+   "mars:snickers": 109,
+   "amul:chocolate": 5,
+   "mars:mars": 18,
+   "cadbury:fuse": 3,
+   "nestle:milkybar": 5,
+   "mondelez:toblerone": 3
+  }
+ },
+ "gallery": {
+  "refs": 13156,
+  "brand_refs_per_view": {
+   "negative:other-product": 3000,
+   "nestle:kitkat": 250,
+   "nestle:munch": 250,
+   "cadbury:dairy-milk": 250,
+   "ferrero:kinder": 250,
+   "mars:snickers": 250,
+   "cadbury:perk": 140,
+   "mondelez:milka": 250,
+   "mars:bounty": 250,
+   "mars:twix": 250,
+   "nestle:milkybar": 250,
+   "hersheys:chocolate": 250,
+   "cadbury:bournville": 106,
+   "cadbury:5-star": 250,
+   "cadbury:gems": 46,
+   "mondelez:toblerone": 101,
+   "mars:mars": 47,
+   "amul:chocolate": 58,
+   "cadbury:eclairs": 93,
+   "cadbury:fuse": 23,
+   "ferrero:rocher": 141,
+   "mars:galaxy": 73
+  },
+  "backend": "dinov2-onnx:c42c79ffec95",
+  "catalogue_revision": "brands-c42c79ff-13156"
+ },
+ "threshold_choice_on_val": {
+  "family_score": 0.65,
+  "tie_margin": 0.05,
+  "correct": 1036,
+  "neg_fa": 102,
+  "wrong_brand": 23,
+  "n_neg": 10369,
+  "n_brand": 2438
+ },
+ "test_crop_level": {
+  "brand_crops": 1027,
+  "correct_brand": {
+   "k": 446,
+   "n": 1027,
+   "rate": 0.4342745861733204,
+   "ci95": [
+    0.40369901368685895,
+    0.46522790893720867
+   ],
+   "upper95": 0.46031820728918843
+  },
+  "wrong_brand": {
+   "k": 19,
+   "n": 1027,
+   "rate": 0.018500486854917234,
+   "ci95": [
+    0.011174329440124647,
+    0.028740575615872784
+   ],
+   "upper95": 0.02702877263586875
+  },
+  "other_products_called_a_brand": {
+   "k": 73,
+   "n": 8166,
+   "rate": 0.008939505265735979,
+   "ci95": [
+    0.007013504742690669,
+    0.011227138338844473
+   ],
+   "upper95": 0.010851030096962856
+  },
+  "per_brand": {
+   "cadbury:5-star": {
+    "test_crops": 4,
+    "recall": {
+     "k": 3,
+     "n": 4,
+     "rate": 0.75,
+     "ci95": [
+      0.19412044968324338,
+      0.9936905367902902
+     ],
+     "upper95": 0.9872585449014338
+    },
+    "precision": {
+     "k": 3,
+     "n": 12,
+     "rate": 0.25,
+     "ci95": [
+      0.05486064452799272,
+      0.5718584618781891
+     ],
+     "upper95": 0.5273266035603434
+    },
+    "train_refs": 250
+   },
+   "cadbury:dairy-milk": {
+    "test_crops": 312,
+    "recall": {
+     "k": 172,
+     "n": 312,
+     "rate": 0.5512820512820513,
+     "ci95": [
+      0.49422720223060745,
+      0.6073539949500875
+     ],
+     "upper95": 0.5986872177333278
+    },
+    "precision": {
+     "k": 172,
+     "n": 174,
+     "rate": 0.9885057471264368,
+     "ci95": [
+      0.9590975337894819,
+      0.9986049488282716
+     ],
+     "upper95": 0.9979538934777976
+    },
+    "train_refs": 250
+   },
+   "cadbury:perk": {
+    "test_crops": 11,
+    "recall": {
+     "k": 9,
+     "n": 11,
+     "rate": 0.8181818181818182,
+     "ci95": [
+      0.4822441476398273,
+      0.9771688017000404
+     ],
+     "upper95": 0.9666807823157701
+    },
+    "precision": {
+     "k": 9,
+     "n": 14,
+     "rate": 0.6428571428571429,
+     "ci95": [
+      0.3513801106159917,
+      0.8724015701408404
+     ],
+     "upper95": 0.8472823776153369
+    },
+    "train_refs": 140
+   },
+   "cadbury:bournville": {
+    "test_crops": 26,
+    "recall": {
+     "k": 17,
+     "n": 26,
+     "rate": 0.6538461538461539,
+     "ci95": [
+      0.4433280739576097,
+      0.8278558619943335
+     ],
+     "upper95": 0.8060395506613174
+    },
+    "precision": {
+     "k": 17,
+     "n": 17,
+     "rate": 1.0,
+     "ci95": [
+      0.8049356770309067,
+      1.0
+     ],
+     "upper95": 1.0
+    },
+    "train_refs": 106
+   },
+   "cadbury:gems": {
+    "test_crops": 15,
+    "recall": {
+     "k": 15,
+     "n": 15,
+     "rate": 1.0,
+     "ci95": [
+      0.7819806390894659,
+      1.0
+     ],
+     "upper95": 1.0
+    },
+    "precision": {
+     "k": 15,
+     "n": 17,
+     "rate": 0.8823529411764706,
+     "ci95": [
+      0.6355908378987497,
+      0.9854206831596976
+     ],
+     "upper95": 0.9786823730784788
+    },
+    "train_refs": 46
+   },
+   "cadbury:eclairs": {
+    "test_crops": 7,
+    "recall": {
+     "k": 0,
+     "n": 7,
+     "rate": 0.0,
+     "ci95": [
+      0.0,
+      0.40961639722500337
+     ],
+     "upper95": 0.34816365513116077
+    },
+    "precision": {
+     "k": 0,
+     "n": 4,
+     "rate": 0.0,
+     "ci95": [
+      0.0,
+      0.6023646356164746
+     ],
+     "upper95": 0.527129195498412
+    },
+    "train_refs": 93
+   },
+   "cadbury:fuse": {
+    "test_crops": 3,
+    "recall": {
+     "k": 0,
+     "n": 3,
+     "rate": 0.0,
+     "ci95": [
+      0.0,
+      0.7075982261787133
+     ],
+     "upper95": 0.6315968501359612
+    },
+    "precision": {
+     "k": 0,
+     "n": 0,
+     "rate": null,
+     "ci95": null,
+     "upper95": null
+    },
+    "train_refs": 23
+   },
+   "nestle:kitkat": {
+    "test_crops": 233,
+    "recall": {
+     "k": 43,
+     "n": 233,
+     "rate": 0.18454935622317598,
+     "ci95": [
+      0.13689672651801085,
+      0.24042321265366862
+     ],
+     "upper95": 0.2314367829229596
+    },
+    "precision": {
+     "k": 43,
+     "n": 49,
+     "rate": 0.8775510204081632,
+     "ci95": [
+      0.7523070316403171,
+      0.9537109689181043
+     ],
+     "upper95": 0.9453065555432766
+    },
+    "train_refs": 250
+   },
+   "nestle:munch": {
+    "test_crops": 35,
+    "recall": {
+     "k": 19,
+     "n": 35,
+     "rate": 0.5428571428571428,
+     "ci95": [
+      0.36645801712145215,
+      0.711728556209243
+     ],
+     "upper95": 0.6883467992946624
+    },
+    "precision": {
+     "k": 19,
+     "n": 30,
+     "rate": 0.6333333333333333,
+     "ci95": [
+      0.43855984901195755,
+      0.8007013749879655
+     ],
+     "upper95": 0.7789405501539864
+    },
+    "train_refs": 250
+   },
+   "nestle:milkybar": {
+    "test_crops": 5,
+    "recall": {
+     "k": 2,
+     "n": 5,
+     "rate": 0.4,
+     "ci95": [
+      0.052744950526316906,
+      0.8533672003653268
+     ],
+     "upper95": 0.8107446225622291
+    },
+    "precision": {
+     "k": 2,
+     "n": 7,
+     "rate": 0.2857142857142857,
+     "ci95": [
+      0.03669256617608555,
+      0.7095791362626572
+     ],
+     "upper95": 0.658738563844664
+    },
+    "train_refs": 250
+   },
+   "mars:snickers": {
+    "test_crops": 109,
+    "recall": {
+     "k": 32,
+     "n": 109,
+     "rate": 0.29357798165137616,
+     "ci95": [
+      0.21023824598251376,
+      0.3884771889624705
+     ],
+     "upper95": 0.3736070100511885
+    },
+    "precision": {
+     "k": 32,
+     "n": 43,
+     "rate": 0.7441860465116279,
+     "ci95": [
+      0.5882842789151403,
+      0.8648140497114691
+     ],
+     "upper95": 0.8494195438614305
+    },
+    "train_refs": 250
+   },
+   "mars:bounty": {
+    "test_crops": 51,
+    "recall": {
+     "k": 21,
+     "n": 51,
+     "rate": 0.4117647058823529,
+     "ci95": [
+      0.27584296051258517,
+      0.5583071722325388
+     ],
+     "upper95": 0.536513282551179
+    },
+    "precision": {
+     "k": 21,
+     "n": 24,
+     "rate": 0.875,
+     "ci95": [
+      0.6763886418111671,
+      0.973440685013751
+     ],
+     "upper95": 0.9650466651662819
+    },
+    "train_refs": 250
+   },
+   "mars:mars": {
+    "test_crops": 18,
+    "recall": {
+     "k": 0,
+     "n": 18,
+     "rate": 0.0,
+     "ci95": [
+      0.0,
+      0.1853019681378522
+     ],
+     "upper95": 0.1533175539572782
+    },
+    "precision": {
+     "k": 0,
+     "n": 3,
+     "rate": 0.0,
+     "ci95": [
+      0.0,
+      0.7075982261787133
+     ],
+     "upper95": 0.6315968501359612
+    },
+    "train_refs": 47
+   },
+   "mars:twix": {
+    "test_crops": 46,
+    "recall": {
+     "k": 22,
+     "n": 46,
+     "rate": 0.4782608695652174,
+     "ci95": [
+      0.3288786869273401,
+      0.6305435264300165
+     ],
+     "upper95": 0.6084614378578064
+    },
+    "precision": {
+     "k": 22,
+     "n": 31,
+     "rate": 0.7096774193548387,
+     "ci95": [
+      0.5196393417710907,
+      0.857771470902475
+     ],
+     "upper95": 0.8393889087436222
+    },
+    "train_refs": 250
+   },
+   "mars:galaxy": {
+    "test_crops": 0,
+    "recall": {
+     "k": 0,
+     "n": 0,
+     "rate": null,
+     "ci95": null,
+     "upper95": null
+    },
+    "precision": {
+     "k": 0,
+     "n": 1,
+     "rate": 0.0,
+     "ci95": [
+      0.0,
+      0.975
+     ],
+     "upper95": 0.95
+    },
+    "train_refs": 73
+   },
+   "amul:chocolate": {
+    "test_crops": 5,
+    "recall": {
+     "k": 4,
+     "n": 5,
+     "rate": 0.8,
+     "ci95": [
+      0.2835820638819105,
+      0.9949492366205319
+     ],
+     "upper95": 0.9897937816869885
+    },
+    "precision": {
+     "k": 4,
+     "n": 5,
+     "rate": 0.8,
+     "ci95": [
+      0.2835820638819105,
+      0.9949492366205319
+     ],
+     "upper95": 0.9897937816869885
+    },
+    "train_refs": 58
+   },
+   "ferrero:rocher": {
+    "test_crops": 4,
+    "recall": {
+     "k": 4,
+     "n": 4,
+     "rate": 1.0,
+     "ci95": [
+      0.3976353643835253,
+      1.0
+     ],
+     "upper95": 1.0
+    },
+    "precision": {
+     "k": 4,
+     "n": 4,
+     "rate": 1.0,
+     "ci95": [
+      0.3976353643835253,
+      1.0
+     ],
+     "upper95": 1.0
+    },
+    "train_refs": 141
+   },
+   "ferrero:kinder": {
+    "test_crops": 35,
+    "recall": {
+     "k": 20,
+     "n": 35,
+     "rate": 0.5714285714285714,
+     "ci95": [
+      0.3935309422600038,
+      0.736772764301183
+     ],
+     "upper95": 0.7141511625974114
+    },
+    "precision": {
+     "k": 20,
+     "n": 23,
+     "rate": 0.8695652173913043,
+     "ci95": [
+      0.6641108624628791,
+      0.9722484925772068
+     ],
+     "upper95": 0.9634847002740974
+    },
+    "train_refs": 250
+   },
+   "mondelez:toblerone": {
+    "test_crops": 3,
+    "recall": {
+     "k": 0,
+     "n": 3,
+     "rate": 0.0,
+     "ci95": [
+      0.0,
+      0.7075982261787133
+     ],
+     "upper95": 0.6315968501359612
+    },
+    "precision": {
+     "k": 0,
+     "n": 4,
+     "rate": 0.0,
+     "ci95": [
+      0.0,
+      0.6023646356164746
+     ],
+     "upper95": 0.527129195498412
+    },
+    "train_refs": 101
+   },
+   "mondelez:milka": {
+    "test_crops": 29,
+    "recall": {
+     "k": 15,
+     "n": 29,
+     "rate": 0.5172413793103449,
+     "ci95": [
+      0.32531499636145644,
+      0.7055144170481589
+     ],
+     "upper95": 0.6797037392619758
+    },
+    "precision": {
+     "k": 15,
+     "n": 19,
+     "rate": 0.7894736842105263,
+     "ci95": [
+      0.5443469181084943,
+      0.9394754622907102
+     ],
+     "upper95": 0.9247061834311243
+    },
+    "train_refs": 250
+   },
+   "hersheys:chocolate": {
+    "test_crops": 76,
+    "recall": {
+     "k": 48,
+     "n": 76,
+     "rate": 0.631578947368421,
+     "ci95": [
+      0.513143576542348,
+      0.7394243647397989
+     ],
+     "upper95": 0.7239617763419678
+    },
+    "precision": {
+     "k": 48,
+     "n": 57,
+     "rate": 0.8421052631578947,
+     "ci95": [
+      0.7213173699312707,
+      0.9251688307994875
+     ],
+     "upper95": 0.915079617839864
+    },
+    "train_refs": 250
+   }
+  },
+  "confusion": {
+   "nestle:kitkat->unknown": 184,
+   "cadbury:dairy-milk->cadbury:dairy-milk": 172,
+   "cadbury:dairy-milk->unknown": 137,
+   "mars:snickers->unknown": 75,
+   "hersheys:chocolate->hersheys:chocolate": 48,
+   "nestle:kitkat->nestle:kitkat": 43,
+   "mars:snickers->mars:snickers": 32,
+   "mars:bounty->unknown": 29,
+   "hersheys:chocolate->unknown": 27,
+   "mars:twix->unknown": 24,
+   "mars:twix->mars:twix": 22,
+   "mars:bounty->mars:bounty": 21,
+   "ferrero:kinder->ferrero:kinder": 20,
+   "nestle:munch->nestle:munch": 19,
+   "mars:mars->unknown": 18,
+   "cadbury:bournville->cadbury:bournville": 17,
+   "ferrero:kinder->unknown": 15,
+   "cadbury:gems->cadbury:gems": 15,
+   "mondelez:milka->mondelez:milka": 15,
+   "mondelez:milka->unknown": 14,
+   "nestle:munch->unknown": 13,
+   "cadbury:perk->cadbury:perk": 9,
+   "cadbury:bournville->unknown": 9,
+   "cadbury:eclairs->unknown": 7,
+   "ferrero:rocher->ferrero:rocher": 4,
+   "amul:chocolate->amul:chocolate": 4,
+   "nestle:kitkat->mars:snickers": 4,
+   "nestle:munch->cadbury:perk": 3,
+   "cadbury:5-star->cadbury:5-star": 3,
+   "cadbury:fuse->unknown": 3,
+   "nestle:milkybar->unknown": 3,
+   "mondelez:toblerone->mars:snickers": 3,
+   "cadbury:perk->unknown": 2,
+   "mars:snickers->nestle:munch": 2,
+   "nestle:milkybar->nestle:milkybar": 2,
+   "nestle:kitkat->mars:twix": 1,
+   "mars:bounty->nestle:munch": 1,
+   "cadbury:dairy-milk->nestle:munch": 1,
+   "hersheys:chocolate->ferrero:kinder": 1,
+   "cadbury:dairy-milk->cadbury:gems": 1,
+   "cadbury:5-star->unknown": 1,
+   "cadbury:dairy-milk->mondelez:toblerone": 1,
+   "nestle:kitkat->mars:bounty": 1,
+   "amul:chocolate->unknown": 1
+  },
+  "fusion_vs_vectorised_agreement": 1.0
+ },
+ "onnx_parity_max_abs": 0.0004807785153388977,
+ "dinov2": "facebook/dinov2-small@ed25f3a31f01",
+ "seconds": 294.2,
+ "caveats": [
+  "Ground-truth crops from community annotations; frames of one product are correlated.",
+  "Thresholds are raw cosines chosen on validation, not calibrated probabilities.",
+  "Brand level only; pack size / flavour variants are not distinguished."
+ ]
+}

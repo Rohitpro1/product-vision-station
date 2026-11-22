@@ -1,0 +1,246 @@
+{
+ "stages_done": {
+  "setup": 12.7,
+  "download": 370.4,
+  "prepare": 1087.4,
+  "smoke:train": 71.7,
+  "smoke:export": 16.9,
+  "smoke:brands": 24.6,
+  "smoke:bundle": 0.7,
+  "smoke:e2e": 39.7,
+  "train": 28962.5,
+  "export": 88.8,
+  "brands": 300.0,
+  "bundle": 0.8,
+  "e2e": 771.6,
+  "upload": 0.2
+ },
+ "started_at": "2026-11-22T12:25:12+00:00",
+ "stage": "upload",
+ "stage_started": 1795382062.1923816,
+ "line": "run finished: all stages done",
+ "pct": null,
+ "stage_eta_s": null,
+ "extra": {},
+ "updated_at": "2026-11-22T21:14:22+00:00",
+ "done": 500,
+ "total": 500,
+ "unit": "images",
+ "rate": 0.6503115906802968,
+ "run_eta_s": 300,
+ "run_eta_at": "2026-11-22T21:19+00:00",
+ "epochs": [
+  {
+   "epoch": 1,
+   "loss": 64.95094537734985,
+   "val_recall@0.5": 0.40934933670246365,
+   "val_precision@0.5": 0.4625267665952891,
+   "elapsed_s": 46.8,
+   "gpus": 2
+  },
+  {
+   "epoch": 1,
+   "loss": 17.58959689732968,
+   "val_recall@0.5": 0.7662665824384081,
+   "val_precision@0.5": 0.612008072653885,
+   "elapsed_s": 1454.6,
+   "gpus": 2
+  },
+  {
+   "epoch": 2,
+   "loss": 8.75728833267599,
+   "val_recall@0.5": 0.7789008212255212,
+   "val_precision@0.5": 0.6903695408734603,
+   "elapsed_s": 2895.0,
+   "gpus": 2
+  },
+  {
+   "epoch": 3,
+   "loss": 8.178673396700464,
+   "val_recall@0.5": 0.7915350600126342,
+   "val_precision@0.5": 0.6776636019469984,
+   "elapsed_s": 4341.2,
+   "gpus": 2
+  },
+  {
+   "epoch": 4,
+   "loss": 7.839593181316502,
+   "val_recall@0.5": 0.6645609602021478,
+   "val_precision@0.5": 0.8382470119521912,
+   "elapsed_s": 5790.1,
+   "gpus": 2
+  },
+  {
+   "epoch": 5,
+   "loss": 7.547628110123877,
+   "val_recall@0.5": 0.815540113708149,
+   "val_precision@0.5": 0.699349945828819,
+   "elapsed_s": 7238.7,
+   "gpus": 2
+  },
+  {
+   "epoch": 6,
+   "loss": 7.3367175979108605,
+   "val_recall@0.5": 0.7789008212255212,
+   "val_precision@0.5": 0.7672682016179216,
+   "elapsed_s": 8682.0,
+   "gpus": 2
+  },
+  {
+   "epoch": 7,
+   "loss": 7.130219882067417,
+   "val_recall@0.5": 0.8136449778900822,
+   "val_precision@0.5": 0.7252252252252253,
+   "elapsed_s": 10133.3,
+   "gpus": 2
+  },
+  {
+   "epoch": 8,
+   "loss": 6.905807592374026,
+   "val_recall@0.5": 0.8458622867972204,
+   "val_precision@0.5": 0.6849104859335038,
+   "elapsed_s": 11584.2,
+   "gpus": 2
+  },
+  {
+   "epoch": 9,
+   "loss": 6.724093797541263,
+   "val_recall@0.5": 0.8142766898294378,
+   "val_precision@0.5": 0.7663495838287753,
+   "elapsed_s": 13036.7,
+   "gpus": 2
+  },
+  {
+   "epoch": 10,
+   "loss": 6.533255613788096,
+   "val_recall@0.5": 0.833859759949463,
+   "val_precision@0.5": 0.7407407407407407,
+   "elapsed_s": 14480.9,
+   "gpus": 2
+  },
+  {
+   "epoch": 11,
+   "loss": 6.3404024240636225,
+   "val_recall@0.5": 0.8256475047378395,
+   "val_precision@0.5": 0.7661195779601406,
+   "elapsed_s": 15925.6,
+   "gpus": 2
+  },
+  {
+   "epoch": 12,
+   "loss": 6.178122735893441,
+   "val_recall@0.5": 0.8180669614655717,
+   "val_precision@0.5": 0.7608695652173914,
+   "elapsed_s": 17376.0,
+   "gpus": 2
+  },
+  {
+   "epoch": 13,
+   "loss": 6.029199661047728,
+   "val_recall@0.5": 0.8256475047378395,
+   "val_precision@0.5": 0.7729154346540509,
+   "elapsed_s": 18818.6,
+   "gpus": 2
+  },
+  {
+   "epoch": 14,
+   "loss": 5.866238149501036,
+   "val_recall@0.5": 0.8060644346178143,
+   "val_precision@0.5": 0.7595238095238095,
+   "elapsed_s": 20261.6,
+   "gpus": 2
+  },
+  {
+   "epoch": 15,
+   "loss": 5.742820412634172,
+   "val_recall@0.5": 0.8180669614655717,
+   "val_precision@0.5": 0.7886723507917174,
+   "elapsed_s": 21711.3,
+   "gpus": 2
+  },
+  {
+   "epoch": 16,
+   "loss": 5.637345033605396,
+   "val_recall@0.5": 0.8294377763739734,
+   "val_precision@0.5": 0.7787663107947805,
+   "elapsed_s": 23163.0,
+   "gpus": 2
+  },
+  {
+   "epoch": 17,
+   "loss": 5.524699332708644,
+   "val_recall@0.5": 0.819330385344283,
+   "val_precision@0.5": 0.781796262808921,
+   "elapsed_s": 24608.6,
+   "gpus": 2
+  },
+  {
+   "epoch": 18,
+   "loss": 5.454176635739469,
+   "val_recall@0.5": 0.8250157927984839,
+   "val_precision@0.5": 0.7820359281437126,
+   "elapsed_s": 26055.9,
+   "gpus": 2
+  },
+  {
+   "epoch": 19,
+   "loss": 5.4170360366050305,
+   "val_recall@0.5": 0.8256475047378395,
+   "val_precision@0.5": 0.7775133848899465,
+   "elapsed_s": 27501.6,
+   "gpus": 2
+  },
+  {
+   "epoch": 20,
+   "loss": 5.375779172917457,
+   "val_recall@0.5": 0.8250157927984839,
+   "val_precision@0.5": 0.7839135654261705,
+   "elapsed_s": 28948.8,
+   "gpus": 2
+  }
+ ],
+ "full_run": true,
+ "final": "finished",
+ "log_tail": [
+  "  \"rate\": 0.40842787682333875,",
+  "  \"ci95\": [",
+  "   0.36935087821515267,",
+  "   0.44838546416682934",
+  "  ],",
+  "  \"upper95\": 0.44206369446864324",
+  " },",
+  " \"brand_wrong_end_to_end\": {",
+  "  \"k\": 9,",
+  "  \"n\": 519,",
+  "  \"rate\": 0.017341040462427744,",
+  "  \"ci95\": [",
+  "   0.007959313071611154,",
+  "   0.032662605897679504",
+  "  ],",
+  "  \"upper95\": 0.030065132727597955",
+  " },",
+  " \"other_products_called_a_brand\": {",
+  "  \"k\": 17,",
+  "  \"n\": 1206,",
+  "  \"rate\": 0.014096185737976783,",
+  "  \"ci95\": [",
+  "   0.008232416368241426,",
+  "   0.02247369584284887",
+  "  ],",
+  "  \"upper95\": 0.021069067906811022",
+  " },",
+  " \"unmatched_boxes_called_a_brand\": 33,",
+  " \"median_ms\": 3669.57,",
+  " \"note\": \"full hosted Pipeline (trained detector + GrabCut + DINOv2-ONNX gallery + fusion rules) on held-out test photos; boxes matched to ground truth at IoU >= 0.5; brands not in the gallery count as other.\"",
+  "}",
+  "=== [e2e] done in 12m51s",
+  "=== [upload] started",
+  "8775668c0d247c877bb52a09478ffb778c0f50b4091a1670a33597f5f5c30a5a  /kaggle/working/pvs-retail-out/retail-v2-artifacts.tgz",
+  "85M\t/kaggle/working/pvs-retail-out/bundle/models/trained/dinov2_small.onnx",
+  "18M\t/kaggle/working/pvs-retail-out/bundle/models/trained/gallery_brands.npz",
+  "77M\t/kaggle/working/pvs-retail-out/bundle/models/trained/rtdetr_r18_package.onnx",
+  "=== [upload] done in 0s",
+  "DONE",
+  "=== run finished: all stages done"
+ ]
+}

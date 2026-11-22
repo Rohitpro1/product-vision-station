@@ -175,6 +175,23 @@ Hugging Face Space check (2026-11-22): https://rohitpro1-pack-station-api.hf.spa
 | Live site, headless Chrome | "Connected · Hugging Face", detection sent to `*.hf.space`, axis 4.7° |
 | Live site with `*.hf.space` blocked | "Connected · Vercel", detection sent to `pack-station-api.vercel.app`, axis 4.6° |
 
+## Hosted release v2 check (2026-11-23)
+
+Release `v2-retail-brands-keep5` (`model-assets/release.json` at `ec5613e`). Space code from repo `adb4daf`. Vercel API
+deployment `dpl_FoNTgV3EkhKoqh2YM5xnVJCgDxpD` (code `ac4b7cb`). Site deployment `dpl_2TzGja5k8sg2KEojKb2qXtL3J5Tn` (`0fd61a8`).
+
+| Check | Result |
+|---|---|
+| Release switch on the Space | test release picked up in about 8 min and reverted (22 Nov); v2 picked up within one 10-min poll (23 Nov, 03:51 IST) |
+| `/readyz`, both hosts | ready; `hosted-retail-brands-v2`, catalogue `brands-c42c79ff-13156-keep5` |
+| `POST /v1/detect`, shop-shelf photo (Wikimedia Commons) | 3 packs on both hosts, all `unknown`; 6.2 s on Vercel, 7.3 s on the Space |
+| `POST /v1/detect`, synthetic three-pack example | 3 packs (v1 found 1); 2.7 s on Vercel, 8.5 s on the Space |
+| CORS from the site's origin | allowed on both hosts |
+| CORS from another origin | Vercel: preflight 400. Space: the Hugging Face front proxy echoes the origin. The same app run locally answers 400 and the echoed headers differ from the app's, so this comes from the platform (`docs/DECISIONS.md` D27) |
+| Site | 200; status note and brand display names live; examples load. A first deploy without the `frontend` root directory returned 404 for about 3 minutes before it was redeployed |
+
+Pre-deploy model checks (brand bar, Bournville retirement, public-photo check): `evidence/training/retail_v2_kaggle_t4x2/README.md`.
+
 ## 5. Gates not yet supported by evidence
 
 Every PDF p.8 gate on **real station** data (the public-data detector figures above are not station presentations); runtime/latency gates; Docker build; TensorRT; OCR (backend

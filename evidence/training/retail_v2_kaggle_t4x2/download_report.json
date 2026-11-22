@@ -1,0 +1,266 @@
+[
+ {
+  "ws": "nano-b8y2n",
+  "project": "sct-ufzbr",
+  "version": 6,
+  "licence": "CC BY 4.0",
+  "ok": true
+ },
+ {
+  "ws": "nano-b8y2n",
+  "project": "scancart",
+  "version": 2,
+  "licence": "CC BY 4.0",
+  "ok": true
+ },
+ {
+  "ws": "iit-patna-qg1jh",
+  "project": "grocery_items-7i2em",
+  "version": 45,
+  "licence": "Public Domain",
+  "ok": true
+ },
+ {
+  "ws": "iit-patna-qg1jh",
+  "project": "reliance",
+  "version": 11,
+  "licence": "CC BY 4.0",
+  "ok": true
+ },
+ {
+  "ws": "test-fk1uk",
+  "project": "indian-market",
+  "version": 22,
+  "licence": "CC BY 4.0",
+  "ok": true
+ },
+ {
+  "ws": "smart-cart-boak8",
+  "project": "kiranacart",
+  "version": 1,
+  "licence": "CC BY 4.0",
+  "ok": true
+ },
+ {
+  "ws": "santhosh-jv8qe",
+  "project": "1000-products-4nwkj",
+  "ok": false,
+  "skip": "RuntimeError: no generated versions"
+ },
+ {
+  "ws": "object-cbrjy",
+  "project": "popcorn-detection-bgw2s",
+  "version": 4,
+  "licence": "CC BY 4.0",
+  "ok": true
+ },
+ {
+  "ws": "annotation-a7xam",
+  "project": "indian-grocery-object-detection-mfsnx-hqkrl",
+  "ok": false,
+  "skip": "RuntimeError: no generated versions"
+ },
+ {
+  "ws": "image-classifications",
+  "project": "indian-groceries-yn9sz",
+  "version": 2,
+  "licence": "CC BY 4.0",
+  "ok": true
+ },
+ {
+  "ws": "harsh-parmar-d95in",
+  "project": "500-grocery",
+  "version": 2,
+  "licence": "CC BY 4.0",
+  "ok": true
+ },
+ {
+  "ws": "w-esczz",
+  "project": "productclassification-r7lnq",
+  "version": 4,
+  "licence": "CC BY 4.0",
+  "ok": true
+ },
+ {
+  "ws": "pooja-d76hd",
+  "project": "autobilling-cbubv",
+  "version": 1,
+  "licence": "Public Domain",
+  "ok": true
+ },
+ {
+  "ws": "bits-pilani-hyderabad",
+  "project": "storeitems2",
+  "version": 1,
+  "licence": "CC BY 4.0",
+  "ok": true
+ },
+ {
+  "ws": "achyut-i6k4x",
+  "project": "my-first-project-bjtps",
+  "version": 15,
+  "licence": "CC BY 4.0",
+  "ok": true
+ },
+ {
+  "ws": "shivam-qgtej",
+  "project": "self-checkout-project",
+  "version": 3,
+  "licence": "CC BY 4.0",
+  "ok": true
+ },
+ {
+  "ws": "mathi-sivakumar",
+  "project": "vending-machine-snacks",
+  "version": 5,
+  "licence": "CC BY 4.0",
+  "ok": true
+ },
+ {
+  "ws": "dmart",
+  "project": "my-first-project-h4f0d",
+  "version": 1,
+  "licence": "CC BY 4.0",
+  "ok": true
+ },
+ {
+  "ws": "working-cih6k",
+  "project": "count-cltyz",
+  "version": 1,
+  "licence": "CC BY 4.0",
+  "ok": true
+ },
+ {
+  "ws": "aabhas-ynnuw",
+  "project": "my-first-project-ptz6r",
+  "version": 1,
+  "licence": "CC BY 4.0",
+  "ok": true
+ },
+ {
+  "ws": "choki",
+  "project": "kitkat-z4cop",
+  "version": 1,
+  "licence": "CC BY 4.0",
+  "ok": true
+ },
+ {
+  "ws": "groceries-dwrer",
+  "project": "pepsi-byted",
+  "version": 1,
+  "licence": "CC BY 4.0",
+  "ok": true
+ },
+ {
+  "ws": "groceries-dwrer",
+  "project": "redbull-gpedf",
+  "version": 1,
+  "licence": "CC BY 4.0",
+  "ok": true
+ },
+ {
+  "ws": "groceries-dwrer",
+  "project": "404-brainnotfound",
+  "version": 11,
+  "licence": "CC BY 4.0",
+  "ok": true
+ },
+ {
+  "ws": "gold-ngh4t",
+  "project": "chocolate-tcmzq",
+  "version": 2,
+  "licence": "CC BY 4.0",
+  "ok": true
+ },
+ {
+  "ws": "gold-ngh4t",
+  "project": "things-o3nhx",
+  "version": 1,
+  "licence": "CC BY 4.0",
+  "ok": true
+ },
+ {
+  "ws": "shubh-gupta-hblbv",
+  "project": "chocolate_detection-orzf6",
+  "version": 574098036,
+  "licence": "CC BY 4.0",
+  "ok": true
+ },
+ {
+  "ws": "vidhi-neen8",
+  "project": "chocolate-images",
+  "version": 2,
+  "licence": "CC BY 4.0",
+  "ok": true
+ },
+ {
+  "ws": "fieldlytics-sn6h2",
+  "project": "15072022_cho_n",
+  "version": 2,
+  "licence": "CC BY 4.0",
+  "ok": true
+ },
+ {
+  "ws": "g-deepika-mzdv0",
+  "project": "smartbin-sfl9t",
+  "version": 6,
+  "licence": "CC BY 4.0",
+  "ok": true
+ },
+ {
+  "ws": "tanvi-eq5dk",
+  "project": "prototype-r7fid",
+  "version": 2,
+  "licence": "CC BY 4.0",
+  "ok": true
+ },
+ {
+  "ws": "object-detection-5wyhv",
+  "project": "grocery-detection-mj42b",
+  "version": 1,
+  "licence": "CC BY 4.0",
+  "ok": true
+ },
+ {
+  "ws": "object-detection-5mlem",
+  "project": "object-detection-food-ufxpq",
+  "version": 2,
+  "licence": "CC BY 4.0",
+  "ok": true
+ },
+ {
+  "ws": "ojas-verma-26bqc1087",
+  "project": "supermarket-trolley-items",
+  "version": 4,
+  "licence": "CC BY 4.0",
+  "ok": true
+ },
+ {
+  "ws": "shahmir-29gms",
+  "project": "chocolate-m9ien",
+  "version": 2,
+  "licence": "CC BY 4.0",
+  "ok": true
+ },
+ {
+  "ws": "doga-and-cat",
+  "project": "countfav",
+  "version": 16,
+  "licence": "CC BY 4.0",
+  "ok": true
+ },
+ {
+  "ws": "tanmoy-kalita",
+  "project": "cart-product-detection",
+  "version": 1,
+  "licence": "CC BY 4.0",
+  "ok": true
+ },
+ {
+  "ws": "visiofy",
+  "project": "vendingmachineproject1",
+  "version": 32,
+  "licence": "CC BY 4.0",
+  "ok": true
+ }
+]
