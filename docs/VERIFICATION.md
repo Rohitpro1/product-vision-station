@@ -165,7 +165,7 @@ Site: https://pack-station-psi.vercel.app. API: https://pack-station-api.vercel.
 | `POST /v1/detect`, 1280 px real 5 Star photo | 200, `ok`, 1 pack, same box as the local run, ~2.3 s per request (1.4 s pipeline) |
 | Headless Chrome: open the site, upload the photo through the page | "Connected · station"; the box and a 4.6° axis are drawn; identity `unknown` (expected: synthetic demo catalogue) |
 
-Hugging Face Space check (2026-11-22): https://rohitpro1-pack-station-api.hf.space, Space commit `e6b1…` + app from `5ffae01`.
+Hugging Face Space check (2026-11-22): https://rohitpro1-pack-station-api.hf.space, files from repo commits `3fb7c75` (requirements) and `5ffae01` (app.py).
 
 | Check | Result |
 |---|---|
