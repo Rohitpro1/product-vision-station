@@ -1,0 +1,23 @@
+# Hosted demo profile: RT-DETR-R18 package detector fine-tuned on public retail photos (Kaggle 2xT4 run,
+# evidence/training/real5star_kaggle_t4x2), ONNX Runtime on CPU; crop-level mask fallback; colour-histogram gallery (no torch)
+# against the catalogue below. Identity on real packs is NOT validated (see docs/VERIFICATION.md).
+station_id: hosted-demo
+camera_id: upload
+capture:
+  device: "0"
+  width: 1920
+  height: 1080
+  sample_hz: 15
+  mirror_preview: false
+models:
+  detector: rtdetr_onnx
+  rtdetr_onnx: models/trained/rtdetr_r18_package.onnx
+  provider: CPUExecutionProvider
+  masks: grabcut_fallback
+  embedder: colour_hist
+catalogue: catalogues/fixture/catalogue.json
+thresholds: configs/thresholds.yaml
+bundle_id: hosted-onnx-demo-swapcheck
+outbox_path: var/outbox.sqlite
+bind: 0.0.0.0
+port: 7860

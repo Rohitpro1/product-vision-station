@@ -1,11 +1,16 @@
 {
-  "release": "v1-hosted-onnx-demo",
+  "release": "v1-swapcheck",
   "config": "configs/station.hosted.yaml",
   "files": [
     {
       "url": "https://raw.githubusercontent.com/Rohitpro1/product-vision-station/model-assets/pvs-hosted-bundle.tgz",
       "sha256": "8ba6fdaa22773af1dd0e144b239ec825689f8cad10e844f8912cfcdd11fc6787",
       "extract": true
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Rohitpro1/product-vision-station/model-assets/test/station.hosted.swapcheck.yaml",
+      "sha256": "a25f3cdd1eab1abb73d24b6ac7fff721996e266cd4e25093870151c35ff2e963",
+      "path": "configs/station.hosted.yaml"
     }
   ]
 }
