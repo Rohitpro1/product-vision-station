@@ -9,7 +9,21 @@ const store = {
   set(k, v) { try { v ? localStorage.setItem(k, v) : localStorage.removeItem(k); } catch { /* storage unavailable */ } },
 };
 const cfg = window.PVS_CONFIG || {};
-let api = { url: store.get("pvs.api") || cfg.apiUrl || "", token: store.get("pvs.token") || "" };
+const saved = store.get("pvs.api");
+const candidates = saved ? [saved] : (cfg.apiUrls || (cfg.apiUrl ? [cfg.apiUrl] : []));
+let api = { url: candidates[0] || "", token: store.get("pvs.token") || "" };
+
+// First reachable backend wins; a sleeping or failed host falls through to the next one.
+async function pickBackend() {
+  for (const url of candidates) {
+    try {
+      const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), 15000);
+      const r = await fetch(new URL("/readyz", url), { headers: authHeaders(), signal: ctl.signal });
+      clearTimeout(t);
+      if (r.ok && (await r.json()).ready) { api.url = url; return; }
+    } catch { /* try the next backend */ }
+  }
+}
 
 // ------------------------------------------------------------------ backend connection
 async function checkBackend() {
@@ -22,7 +36,7 @@ async function checkBackend() {
     const r = await fetch(new URL("/readyz", api.url), { headers: authHeaders() });
     const j = await r.json();
     if (r.ok && j.ready) {
-      dot.className = "dot ok"; text.textContent = `Connected · ${j.profile}`;
+      dot.className = "dot ok"; text.textContent = `Connected · ${new URL(api.url).hostname.endsWith(".hf.space") ? "Hugging Face" : new URL(api.url).hostname.endsWith(".vercel.app") ? "Vercel" : j.profile}`;
       note.textContent = "Photos are sent to the connected backend for analysis."; return true;
     }
     dot.className = "dot bad"; text.textContent = "Backend models unavailable";
@@ -194,5 +208,5 @@ const drop = $("#drop");
 ["dragleave", "drop"].forEach((t) => $("#stage").addEventListener(t, () => drop.classList.remove("over")));
 $("#stage").addEventListener("drop", (e) => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) analyse(f); });
 
-checkBackend();
+pickBackend().then(() => { $("#apiUrl").value = api.url; checkBackend(); });
 loadExamples();
