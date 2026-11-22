@@ -50,7 +50,7 @@ echo "== prepare";  "${PY[@]}" -m pvs.training.retail prepare --exports "$WORK/r
 BATCH=$((BATCH_PER_GPU * NGPU))
 LR=$("${PY[@]}" -c "print(round(2e-4 * ($BATCH / 16) ** 0.5, 6))")
 EXTRA=(); EVAL_LIMIT=2000; E2E_B=300; E2E_O=200
-RUN="$RUN"
+RUN="$WORK/run"
 if [ "$SMOKE" = "1" ]; then EPOCHS=1; EXTRA=(--max-steps 30); EVAL_LIMIT=50; E2E_B=12; E2E_O=8; RUN="$WORK/run-smoke"; rm -rf "$RUN"; fi
 if [ "$NGPU" -gt 1 ]; then LAUNCH=("${PY[@]}" -m torch.distributed.run --standalone --nproc_per_node="$NGPU"); else LAUNCH=("${PY[@]}"); fi
 echo "== train detector: $NGPU GPU(s), batch $BATCH, lr $LR, $EPOCHS epochs"
