@@ -1,0 +1,14 @@
+digraph G { graph [rankdir=TB,bgcolor="transparent",pad=0.12,nodesep=0.30,ranksep=0.34,splines=polyline]; node [shape=box,style="rounded,filled",fontname="DejaVu Sans",fontsize=12,margin="0.16,0.10",color="#BDD3D0",fillcolor="#EDF5F3",fontcolor="#173338"]; edge [color="#48827D",arrowsize=0.68,fontname="DejaVu Sans",fontsize=10,fontcolor="#425D61"];
+p [label="38 Roboflow project candidates\nselect version, read licence, record skips"];
+m [label="Group exact / perceptual / mirrored copies\nstrictest split + per-source sampling caps",fillcolor="#21494B",fontcolor="white",color="#21494B"];
+s [label="Separate smoke pipeline\ntrain, export, gallery, bundle, end-to-end"];
+d [label="Generic detector\nDDP → best checkpoint → ONNX"];
+g [label="Brand gallery\ntrain crops → validation thresholds → crop test"];
+b [label="Candidate bundle → full-image evaluation\nreports + hashes → training repository",fillcolor="#21494B",fontcolor="white",color="#21494B"];
+p -> m;
+m -> s;
+s -> d;
+s -> g;
+d -> b;
+g -> b;
+}

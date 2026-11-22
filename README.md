@@ -23,6 +23,18 @@ observation age. Specification: *Product Recognition & Orientation — ADR-01* (
 > - Both run the trained ONNX detector, and the site switches to Vercel automatically if the Space doesn't answer.
 > - The demo catalogue is synthetic, so real packs come back as `unknown`.
 
+## Documentation
+
+- **Engineering submission (22 Nov 2026):**
+  - Start with [`docs/submission/2026-11-22/Product_Vision_Completion_Report.pdf`](docs/submission/2026-11-22/Product_Vision_Completion_Report.pdf).
+  - Disposition: the v1 software and hosted package-detection demonstrator are delivered. Real-product identity and
+    field commissioning are still open.
+  - The pack also has PDF extracts, editable Markdown, DOT/SVG/PDF diagrams, CSV registers (datasets, models, code,
+    acceptance, sources) and frozen evidence. Its contents are listed in [`docs/submission/`](docs/submission/).
+  - It's checksummed: run `cd docs/submission/2026-11-22 && sha256sum -c SHA256SUMS.txt`.
+- **Full project context** for a new engineer or agent: [`docs/HANDOFF.md`](docs/HANDOFF.md).
+- **Every other document:** [`docs/README.md`](docs/README.md).
+
 ## Quick start (tested commands)
 
 ```bash
@@ -88,7 +100,9 @@ models/manifest.json  pinned weights: repo, revision, SHA-256, licence, intended
 migrations/postgres  central catalogue/release registry
 deploy/             Dockerfile, compose, systemd unit, Caddy TLS, trust/ (public keys only)
 evidence/           committed results; each artifact labelled by provenance (evidence/README.md)
-docs/               architecture, API, operator guide, training/evaluation, verification, decisions
+docs/               architecture, API, operator guide, training/evaluation, verification, decisions,
+                    HANDOFF.md (full project context), README.md (index),
+                    submission/<date>/ (frozen, checksummed engineering submission packs)
 ```
 
 Licence: proprietary (see `LICENSE`); third-party notices in `THIRD_PARTY_NOTICES.md`.

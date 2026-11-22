@@ -1,0 +1,20 @@
+digraph G { graph [rankdir=TB,bgcolor="transparent",pad=0.12,nodesep=0.30,ranksep=0.34,splines=polyline]; node [shape=box,style="rounded,filled",fontname="DejaVu Sans",fontsize=12,margin="0.16,0.10",color="#BDD3D0",fillcolor="#EDF5F3",fontcolor="#173338"]; edge [color="#48827D",arrowsize=0.68,fontname="DejaVu Sans",fontsize=10,fontcolor="#425D61"];
+a [label="Input frame + timestamp + transforms",fillcolor="#21494B",fontcolor="white",color="#21494B"];
+b [label="Frame quality → detector → per-box mask\nInstance cap and crop quality gates"];
+t [label="Optional tracker for streams\nIDs scoped to camera and epoch"];
+id [label="Identity evidence\ngallery • GTIN • artwork cues"];
+g [label="Geometry evidence\nmask PCA • SIFT homography"];
+o [label="Fusion and FrameResult\nidentity, axis, heading, face, reasons, age",fillcolor="#21494B",fontcolor="white",color="#21494B"];
+v [label="Still API / overlay"];
+e [label="Replay CLI → SQLite outbox\nLive worker → preview / WebSocket"];
+a -> b;
+b -> t [label="video"];
+b -> id [label="still"];
+b -> g [label="still"];
+t -> id;
+t -> g;
+id -> o;
+g -> o;
+o -> v;
+o -> e;
+}

@@ -1,0 +1,13 @@
+﻿requirement,target,population,k,n,value,disposition,evidence
+Localisation,≥97% recall @IoU .5,public v1,347,360,96.39%,Below numeric gate; field assessment open,https://github.com/Rohitpro1/product-vision-station/blob/b56c2a781939fc1524a5b9d2e1ba297992d58bfb/evidence/training/real5star_kaggle_t4x2/eval_report.json
+SKU precision,≥99%,ground-truth crops,0,7,0%,Fail,https://github.com/Rohitpro1/product-vision-station/blob/b56c2a781939fc1524a5b9d2e1ba297992d58bfb/evidence/training/real5star_kaggle_t4x2/eval_report.json
+SKU recall,≥95%,ground-truth crops,0,3,0%,Fail,https://github.com/Rohitpro1/product-vision-station/blob/b56c2a781939fc1524a5b9d2e1ba297992d58bfb/evidence/training/real5star_kaggle_t4x2/eval_report.json
+False acceptance,≤1%,non-target crops,6,357,1.68%,Fail; upper95 3.29%,https://github.com/Rohitpro1/product-vision-station/blob/b56c2a781939fc1524a5b9d2e1ba297992d58bfb/evidence/training/real5star_kaggle_t4x2/eval_report.json
+Axis coverage / p95,"≥95%, ≤10°",fixture,228,228,100%; 0.15°,Fixture only; field unverified,https://github.com/Rohitpro1/product-vision-station/blob/b56c2a781939fc1524a5b9d2e1ba297992d58bfb/evidence/eval/fixture_sealed150_seed12000/report.md
+Heading coverage / p95 / reversals,"≥90%, ≤15°, <1%",fixture,105,105,100%; 0.05°; 0 reversals,Fixture only; field unverified,https://github.com/Rohitpro1/product-vision-station/blob/b56c2a781939fc1524a5b9d2e1ba297992d58bfb/evidence/eval/fixture_sealed150_seed12000/report.md
+Joint success,≥85% within 500 ms,field,,,,Pending,https://github.com/Rohitpro1/product-vision-station/blob/b56c2a781939fc1524a5b9d2e1ba297992d58bfb/docs/REQUIREMENTS_EVIDENCE.md
+Station throughput and soak,≥15 fps; p95≤150 ms; ≥95% scheduled; 8 h,field,,,,Pending,https://github.com/Rohitpro1/product-vision-station/blob/b56c2a781939fc1524a5b9d2e1ba297992d58bfb/docs/VERIFICATION.md
+Fallback and readiness,ready on two hosts,hosted,,,Both returned ready,Verified for selected bundle; different gallery IDs,https://rohitpro1-pack-station-api.hf.space/v1/meta
+Offline outbox,retry / deduplication,local replay,,,implemented,Replay CLI + tests; live deployment unqualified,https://github.com/Rohitpro1/product-vision-station/blob/b56c2a781939fc1524a5b9d2e1ba297992d58bfb/src/pvs/cli.py
+Release safety,signed install / rollback,station,,,implemented,Tests; hosted adapters use SHA pin,https://github.com/Rohitpro1/product-vision-station/blob/b56c2a781939fc1524a5b9d2e1ba297992d58bfb/src/pvs/bundle.py
+Retail v2 brands,held-out crop and full-image results,candidate,,,,Awaiting final reports,https://huggingface.co/Rohitpro1/pack-station-training/tree/55b036781ed354634b5f6cc7b562149632b2a8dc

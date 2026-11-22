@@ -11,6 +11,11 @@
 > **Owner:** Rohit (GitHub `Rohitpro1`, Hugging Face `Rohitpro1`, Kaggle `rohitkumarp`, Vercel team
 > `rohitpro1s-projects`).
 
+> **Formal submission:** the checksummed engineering submission pack for 22 Nov 2026 is in
+> [`docs/submission/2026-11-22/`](submission/2026-11-22/). It includes the completion report PDF, extracts,
+> diagrams, registers and frozen evidence, with v2 telemetry frozen at 22:07 IST (epoch 10 of 20). This handoff
+> keeps running context; the pack is the formal record.
+
 ---
 
 ## Contents
@@ -705,7 +710,7 @@ Full table in `docs/DECISIONS.md`.
 
 | # | Decision |
 |---|---|
-| D1–D3 | Toolchain pins and the pretrained baseline. *Note:* D1 says "private" but **the repo is public**, as created by Rohit; this needs a doc fix. |
+| D1–D3 | Toolchain pins and the pretrained baseline. D1 now records that the repo is **public**, as Rohit created it. |
 | D4–D6 | Direction comes only from gated templates. Exact SKU from vision needs a variant cue. A template-only match supports family, not SKU. |
 | D7–D10 | Crop-level quality gates. One-sided 95% bound for false accepts. Head-of-line ordered outbox. Scores reported as raw uncalibrated cosine. |
 | D11–D13 | OCR unavailable. Non-commercial components (FoundationPose) excluded. Third-party photos fetched, not committed. |
@@ -797,8 +802,7 @@ Full table in `docs/DECISIONS.md`.
 
 6. **Delete the CyFuture VMs** `pvstrain5star` and `pvstrain` if they still exist.
 7. **Docs fixes:**
-   - D1 says "private", but the repo is public.
-   - Add the run 2 decisions to DECISIONS.md.
+   - Add the run 2 decisions to DECISIONS.md. (D1 now says the repo is public.)
    - Update the README capability table after run 2.
 
 **Hosting and limits:**

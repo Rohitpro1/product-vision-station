@@ -1,0 +1,173 @@
+{
+ "provenance": {
+  "off_5star_1.jpg": "Open Food Facts contributors, CC BY-SA 3.0, product 7622202318078 image 1, sha256 a868288a\u2026",
+  "milka_wrapper.jpg": "Ubcule, Wikimedia Commons, CC BY-SA 4.0, sha256 e545bf27\u2026"
+ },
+ "results": [
+  {
+   "example": "5star_unenrolled",
+   "note": "real 5 Star photo vs fixture catalogue (5 Star not enrolled)",
+   "status": "ok",
+   "timing_ms": 14092.68,
+   "instances": [
+    {
+     "det_score": 0.6787,
+     "mask_source": "segmentation",
+     "identity": "unknown",
+     "sku": null,
+     "family": null,
+     "rule": "R7_unknown",
+     "reason": "below_threshold",
+     "gallery_top": {
+      "sku": "fixture:zephyr-classic-40g",
+      "family": "fixture:zephyr",
+      "side": "front",
+      "score": 0.17137904465198517,
+      "reference_revision": "fx-art-1"
+     },
+     "axis_deg": 5.72,
+     "heading_deg": null,
+     "heading_reason": "endpoint_hidden",
+     "face": "unknown"
+    },
+    {
+     "det_score": 0.3146,
+     "mask_source": "segmentation",
+     "identity": "unknown",
+     "sku": null,
+     "family": null,
+     "rule": "R7_unknown",
+     "reason": "not_in_catalogue",
+     "gallery_top": {
+      "sku": "fixture:zephyr-classic-40g",
+      "family": "fixture:zephyr",
+      "side": "back",
+      "score": 0.2105499804019928,
+      "reference_revision": "fx-art-1"
+     },
+     "axis_deg": 3.99,
+     "heading_deg": null,
+     "heading_reason": "endpoint_hidden",
+     "face": "unknown"
+    },
+    {
+     "det_score": 0.3045,
+     "mask_source": "segmentation",
+     "identity": "unknown",
+     "sku": null,
+     "family": null,
+     "rule": "R7_unknown",
+     "reason": "below_threshold",
+     "gallery_top": {
+      "sku": "fixture:zephyr-classic-40g",
+      "family": "fixture:zephyr",
+      "side": "front",
+      "score": 0.175734281539917,
+      "reference_revision": "fx-art-1"
+     },
+     "axis_deg": 5.48,
+     "heading_deg": null,
+     "heading_reason": "endpoint_hidden",
+     "face": "unknown"
+    }
+   ]
+  },
+  {
+   "example": "5star_enrolled_same_photo_rotated",
+   "note": "SAME photograph as the enrolled reference, rotated and re-lit: self-consistency only, NOT validation",
+   "status": "ok",
+   "timing_ms": 11939.28,
+   "instances": [
+    {
+     "det_score": 0.5483,
+     "mask_source": "segmentation",
+     "identity": "sku",
+     "sku": "demo:cadbury-5star-18g-unverified",
+     "family": "cadbury:5star",
+     "rule": "R3_visual_sku_with_variant_cue",
+     "reason": "ok",
+     "gallery_top": {
+      "sku": "demo:cadbury-5star-18g-unverified",
+      "family": "cadbury:5star",
+      "side": "front",
+      "score": 0.9497151374816895,
+      "reference_revision": "observed-off-1"
+     },
+     "axis_deg": 120.69,
+     "heading_deg": 300.72,
+     "heading_reason": "ok",
+     "face": "front"
+    }
+   ]
+  },
+  {
+   "example": "milka_vs_demo_5star_catalogue",
+   "note": "real non-target (Milka) vs demo 5 Star catalogue",
+   "status": "ok",
+   "timing_ms": 14839.34,
+   "instances": [
+    {
+     "det_score": 0.7037,
+     "mask_source": "segmentation",
+     "identity": "unknown",
+     "sku": null,
+     "family": null,
+     "rule": "R7_unknown",
+     "reason": "below_threshold",
+     "gallery_top": {
+      "sku": "demo:cadbury-5star-18g-unverified",
+      "family": "cadbury:5star",
+      "side": "front",
+      "score": 0.3284533619880676,
+      "reference_revision": "observed-off-1"
+     },
+     "axis_deg": 179.52,
+     "heading_deg": null,
+     "heading_reason": "endpoint_hidden",
+     "face": "unknown"
+    },
+    {
+     "det_score": 0.609,
+     "mask_source": "segmentation",
+     "identity": "unknown",
+     "sku": null,
+     "family": null,
+     "rule": "R7_unknown",
+     "reason": "below_threshold",
+     "gallery_top": {
+      "sku": "demo:cadbury-5star-18g-unverified",
+      "family": "cadbury:5star",
+      "side": "front",
+      "score": 0.1705484688282013,
+      "reference_revision": "observed-off-1"
+     },
+     "axis_deg": null,
+     "heading_deg": null,
+     "heading_reason": "endpoint_hidden",
+     "face": "unknown"
+    },
+    {
+     "det_score": 0.4564,
+     "mask_source": "segmentation",
+     "identity": "unknown",
+     "sku": null,
+     "family": null,
+     "rule": "R7_unknown",
+     "reason": "below_threshold",
+     "gallery_top": {
+      "sku": "demo:cadbury-5star-18g-unverified",
+      "family": "cadbury:5star",
+      "side": "front",
+      "score": 0.2663368880748749,
+      "reference_revision": "observed-off-1"
+     },
+     "axis_deg": 134.96,
+     "heading_deg": null,
+     "heading_reason": "endpoint_hidden",
+     "face": "unknown"
+    }
+   ]
+  }
+ ],
+ "unenrolled_best_detection": 0.6787
+}

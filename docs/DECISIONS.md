@@ -2,7 +2,7 @@
 
 | # | Decision | Why | Reversible by |
 |---|---|---|---|
-| D1 | Repository `Rohitpro1/product-vision-station`, private, branch `main` | build prompt defaults; authenticated account | GitHub settings |
+| D1 | Repository `Rohitpro1/product-vision-station`, branch `main`; **public** (the brief's default was private, but the owner created it public and chose to keep it that way) | build prompt defaults; authenticated account; owner's choice of visibility | GitHub settings |
 | D2 | Python 3.13, torch 2.15 CPU, transformers 5.23, ONNX Runtime 1.32 (exact pins in `requirements/*.lock`) | versions installable and mutually compatible in the build environment | edit locks + rerun CI |
 | D3 | Pretrained baseline = Grounding DINO tiny + SAM 2.1 tiny + DINOv2-small, all Apache-2.0, revisions + SHA-256 in `models/manifest.json` | PDF p.4 route 1–2; smallest variants fit a 2-CPU / 7 GB sandbox | `fetch_models.py --pin` |
 | D4 | Direction prototype = SIFT homography to front/back references with inlier, spread, reprojection, non-mirror and axis-agreement gates | PDF p.4 "use printed asymmetric template matches for the first direction arrow" | swap for trained landmark head once validated |

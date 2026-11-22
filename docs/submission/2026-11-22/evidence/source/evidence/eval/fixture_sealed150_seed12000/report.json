@@ -1,0 +1,714 @@
+{
+ "counts": {
+  "gt": 228,
+  "matched": 228,
+  "sku_accepted": 103,
+  "sku_correct": 103,
+  "target_presentations": 145,
+  "target_correct": 103,
+  "neg_presentations": 83,
+  "neg_false_accept": 0,
+  "axis_obs": 228,
+  "axis_ret": 228,
+  "head_obs": 105,
+  "head_ret": 105,
+  "reversals": 0,
+  "empty_scenes": 37,
+  "empty_false_pos": 0,
+  "target_id_observable": 105,
+  "target_id_observable_correct": 103
+ },
+ "metrics": {
+  "localisation_recall": {
+   "metric": "localisation_recall",
+   "status": "measured",
+   "k": 228,
+   "n": 228,
+   "value": 1.0,
+   "ci95": [
+    0.9839508859269988,
+    1.0
+   ],
+   "gate": "pass (>=0.97)"
+  },
+  "exact_sku_precision": {
+   "metric": "exact_sku_precision",
+   "status": "measured",
+   "k": 103,
+   "n": 103,
+   "value": 1.0,
+   "ci95": [
+    0.9648193824256598,
+    1.0
+   ],
+   "gate": "pass (>=0.99)"
+  },
+  "exact_sku_recall": {
+   "metric": "exact_sku_recall",
+   "status": "measured",
+   "k": 103,
+   "n": 145,
+   "value": 0.7103448275862069,
+   "ci95": [
+    0.629270085894195,
+    0.7826064367530502
+   ],
+   "gate": "fail (>=0.95)"
+  },
+  "exact_sku_recall_identity_observable": {
+   "metric": "exact_sku_recall_identity_observable",
+   "status": "measured",
+   "k": 103,
+   "n": 105,
+   "value": 0.9809523809523809,
+   "ci95": [
+    0.9328842396977072,
+    0.9976848632599249
+   ],
+   "gate": "pass (>=0.95)"
+  },
+  "false_target_acceptance": {
+   "metric": "false_target_acceptance",
+   "status": "measured",
+   "k": 0,
+   "n": 83,
+   "value": 0.0,
+   "ci95": [
+    0.0,
+    0.0434711521664418
+   ],
+   "one_sided_upper95": 0.035449568145885034,
+   "gate": "insufficient_evidence (point=0.0000, upper95=0.0354 > 0.01; need >=299 clean independent negatives)"
+  },
+  "axis_coverage": {
+   "metric": "axis_coverage",
+   "status": "measured",
+   "k": 228,
+   "n": 228,
+   "value": 1.0,
+   "ci95": [
+    0.9839508859269988,
+    1.0
+   ],
+   "gate": "pass (>=0.95)"
+  },
+  "axis_p95_err_deg": {
+   "metric": "axis_p95_err_deg",
+   "status": "measured",
+   "n": 228,
+   "value": 0.14888061771960465,
+   "max": 1.378575405529233,
+   "mean": 0.06781826870375975,
+   "gate": "pass (<=10.0)"
+  },
+  "heading_coverage": {
+   "metric": "heading_coverage",
+   "status": "measured",
+   "k": 105,
+   "n": 105,
+   "value": 1.0,
+   "ci95": [
+    0.9654777858734943,
+    1.0
+   ],
+   "gate": "pass (>=0.9)"
+  },
+  "heading_p95_err_deg": {
+   "metric": "heading_p95_err_deg",
+   "status": "measured",
+   "n": 105,
+   "value": 0.04510542124245375,
+   "max": 0.09097970024602375,
+   "mean": 0.016914815722632027,
+   "gate": "pass (<=15.0)"
+  },
+  "heading_reversal_rate": {
+   "metric": "heading_reversal_rate",
+   "status": "measured",
+   "k": 0,
+   "n": 105,
+   "value": 0.0,
+   "ci95": [
+    0.0,
+    0.03452221412650563
+   ],
+   "gate": "pass (<0.01)"
+  }
+ },
+ "negative_slices": {
+  "similar_gold_wrapper": {
+   "false_accept": 0,
+   "n": 83
+  }
+ },
+ "failures": [
+  {
+   "scene": "fx-012004",
+   "truth_sku": "fixture:zephyr-classic-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  },
+  {
+   "scene": "fx-012010",
+   "truth_sku": "fixture:zephyr-lite-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  },
+  {
+   "scene": "fx-012011",
+   "truth_sku": "fixture:zephyr-classic-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  },
+  {
+   "scene": "fx-012011",
+   "truth_sku": "fixture:zephyr-classic-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  },
+  {
+   "scene": "fx-012015",
+   "truth_sku": "fixture:zephyr-lite-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  },
+  {
+   "scene": "fx-012016",
+   "truth_sku": "fixture:zephyr-lite-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  },
+  {
+   "scene": "fx-012018",
+   "truth_sku": "fixture:zephyr-classic-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  },
+  {
+   "scene": "fx-012019",
+   "truth_sku": "fixture:zephyr-lite-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  },
+  {
+   "scene": "fx-012020",
+   "truth_sku": "fixture:zephyr-classic-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  },
+  {
+   "scene": "fx-012023",
+   "truth_sku": "fixture:zephyr-classic-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  },
+  {
+   "scene": "fx-012024",
+   "truth_sku": "fixture:zephyr-lite-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  },
+  {
+   "scene": "fx-012031",
+   "truth_sku": "fixture:zephyr-lite-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  },
+  {
+   "scene": "fx-012035",
+   "truth_sku": "fixture:zephyr-lite-40g",
+   "face": "back",
+   "pred": {
+    "level": "conflict",
+    "sku": null,
+    "rule": "R1_unknown_code_vs_visual",
+    "reason": "conflicting_code"
+   }
+  },
+  {
+   "scene": "fx-012038",
+   "truth_sku": "fixture:zephyr-lite-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  },
+  {
+   "scene": "fx-012038",
+   "truth_sku": "fixture:zephyr-classic-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  },
+  {
+   "scene": "fx-012042",
+   "truth_sku": "fixture:zephyr-lite-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  },
+  {
+   "scene": "fx-012044",
+   "truth_sku": "fixture:zephyr-lite-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  },
+  {
+   "scene": "fx-012051",
+   "truth_sku": "fixture:zephyr-lite-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  },
+  {
+   "scene": "fx-012059",
+   "truth_sku": "fixture:zephyr-classic-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  },
+  {
+   "scene": "fx-012059",
+   "truth_sku": "fixture:zephyr-lite-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  },
+  {
+   "scene": "fx-012065",
+   "truth_sku": "fixture:zephyr-classic-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  },
+  {
+   "scene": "fx-012069",
+   "truth_sku": "fixture:zephyr-classic-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  },
+  {
+   "scene": "fx-012081",
+   "truth_sku": "fixture:zephyr-classic-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  },
+  {
+   "scene": "fx-012082",
+   "truth_sku": "fixture:zephyr-classic-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  },
+  {
+   "scene": "fx-012083",
+   "truth_sku": "fixture:zephyr-lite-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  },
+  {
+   "scene": "fx-012086",
+   "truth_sku": "fixture:zephyr-lite-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  },
+  {
+   "scene": "fx-012095",
+   "truth_sku": "fixture:zephyr-classic-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  },
+  {
+   "scene": "fx-012103",
+   "truth_sku": "fixture:zephyr-classic-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  },
+  {
+   "scene": "fx-012115",
+   "truth_sku": "fixture:zephyr-classic-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  },
+  {
+   "scene": "fx-012118",
+   "truth_sku": "fixture:zephyr-lite-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  },
+  {
+   "scene": "fx-012118",
+   "truth_sku": "fixture:zephyr-lite-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  },
+  {
+   "scene": "fx-012120",
+   "truth_sku": "fixture:zephyr-lite-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  },
+  {
+   "scene": "fx-012123",
+   "truth_sku": "fixture:zephyr-classic-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  },
+  {
+   "scene": "fx-012124",
+   "truth_sku": "fixture:zephyr-lite-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  },
+  {
+   "scene": "fx-012126",
+   "truth_sku": "fixture:zephyr-classic-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  },
+  {
+   "scene": "fx-012129",
+   "truth_sku": "fixture:zephyr-lite-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  },
+  {
+   "scene": "fx-012132",
+   "truth_sku": "fixture:zephyr-classic-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  },
+  {
+   "scene": "fx-012134",
+   "truth_sku": "fixture:zephyr-classic-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  },
+  {
+   "scene": "fx-012135",
+   "truth_sku": "fixture:zephyr-classic-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  },
+  {
+   "scene": "fx-012141",
+   "truth_sku": "fixture:zephyr-classic-40g",
+   "face": "back",
+   "pred": {
+    "level": "conflict",
+    "sku": null,
+    "rule": "R0_multiple_codes",
+    "reason": "conflicting_code"
+   }
+  },
+  {
+   "scene": "fx-012148",
+   "truth_sku": "fixture:zephyr-classic-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  },
+  {
+   "scene": "fx-012148",
+   "truth_sku": "fixture:zephyr-lite-40g",
+   "face": "edge",
+   "pred": {
+    "level": "unknown",
+    "sku": null,
+    "rule": "R7_unknown",
+    "reason": "below_threshold"
+   }
+  }
+ ],
+ "run": {
+  "profile": "fixture",
+  "backend": {
+   "detector": "scripted-fixture",
+   "masks": "scripted-fixture",
+   "embedder": "colour-hist-v1",
+   "gallery": "colour-hist-v1#7b16c94878feebca",
+   "template": "sift-homography-v1",
+   "barcode": "zxing-cpp",
+   "ocr": "unavailable"
+  },
+  "thresholds": "thr-dev-0.5",
+  "catalogue": "fixture-r1",
+  "ground_truth": "data/sealed/scenes/ground_truth.json",
+  "ground_truth_sha256": "893b1140909a495cd1b5bc55c146f351b95e9d05886e6fe57ff029431ac79759",
+  "input_sha256": [
+   "d9458e328a5000e22bbd91f485c5c9d9272269a0b9e817fc678de056cdaea85c",
+   "ae550b78120959698da45fe20943453678393026db0709fee46e964db509d9db",
+   "053668d35ff03dcdff4d3b3b47bac43b5369b76d7687d328a39ac7156a80865f",
+   "..."
+  ],
+  "n_scenes": 150,
+  "timing_method": "time.perf_counter around Pipeline.process (processing-only; no capture delay)",
+  "processing_ms": {
+   "metric": "processing_ms",
+   "status": "measured",
+   "n": 150,
+   "value": 78.42002905010759,
+   "max": 112.85948200020357,
+   "mean": 33.85159952668497,
+   "median": 31.41128350011968
+  },
+  "env": {
+   "python": "3.13.18",
+   "platform": "Linux-6.18.44-fc-v726-x86_64-with-glibc2.39",
+   "machine": "x86_64",
+   "cpu_count": 2,
+   "implementation_commit": "473b608060c541231f73b3809db2af8b1dca0459",
+   "onnxruntime": "1.32.0",
+   "torch": "2.15.0+cpu",
+   "cuda": false
+  },
+  "caveat": "fixture profile uses scripted detections; only identity/orientation/barcode/fusion algorithms are exercised"
+ },
+ "summary": {
+  "localisation_recall": {
+   "k": 228,
+   "n": 228,
+   "value": 1.0,
+   "gate": "pass (>=0.97)"
+  },
+  "exact_sku_precision": {
+   "k": 103,
+   "n": 103,
+   "value": 1.0,
+   "gate": "pass (>=0.99)"
+  },
+  "exact_sku_recall": {
+   "k": 103,
+   "n": 145,
+   "value": 0.7103448275862069,
+   "gate": "fail (>=0.95)"
+  },
+  "exact_sku_recall_identity_observable": {
+   "k": 103,
+   "n": 105,
+   "value": 0.9809523809523809,
+   "gate": "pass (>=0.95)"
+  },
+  "false_target_acceptance": {
+   "k": 0,
+   "n": 83,
+   "value": 0.0,
+   "gate": "insufficient_evidence (point=0.0000, upper95=0.0354 > 0.01; need >=299 clean independent negatives)"
+  },
+  "axis_coverage": {
+   "k": 228,
+   "n": 228,
+   "value": 1.0,
+   "gate": "pass (>=0.95)"
+  },
+  "axis_p95_err_deg": {
+   "k": null,
+   "n": 228,
+   "value": 0.14888061771960465,
+   "gate": "pass (<=10.0)"
+  },
+  "heading_coverage": {
+   "k": 105,
+   "n": 105,
+   "value": 1.0,
+   "gate": "pass (>=0.9)"
+  },
+  "heading_p95_err_deg": {
+   "k": null,
+   "n": 105,
+   "value": 0.04510542124245375,
+   "gate": "pass (<=15.0)"
+  },
+  "heading_reversal_rate": {
+   "k": 0,
+   "n": 105,
+   "value": 0.0,
+   "gate": "pass (<0.01)"
+  }
+ }
+}

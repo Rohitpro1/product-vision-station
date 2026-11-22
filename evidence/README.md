@@ -25,6 +25,11 @@ come from fixture ground truth · **REAL-MODEL** real pretrained weights ran · 
 | `eval/burned/` | SYN | earlier held-out runs, invalidated after failure inspection (kept for audit) |
 | `training/` | SYN | landmark + RT-DETR smoke runs, ONNX parity, augmentation grid |
 | `api/` | SYN, SCRIPTED | live server smoke transcript, live overlay, generated JSON Schema |
+| `training/real5star_kaggle_t4x2/` | REAL-PHOTO (public Roboflow, CC BY 4.0), REAL-MODEL | run 1 on Kaggle 2 × T4: package detector test recall 0.964 / precision 0.967; 5 Star identity 0/3 (reports and logs only; no images, ONNX or gallery) |
 
 Overlays under `real/` are adaptations of CC BY-SA photographs and carry the same licence; the source photos
 themselves are not committed (`scripts/fetch_real_examples.py`).
+
+Frozen copies of the main reports above, plus hosted-service and training-repo observations as of
+22 Nov 2026, are in the engineering submission pack: `docs/submission/2026-11-22/evidence/`. Those copies are
+checksummed and must not be edited; this folder holds the current files.

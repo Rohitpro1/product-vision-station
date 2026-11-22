@@ -1,0 +1,48 @@
+{
+  "models": {
+    "grounding_dino": {
+      "repo": "IDEA-Research/grounding-dino-tiny",
+      "revision": "a2bb814dd30d776dcf7e30523b00659f4f141c71",
+      "licence": "Apache-2.0",
+      "intended_use": "pretrained profile: prompted package proposals; annotation assistance",
+      "sha256": {
+        "model.safetensors": "1a2412ef99bd74bcd3c2a246fa1e48581f8889a1300c9051974741314fc042f3"
+      },
+      "retrieval": "python scripts/fetch_models.py --only grounding_dino",
+      "commercial_station_ok": true
+    },
+    "sam2": {
+      "repo": "facebook/sam2.1-hiera-tiny",
+      "revision": "de431c4043854a71d8101e17995dfe596bf101a5",
+      "licence": "Apache-2.0",
+      "intended_use": "pretrained profile: box-prompted masks for geometry and dataset assistance",
+      "sha256": {
+        "model.safetensors": "48c14467e5cf9e51870511feb72c89688e82dd74523142c0538b663e193ac2a7"
+      },
+      "retrieval": "python scripts/fetch_models.py --only sam2",
+      "commercial_station_ok": true
+    },
+    "dinov2": {
+      "repo": "facebook/dinov2-small",
+      "revision": "ed25f3a31f01632728cabb09d1542f84ab7b0056",
+      "licence": "Apache-2.0",
+      "intended_use": "gallery embeddings (frozen) for reference matching",
+      "sha256": {
+        "model.safetensors": "ae1e99fcefd534ed978cdeb8326f08030c96e28b7a81ffcbc98a857c84d14be1"
+      },
+      "retrieval": "python scripts/fetch_models.py --only dinov2",
+      "commercial_station_ok": true
+    },
+    "rtdetr_r18": {
+      "repo": "PekingU/rtdetr_r18vd",
+      "revision": "ac77a11ff0170a41b771c03264987f8ce2b0d753",
+      "licence": "Apache-2.0",
+      "intended_use": "COCO-initialised station detector candidate (fine-tune + export path)",
+      "sha256": {
+        "model.safetensors": "fe87a5a30f5daf298d10794c7682a63b6107986f97d6a770ba948d89e4340093"
+      },
+      "retrieval": "python scripts/fetch_models.py --only rtdetr_r18",
+      "commercial_station_ok": true
+    }
+  }
+}
