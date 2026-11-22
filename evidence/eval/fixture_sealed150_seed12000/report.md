@@ -1,6 +1,6 @@
 # Evaluation report — profile `fixture`
 
-- Implementation commit: `473b608060c541231f73b3809db2af8b1dca0459`
+- Implementation commit: `6c36061b75e6888dfbd75df77c098b93adec1b9b`
 - Ground truth: `data/sealed/scenes/ground_truth.json` sha256 `893b1140909a495c…`
 - Scenes: 150 · thresholds `thr-dev-0.5` · catalogue `fixture-r1`
 - Backends: `{"detector": "scripted-fixture", "masks": "scripted-fixture", "embedder": "colour-hist-v1", "gallery": "colour-hist-v1#7b16c94878feebca", "template": "sift-homography-v1", "barcode": "zxing-cpp", "ocr": "unavailable"}`

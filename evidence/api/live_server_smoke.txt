@@ -1,4 +1,4 @@
-# Live server smoke — 2026-11-21T10:07:21Z — commit 84aaa68 — fixture profile, replay source data/fixtures/video/crossing.mp4
+# Live server smoke — 2026-11-21T10:07:21Z — commit ddadf2e — fixture profile, replay source data/fixtures/video/crossing.mp4
 ## GET /healthz
 {"status":"alive"}
 ## GET /readyz

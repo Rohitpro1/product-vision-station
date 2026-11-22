@@ -1,7 +1,7 @@
 # Evidence index
 
-Still-image evaluations and real-photo runs: implementation revision `473b608`. Replays, examples and the
-API smoke: `84aaa68` (tracker-only change; see docs/VERIFICATION.md §6). Provenance labels:
+Still-image evaluations and real-photo runs: implementation revision `6c36061`. Replays, examples and the
+API smoke: `ddadf2e` (tracker-only change; see docs/VERIFICATION.md §6). Provenance labels:
 **SYN** synthetic fixture (original artwork, `pvs.fixtures`, seed recorded) · **SCRIPTED** detection boxes
 come from fixture ground truth · **REAL-MODEL** real pretrained weights ran · **REAL-PHOTO** third-party photograph.
 

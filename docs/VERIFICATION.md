@@ -1,6 +1,6 @@
 # Verification report
 
-Implementation revisions evaluated: **`473b608`** (still-image evaluations, real-photo runs) and **`84aaa68`**
+Implementation revisions evaluated: **`6c36061`** (still-image evaluations, real-photo runs) and **`ddadf2e`**
 (tracker fix; unit tests, tracked replays and the API smoke were re-run at this revision). Evidence and
 documentation were added in a later evidence/docs-only commit. See §6.
 
@@ -26,7 +26,7 @@ cannot establish live capture-to-result delay; no camera/driver buffering was me
 | Command | Result |
 |---|---|
 | `ruff check src tests scripts` | All checks passed |
-| `python -m pytest -q -m "not models and not postgres"` (at `84aaa68`) | 101 passed, 2 skipped (opt-in real-model module; Postgres without DSN) |
+| `python -m pytest -q -m "not models and not postgres"` (at `ddadf2e`) | 101 passed, 2 skipped (opt-in real-model module; Postgres without DSN) |
 | `PVS_PG_DSN=postgresql://postgres@/pvs?host=/tmp&port=55432 python -m pytest -q tests/test_training_postgres.py` | 5 passed (local PostgreSQL 16; migrations apply, `--check` clean, one-GTIN-one-SKU constraint enforced) |
 | `python scripts/migrate.py --check` | clean after apply |
 | live server: `pvs serve --port 8765 --video …crossing.mp4 …` + curl | `evidence/api/live_server_smoke.txt` |
@@ -88,7 +88,7 @@ Burned set: seeds 9000–9149 were evaluated, then a rule-ordering defect was fo
 failures (variant-cue rule pre-empted by the gallery tie rule). They are kept under `evidence/eval/burned/`
 and no longer count as held-out.
 
-**Public-data GPU run** (`evidence/training/real5star_kaggle_t4x2`, commit `b5ee790`, Kaggle 2 × T4).
+**Public-data GPU run** (`evidence/training/real5star_kaggle_t4x2`, commit `9dbc97a`, Kaggle 2 × T4).
 The splits keep near-duplicate groups together, and the test split was used for nothing but this report.
 
 | Metric | k / n | Interval / gate |
@@ -119,7 +119,7 @@ pvs --profile pretrained --config configs/station.pretrained.yaml eval --ground-
 
 ## Clean-clone verification
 
-From a fresh `git clone` of tip `28b68ce` (local clone; see the publication status below):
+From a fresh `git clone` of tip `b3d96ba` (local clone; see the publication status below):
 
 | Step | Result |
 |---|---|
@@ -130,9 +130,9 @@ From a fresh `git clone` of tip `28b68ce` (local clone; see the publication stat
 | `PVS_RUN_MODELS=1 pytest tests/test_models.py` | 2 passed |
 | `ruff check src tests scripts` | clean |
 
-Publication: pushed to https://github.com/Rohitpro1/product-vision-station (`main`, remote tip `ff3e3b8`
-at push time). GitHub Actions run 44896002149 on `ff3e3b8`: `deterministic`, `train-smoke` and
-`postgres-migrations` succeeded; `real-models` skipped (manual opt-in). A fresh clone from GitHub of `ff3e3b8`
+Publication: pushed to https://github.com/Rohitpro1/product-vision-station (`main`, remote tip `76732d1`
+at push time). GitHub Actions run 44896002149 on `76732d1`: `deterministic`, `train-smoke` and
+`postgres-migrations` succeeded; `real-models` skipped (manual opt-in). A fresh clone from GitHub of `76732d1`
 ran `./scripts/bootstrap.sh` (exit 0; 101 passed) plus the fixture and pretrained `pvs detect` smoke runs above.
 The repository was created **public** by the owner (spec default was private).
 
@@ -156,7 +156,7 @@ written, **not built** (no Docker daemon in the sandbox).
 
 ## Hosted demo check (2026-11-21)
 
-Site: https://pack-station-psi.vercel.app. API: https://pack-station-api.vercel.app (Vercel deployment `dpl_AgNhtw3Y76PExG1b7z6sk2RYknoA`, package at `7453926`, bundle sha256 `8ba6fdaa…6787`).
+Site: https://pack-station-psi.vercel.app. API: https://pack-station-api.vercel.app (Vercel deployment `dpl_AgNhtw3Y76PExG1b7z6sk2RYknoA`, package at `817ad2f`, bundle sha256 `8ba6fdaa…6787`).
 
 | Check | Result |
 |---|---|
@@ -165,7 +165,7 @@ Site: https://pack-station-psi.vercel.app. API: https://pack-station-api.vercel.
 | `POST /v1/detect`, 1280 px real 5 Star photo | 200, `ok`, 1 pack, same box as the local run, ~2.3 s per request (1.4 s pipeline) |
 | Headless Chrome: open the site, upload the photo through the page | "Connected · station"; the box and a 4.6° axis are drawn; identity `unknown` (expected: synthetic demo catalogue) |
 
-Hugging Face Space check (2026-11-22): https://rohitpro1-pack-station-api.hf.space, files from repo commits `3fb7c75` (requirements) and `5ffae01` (app.py).
+Hugging Face Space check (2026-11-22): https://rohitpro1-pack-station-api.hf.space, files from repo commits `8ac8914` (requirements) and `f09d395` (app.py).
 
 | Check | Result |
 |---|---|
@@ -184,5 +184,5 @@ Every PDF p.8 gate on **real station** data (the public-data detector figures ab
 
 | Commit | Files | Affected verification | Re-run |
 |---|---|---|---|
-| `84aaa68` | `src/pvs/tracker.py` (+ tests) | tracked streams only: a track unseen for > `evidence_gap_s` is no longer re-associated, so an object reappearing after removal gets a new ID. `pvs eval` / `pvs detect` never construct a `Tracker`, so still-image evaluations at `473b608` are unaffected. | full test suite, both synthetic replays, live API smoke, examples |
+| `ddadf2e` | `src/pvs/tracker.py` (+ tests) | tracked streams only: a track unseen for > `evidence_gap_s` is no longer re-associated, so an object reappearing after removal gets a new ID. `pvs eval` / `pvs detect` never construct a `Tracker`, so still-image evaluations at `6c36061` are unaffected. | full test suite, both synthetic replays, live API smoke, examples |
 | later | docs + `evidence/` only | none | — |

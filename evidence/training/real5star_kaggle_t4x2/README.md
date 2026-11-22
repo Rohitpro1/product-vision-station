@@ -1,6 +1,6 @@
 # Real-data run — Kaggle, 2 × Tesla T4 (2026-11-21)
 
-Produced by `scripts/gpu_train_5star.sh 40` at commit `b5ee790` on a Kaggle notebook (2 × T4 16 GB,
+Produced by `scripts/gpu_train_5star.sh 40` at commit `9dbc97a` on a Kaggle notebook (2 × T4 16 GB,
 driver 580, Python 3.13.16, torch 2.6.0+cu124, DDP over both GPUs). The training and evaluation code
 is `src/pvs/training/real5star.py`.
 

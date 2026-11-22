@@ -1,6 +1,6 @@
 # Evaluation report — profile `pretrained`
 
-- Implementation commit: `473b608060c541231f73b3809db2af8b1dca0459`
+- Implementation commit: `6c36061b75e6888dfbd75df77c098b93adec1b9b`
 - Ground truth: `data/sealed/scenes/ground_truth_first20.json` sha256 `c9616e4764c0f161…`
 - Scenes: 20 · thresholds `thr-dev-0.5` · catalogue `fixture-r1`
 - Backends: `{"detector": "grounding-dino:IDEA-Research/grounding-dino-tiny@a2bb814dd30d", "masks": "sam2:facebook/sam2.1-hiera-tiny@de431c404385", "embedder": "dinov2:facebook/dinov2-small@ed25f3a31f01", "gallery": "dinov2:facebook/dinov2-small@ed25f3a31f01#3ab064159054efcf", "template": "sift-homography-v1", "barcode": "zxing-cpp", "ocr": "unavailable"}`

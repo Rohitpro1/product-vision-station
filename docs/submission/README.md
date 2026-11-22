@@ -21,6 +21,9 @@ and the pack's README explains how to bring it up to date ("Update after v2").
 | `evidence/` | Frozen observations: host `/readyz` and `/v1/meta` responses, HF Space and training-repo metadata, CI job metadata, retail v2 status snapshot, and copies of the committed run 1 reports, API schema, fixture reports and model manifest under `evidence/source/`. |
 | `SHA256SUMS.txt` | SHA-256 of every other file in the pack. |
 
+**Commit IDs in this pack are pre-rewrite.** The repository history was rewritten on 22 Nov 2026 (same file
+contents, new commit IDs). Translate any commit ID quoted in the pack with [`../COMMIT_ID_MAP.md`](../COMMIT_ID_MAP.md).
+
 Verify the pack from the repository root:
 
 ```bash

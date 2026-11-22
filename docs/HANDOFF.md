@@ -5,7 +5,7 @@
 > architecture diagrams, scripts, repositories, hosting, decisions, failures and fixes, and open items.
 >
 > **Snapshot time:** 22 Nov 2026, 20:38 IST (15:08 UTC). Facts below were taken from the repository at commit
-> `ed64b5e` plus the live status page at that time. Anything not directly measured is marked *(estimate)* or
+> `6d864f6` plus the live status page at that time. Anything not directly measured is marked *(estimate)* or
 > *(derived)*.
 >
 > **Owner:** Rohit (GitHub `Rohitpro1`, Hugging Face `Rohitpro1`, Kaggle `rohitkumarp`, Vercel team
@@ -15,6 +15,9 @@
 > [`docs/submission/2026-11-22/`](submission/2026-11-22/). It includes the completion report PDF, extracts,
 > diagrams, registers and frozen evidence, with v2 telemetry frozen at 22:07 IST (epoch 10 of 20). This handoff
 > keeps running context; the pack is the formal record.
+
+> **Commit IDs:** history was rewritten on 22 Nov 2026, so every commit has a new ID. This document quotes the new IDs;
+> the submission pack quotes the old ones. See [`COMMIT_ID_MAP.md`](COMMIT_ID_MAP.md).
 
 ---
 
@@ -222,7 +225,7 @@ migrations/postgres/         central catalogue/release registry schema
 evidence/                    committed results (api, eval, examples, real, replay, training/...)
 docs/                        ARCHITECTURE, API, OPERATOR_GUIDE, TRAINING_EVALUATION, VERIFICATION,
                              REQUIREMENTS_EVIDENCE, DECISIONS, EXTENSIONS, reference_drawing, HANDOFF (this)
-tests/                       12 test modules, 169 passed + 2 skipped at ed64b5e
+tests/                       12 test modules, 169 passed + 2 skipped at 6d864f6
 render.yaml                  Render blueprint (prepared, never deployed)
 ```
 
@@ -489,7 +492,7 @@ The run is started as **Save Version → Save & Run All (Commit)**, so it runs h
 ## 10. Training run 1: 5 Star / public retail (finished)
 
 Evidence: `evidence/training/real5star_kaggle_t4x2/` (README, train/eval reports, logs). Kaggle 2 × T4, DDP, commit
-`b5ee790`, 21 Nov 2026.
+`9dbc97a`, 21 Nov 2026.
 
 - **Data:** Roboflow SCt v6 + Scancart v2 (CC BY 4.0).
   - 2,729 images, 151 class names.
@@ -607,13 +610,13 @@ once as a test input and never stored in the project.
 **Frontend, project `pack-station`** (`pack-station-psi.vercel.app`):
 
 - Deployed from GitHub (`gitSource` at a pinned SHA, `rootDirectory: frontend`).
-- Latest deployment: `dpl_GFBZZJn3TeZj8fzXMqX1rFyG2E8e` at `07fc11a`.
+- Latest deployment: `dpl_GFBZZJn3TeZj8fzXMqX1rFyG2E8e` at `b4fc787`.
 - The Vercel team-scope access was approved by Rohit.
 
 **API, project `pack-station-api`** (`pack-station-api.vercel.app`):
 
 - Deployed inline from 4 files: `app.py`, `requirements.txt`, `vercel.json`, `.python-version` = 3.13.
-- `requirements.txt` holds the runtime lock pins plus `product-vision-station @ …/archive/7453926….tar.gz`.
+- `requirements.txt` holds the runtime lock pins plus `product-vision-station @ …/archive/817ad2f….tar.gz`.
 - Bundle size 483 MB, which uses Vercel's large-function path. `maxDuration` is 120 s.
 - On cold start the app downloads the bundle from `raw.githubusercontent.com/.../model-assets/pvs-hosted-bundle.tgz`,
   verifies SHA-256 `8ba6fdaa22773af1dd0e144b239ec825689f8cad10e844f8912cfcdd11fc6787`, unpacks it to `/tmp/pvs`
@@ -631,8 +634,8 @@ once as a test input and never stored in the project.
 - Hugging Face's runtime already owns port 7860. So the app launches through `demo.launch()` and injects the REST
   routes plus an outermost CORS middleware inside `gradio.routes.App.create_app`.
 - A small Gradio upload page sits at `/`.
-- Files were committed to the Space through Rohit's signed-in browser session, from repo commits `3fb7c75`
-  (requirements) and `5ffae01` (`app.py`).
+- Files were committed to the Space through Rohit's signed-in browser session, from repo commits `8ac8914`
+  (requirements) and `f09d395` (`app.py`).
 
 ### Other
 
@@ -669,7 +672,7 @@ Files are in `frontend/`.
 
 ## 15. Verification and test evidence
 
-**Tests:** **169 passed, 2 skipped** at `ed64b5e`; `ruff` is clean. The two skips are opt-in real-model tests and
+**Tests:** **169 passed, 2 skipped** at `6d864f6`; `ruff` is clean. The two skips are opt-in real-model tests and
 Postgres without a DSN. The Postgres registry tests were run once against a local PG 16 (5 passed).
 
 **Coverage of the newer tests:**
@@ -846,18 +849,18 @@ Times before 22 Nov are approximate *(estimate)*. Commit times in git are UTC.
 
 | Commit | What |
 |---|---|
-| `473b608` | Station software |
-| `84aaa68` | Tracker fix |
-| `f72938a` | Real-data pipeline, frontend, CORS, Render blueprint |
-| `b5ee790` | DDP runner |
-| `0a81971` | Run 1 evidence |
-| `7453926` | Hosted API + ROI GrabCut |
-| `ec36a0c` | Frontend → hosted API |
-| `cf3992b` / `5ffae01` | HF Space (Gradio) |
-| `07fc11a` | HF primary + Vercel fallback |
-| `5bac355` | Retail v2 pipeline |
-| `ad0819a` | Live progress / HF publisher |
-| `ed64b5e` | Roboflow venv fix (latest) |
+| `6c36061` | Station software |
+| `ddadf2e` | Tracker fix |
+| `57a4e1a` | Real-data pipeline, frontend, CORS, Render blueprint |
+| `9dbc97a` | DDP runner |
+| `63654dd` | Run 1 evidence |
+| `817ad2f` | Hosted API + ROI GrabCut |
+| `641c3f2` | Frontend → hosted API |
+| `0118de2` / `f09d395` | HF Space (Gradio) |
+| `b4fc787` | HF primary + Vercel fallback |
+| `0d253b1` | Retail v2 pipeline |
+| `e87713c` | Live progress / HF publisher |
+| `6d864f6` | Roboflow venv fix (latest) |
 
 ---
 
