@@ -39,6 +39,9 @@ observation age. Specification: *Product Recognition & Orientation — ADR-01* (
   - The pack also has PDF extracts, editable Markdown, DOT/SVG/PDF diagrams, CSV registers (datasets, models, code,
     acceptance, sources) and frozen evidence. Its contents are listed in [`docs/submission/`](docs/submission/).
   - It's checksummed: run `cd docs/submission/2026-11-22 && sha256sum -c SHA256SUMS.txt`.
+- **Laptop station (YOLO26-seg + OCR, 4 GB RAM):** [`docs/EDGE.md`](docs/EDGE.md). Detects, segments and names
+  chocolate packs every frame and reads MRP / dates / batch with PP-OCRv5. Ultralytics YOLO is AGPL-3.0; read the
+  licence note there before using it in a closed product.
 - **Full project context** for a new engineer or agent: [`docs/HANDOFF.md`](docs/HANDOFF.md).
 - **Every other document:** [`docs/README.md`](docs/README.md).
 

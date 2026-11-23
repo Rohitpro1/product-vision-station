@@ -24,7 +24,11 @@ ARTIFACTS = ["retail-v2-artifacts.tgz", "data_stats.json", "download_report.json
              "brands/catalogue_brands.json",
              # run 3 (brands3)
              "brands-v3-artifacts.tgz", "off_scan_stats.json", "off_download_stats.json", "crop_stats.json",
-             "ft/train_report.json", "external_v2.json", "external_v3.json", "decision.json"]
+             "ft/train_report.json", "external_v2.json", "external_v3.json", "decision.json",
+             # laptop model (YOLO26-seg + OCR)
+             "yolo-edge-artifacts.tgz", "edge_bundle.tgz", "yolo/dataset_report.json", "yolo/train_report.json",
+             "yolo/results.csv", "yolo/yolo_val_test.json", "yolo/yolo_report.json", "yolo/bench_t4_gpu.json",
+             "yolo/bench_cpu_4gb.json", "e2e_v2/e2e_report.json"]
 
 
 def _api():
@@ -170,6 +174,26 @@ def _summary(out: Path) -> list[str]:
         if x:
             s.append(f"- **External photos ({name[9:11]}):** named correctly {x['named_correctly']}/"
                      f"{x['with_true_brand']}, photos with a wrong name {x['photos_with_a_wrong_name']}")
+    y = j("yolo/yolo_report.json")
+    if y:
+        for name, m in y.get("models", {}).items():
+            tt = m["test"]
+            s.append(f"- **YOLO {name} ({'GPU' if m['provider'].startswith('CUDA') else 'CPU'}):** pack recall {tt['pack_detection_recall_iou50']['rate']:.3f}, "
+                     f"brand correct {tt['correct_brand']['k']}/{tt['brand_boxes']}, wrong {tt['wrong_brand']['k']}, "
+                     f"other packs called a brand {tt['other_packs_called_a_brand']['k']}, mask IoU "
+                     f"{tt['mask_iou_mean_vs_sam2_labels']}, {m['latency_ms_incl_mask_decode']['p50']} ms")
+        o = y.get("ocr_brand_check")
+        if o:
+            s.append(f"- **OCR on brand packs:** text named the right brand {o['text_brand_right']['k']}/{o['brand_packs']}, "
+                     f"wrong {o['text_brand_wrong']['k']}, {o['ocr_ms_per_pack']['p50']} ms per pack")
+    for name in ("yolo/bench_t4_gpu.json", "yolo/bench_cpu_4gb.json"):
+        bb = j(name)
+        if bb:
+            s.append(f"- **Speed {name[11:-5]}:** detect+segment p50 {bb['seg_ms']['p50']} ms, p95 {bb['seg_ms']['p95']} ms; "
+                     f"OCR p50 {bb['ocr_ms_per_pack']['p50']} ms per pack; peak memory {bb['peak_rss_mb']} MB")
+    yv = j("yolo/yolo_val_test.json")
+    if yv:
+        s.append(f"- **Test mAP50-95:** box {yv['box']['map50_95']:.3f}, mask {yv['mask']['map50_95']:.3f}")
     dec = j("decision.json")
     if dec:
         s.append(f"- **Deploy decision:** {dec['verdict']} ({dec['reason']})")

@@ -1,0 +1,7 @@
+# Laptop station runtime (pvs.edge): no PyTorch, no Ultralytics.
+# Install ONE ONNX Runtime next to this file:
+#   NVIDIA GPU:  pip install "onnxruntime-gpu[cuda,cudnn]==1.32.0"
+#   CPU only:    pip install onnxruntime==1.32.0
+numpy>=1.26,<3
+opencv-python-headless>=4.10
+rapidocr==3.10.0
