@@ -612,6 +612,8 @@ once as a test input and never stored in the project.
 - Deployed from GitHub (`gitSource` at a pinned SHA). **Always pass `projectSettings.rootDirectory: "frontend"`**:
   a deploy without it served the repo root and the site returned 404 for about 3 minutes on 23 Nov.
 - Latest deployment: `dpl_2TzGja5k8sg2KEojKb2qXtL3J5Tn` at `0fd61a8`.
+- **Never roll back to `dpl_5iGCEYzuTHGASkVXkrK5GxwcG9EG`**: it is the deploy that served the repo root (404), but
+  Vercel still lists it as a rollback candidate.
 - The Vercel team-scope access was approved by Rohit.
 
 **API, project `pack-station-api`** (`pack-station-api.vercel.app`):
@@ -817,8 +819,9 @@ store; brand identity is family-level only.
   and Rohit was told before the run.
 - **No assistant names:** no file, commit message or author in the repo names the AI assistant (history rewritten on 22 Nov;
   `docs/COMMIT_ID_MAP.md`). Commits are authored as `Rohit Kumar P <160228227+Rohitpro1@users.noreply.github.com>` with
-  no trailer lines. Old commit IDs can still be opened directly on GitHub until GitHub support purges them. Old
-  Vercel deployment records keep the commit messages they were built from.
+  no trailer lines. Old commit IDs can still be opened directly on GitHub until GitHub support purges them. The two
+  old Vercel deployment records that still carried the original commit messages were deleted on 23 Nov with
+  Rohit's OK.
 - **API exposure:** the hosted API has **no auth**. It is read-only and stores nothing. The app limits CORS to the
   site; Vercel enforces it, but Hugging Face's proxy echoes any origin for the Space (D27). Optional hardening:
   set `PVS_API_TOKEN`.
