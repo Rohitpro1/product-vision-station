@@ -1,0 +1,15 @@
+# External sanity photos for the brand model (pvs.training.brands3 external).
+# Public Wikimedia Commons files, downloaded at check time and never committed or redistributed.
+# None of these photos is in any training set. `brand` is the family the photo shows (null = shelf / mixed).
+photos:
+  - {file: dm1, commons: "File:Cadbury_Dairy_Milk_Oreo.jpg", brand: "cadbury:dairy-milk"}
+  - {file: dm2, commons: "File:Cadbury-Dairy-Milk-Caramel-Bar.jpg", brand: "cadbury:dairy-milk"}
+  - {file: dm3, commons: "File:Cadbury_Dairy_Milk's_'Thodi_Thodi_Hindi'_Wrapper.jpg", brand: "cadbury:dairy-milk"}
+  - {file: dm_store, commons: "File:Cadburys_Chocolate_in_Coimbatore,INDIA.jpg", brand: "cadbury:dairy-milk"}
+  - {file: kk2, commons: "File:2020-03-14_05_53_23_A_Kit_Kat_bar_in_the_Franklin_Farm_section_of_Oak_Hill,_Fairfax_County,_Virginia.jpg", brand: "nestle:kitkat"}
+  - {file: bo1, commons: "File:Bounty.jpg", brand: "mars:bounty"}
+  - {file: bo2, commons: "File:Bounty-Split.jpg", brand: "mars:bounty"}
+  - {file: ki1, commons: "File:Kinderchocolate.jpg", brand: "ferrero:kinder"}
+  - {file: ki2, commons: "File:KinderSchokolade.jpg", brand: "ferrero:kinder"}
+  - {file: sn1, commons: "File:2019-01-28_19_55_14_A_Snickers_bar_with_the_wrapper_still_intact_in_the_Dulles_section_of_Sterling,_Loudoun_County,_Virginia.jpg", brand: "mars:snickers"}
+  - {file: sn2, commons: "File:2020-03-06_07_31_28_An_intact_Snickers_bar_in_the_Franklin_Farm_section_of_Oak_Hill,_Fairfax_County,_Virginia.jpg", brand: "mars:snickers"}

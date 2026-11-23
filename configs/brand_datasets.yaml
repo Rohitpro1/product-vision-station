@@ -1,0 +1,88 @@
+# Run 3 (brand accuracy): every project from retail_datasets.yaml plus more chocolate / candy / checkout
+# projects. Same rules: latest version, licence read from the export and checked against allowed_licences,
+# max_images caps big projects (brand images are always kept). Open Food Facts close-ups are added as one more
+# export by pvs.training.off. Projects that no longer exist or have no generated version are skipped and logged.
+allowed_licences: ["CC BY 4.0", "CC BY-SA 4.0", "Public Domain", "CC0 1.0", "MIT", "Apache 2.0", "ODbL v1.0"]
+projects:
+  # --- previous run (5 Star + Indian retail)
+  - {ws: nano-b8y2n, project: sct-ufzbr}
+  - {ws: nano-b8y2n, project: scancart}
+  # --- large Indian retail / grocery
+  - {ws: iit-patna-qg1jh, project: grocery_items-7i2em, max_images: 4000}
+  - {ws: iit-patna-qg1jh, project: reliance}
+  - {ws: test-fk1uk, project: indian-market, max_images: 4000}
+  - {ws: smart-cart-boak8, project: kiranacart, max_images: 4000}
+  - {ws: santhosh-jv8qe, project: 1000-products-4nwkj, max_images: 4000}
+  - {ws: object-cbrjy, project: popcorn-detection-bgw2s, max_images: 3000}
+  - {ws: annotation-a7xam, project: indian-grocery-object-detection-mfsnx-hqkrl}
+  - {ws: image-classifications, project: indian-groceries-yn9sz}
+  - {ws: harsh-parmar-d95in, project: 500-grocery}
+  - {ws: w-esczz, project: productclassification-r7lnq}
+  - {ws: pooja-d76hd, project: autobilling-cbubv}
+  - {ws: bits-pilani-hyderabad, project: storeitems2}
+  - {ws: achyut-i6k4x, project: my-first-project-bjtps}
+  - {ws: shivam-qgtej, project: self-checkout-project}
+  - {ws: mathi-sivakumar, project: vending-machine-snacks}
+  - {ws: dmart, project: my-first-project-h4f0d}
+  - {ws: working-cih6k, project: count-cltyz}
+  # --- chocolates (brand labels)
+  - {ws: aabhas-ynnuw, project: my-first-project-ptz6r}
+  - {ws: choki, project: kitkat-z4cop}
+  - {ws: groceries-dwrer, project: pepsi-byted}
+  - {ws: groceries-dwrer, project: redbull-gpedf}
+  - {ws: groceries-dwrer, project: 404-brainnotfound}
+  - {ws: gold-ngh4t, project: chocolate-tcmzq}
+  - {ws: gold-ngh4t, project: things-o3nhx}
+  - {ws: shubh-gupta-hblbv, project: chocolate_detection-orzf6}
+  - {ws: vidhi-neen8, project: chocolate-images}
+  - {ws: fieldlytics-sn6h2, project: 15072022_cho_n}
+  - {ws: g-deepika-mzdv0, project: smartbin-sfl9t}
+  - {ws: tanvi-eq5dk, project: prototype-r7fid}
+  - {ws: object-detection-5wyhv, project: grocery-detection-mj42b}
+  - {ws: object-detection-5mlem, project: object-detection-food-ufxpq}
+  - {ws: ojas-verma-26bqc1087, project: supermarket-trolley-items}
+  - {ws: shahmir-29gms, project: chocolate-m9ien}
+  - {ws: doga-and-cat, project: countfav}
+  - {ws: tanmoy-kalita, project: cart-product-detection}
+  - {ws: visiofy, project: vendingmachineproject1, max_images: 2000}
+  # --- run 3: more chocolate / candy / checkout projects (brand crops; licence still checked at download)
+  - {ws: digga_88-freenet-de, project: sweets, max_images: 2000}
+  - {ws: ai-project-ioqnt, project: choclate}
+  - {ws: plan-awgir, project: kitkat-qlhvk}
+  - {ws: learning-0qlfz, project: grocery_project2-gzphf}
+  - {ws: images-hcaaz, project: testing-okfuy}
+  - {ws: dicksons-workspace, project: fyp-0wizt, max_images: 3000}
+  - {ws: nikk-rzczl, project: product_dataset-644tu}
+  - {ws: candy-kre6n, project: candy-detection-fixiw}
+  - {ws: proyectod, project: final_pm}
+  - {ws: hibas-workspace-mt36e, project: kitkat-gwsqm}
+  - {ws: dat-zqh0p, project: kitkat2-7cafh}
+  - {ws: cemartyna, project: candy-bar-detection-system}
+  - {ws: aikassa, project: ai-kassa-1}
+  - {ws: fyp-0fbzo, project: smart-cashierless-checkout-system, max_images: 2000}
+  - {ws: sean-mme4p, project: grocery-detection-final}
+  - {ws: candyimages, project: carriercandy}
+  - {ws: jugal-gajjar, project: ezycart-vy7p0}
+  - {ws: toffee-7gwwr, project: chocolate-btzmq}
+  - {ws: fleming, project: shop-qcwko}
+  - {ws: kamya-ilsrh, project: 5star-wrapper-detection}
+  - {ws: object-tracking-l2dvc, project: objectss-e4s2d}
+  - {ws: hemant-kumar-rathore, project: product-recoginition}
+  - {ws: checkout-dqdni, project: label-fql3c}
+  - {ws: th-koeln-wzxph, project: chocolate-bar-project}
+  - {ws: sukru-can-ercoban, project: chocolate-cavks}
+  - {ws: harishs, project: chocolate-btjxh}
+  - {ws: kkkkkkk, project: chocolate-rjumk}
+  - {ws: chocolate-pipez, project: chocolate-detection-ut3lm}
+  - {ws: workspace-rboym, project: chocolate-bars}
+  - {ws: rohini-1cnby, project: chocolate-8ylw4}
+  - {ws: chocolate-detection, project: chocolate-detection-41qji}
+  - {ws: ws-6hw0o, project: productdetection-h1vhz}
+  - {ws: parthasarathi-irjmn, project: obj-detect-1-rxnlg}
+  - {ws: flipkart-grid-wfxdd, project: brand-recignization-and-counting}
+  - {ws: recsys, project: boycott-3}
+  - {ws: recsys, project: boycott-2}
+  - {ws: recsys, project: boycott-uiqly}
+  - {ws: jiawei-liao-o0ld6, project: iipv1}
+  - {ws: anas-bmt8z, project: supermarket-pdvkd}
+  - {ws: image-recognition-3megb, project: image_recognition-ksyzx}

@@ -1,6 +1,6 @@
 import pytest
 
-from pvs.training.brand_map import BRANDS, brand_for
+from pvs.training.brand_map import BRANDS, ambiguous, brand_for
 
 
 @pytest.mark.parametrize("name,brand", [
@@ -35,3 +35,25 @@ def test_brand_mapping(name, brand):
 ])
 def test_not_a_chocolate_brand(name):
     assert brand_for(name) is None
+
+
+@pytest.mark.parametrize("name,brand", [
+    ("CDM medium", "cadbury:dairy-milk"), ("snikers", "mars:snickers"), ("HARSYS", "hersheys:chocolate"),
+    ("kisses", "hersheys:chocolate"), ("mars_chocolate", "mars:mars"), ("star 3d", "cadbury:5-star"),
+    ("star oreo", "cadbury:5-star"), ("snickers_chocolate", "mars:snickers"), ("kitkat_chocolate", "nestle:kitkat"),
+])
+def test_new_spellings(name, brand):
+    assert brand_for(name) == brand
+
+
+@pytest.mark.parametrize("name", ["cadbury", "cadbury_chocolate", "CATBORY", "Cadbury Chocolate Berry", "chocolate",
+                                  "Chocolates", "candy", "131_chocolate", "nestle", "chocolate-bar"])
+def test_ambiguous_names_are_not_negatives(name):
+    assert brand_for(name) is None
+    assert ambiguous(name)
+
+
+@pytest.mark.parametrize("name", ["Oreo", "Choco Pie", "Amul Chocolate Ice Cream 750 ML", "Lays Chips", "Dettol Soap",
+                                  "Bournvita", "Milky Way", "Cadbury Chocobakes", "DairyMilk", "5Star"])
+def test_clear_names_are_not_ambiguous(name):
+    assert not ambiguous(name)

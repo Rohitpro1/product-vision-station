@@ -25,7 +25,7 @@ from pathlib import Path
 import cv2
 import yaml
 
-from .brand_map import brand_for
+from .brand_map import ambiguous, brand_for
 from .progress import Progress, stage_name
 
 
@@ -111,7 +111,8 @@ def prepare(exports_root: Path, list_path: Path, out: Path, ham: int = 6, seed: 
                 if w < 4 or h < 4:
                     continue
                 name = cats[a["category_id"]]
-                by_img[a["image_id"]].append({"box": [x, y, x + w, y + h], "class": name, "brand": brand_for(name)})
+                by_img[a["image_id"]].append({"box": [x, y, x + w, y + h], "class": name, "brand": brand_for(name),
+                                              "ambiguous": ambiguous(name)})
             for im in coco["images"]:
                 p = ex / split / im["file_name"]
                 if p.exists() and by_img.get(im["id"]):  # images with no boxes say nothing about products
@@ -197,6 +198,7 @@ def prepare(exports_root: Path, list_path: Path, out: Path, ham: int = 6, seed: 
                               for b in sorted({x["brand"] for i in items for x in i["boxes"] if x["brand"]})},
         "unmapped_chocolate_like": sorted({x["class"] for i in items for x in i["boxes"] if not x["brand"]
                                            and re.search(r"choc|cadbury|nestle|candy|bar\b", x["class"], re.I)}),
+        "ambiguous_class_names": sorted({x["class"] for i in items for x in i["boxes"] if x.get("ambiguous")}),
         "licences": dict(Counter(i["licence"] for i in items)),
         "images_by_project": dict(Counter(i["export"] for i in items)),
     }

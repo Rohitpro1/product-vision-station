@@ -39,6 +39,8 @@ def _crops(data: Path, items: list[dict], split: str, max_other_per_class: int, 
             break
         img = None
         for b in it["boxes"]:
+            if b.get("ambiguous"):  # could be a brand: neither a positive nor a safe negative
+                continue
             lab = b["brand"] or f"other:{b['class']}"
             if not b["brand"] and per[lab] >= max_other_per_class:
                 continue

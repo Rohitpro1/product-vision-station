@@ -21,7 +21,10 @@ from .progress import IST, fmt_dur
 ARTIFACTS = ["retail-v2-artifacts.tgz", "data_stats.json", "download_report.json", "bundle_sha256.txt",
              "detector/detector_report.json", "detector/train_report.json", "detector/rtdetr_r18_package.json",
              "brands/brands_report.json", "brands/e2e_report.json", "brands/thresholds_brands.yaml",
-             "brands/catalogue_brands.json"]
+             "brands/catalogue_brands.json",
+             # run 3 (brands3)
+             "brands-v3-artifacts.tgz", "off_scan_stats.json", "off_download_stats.json", "crop_stats.json",
+             "ft/train_report.json", "external_v2.json", "external_v3.json", "decision.json"]
 
 
 def _api():
@@ -154,6 +157,22 @@ def _summary(out: Path) -> list[str]:
         for k, v in t["per_brand"].items():
             r, p = v["recall"], v["precision"]
             s.append(f"  - {b['display_names'][k]}: recall {r['k']}/{r['n']}, precision {p['k']}/{p['n']}")
+    if b and b.get("v2_live_on_same_test"):
+        v2 = b["v2_live_on_same_test"]["test"]["all"]
+        s.append(f"- **Model chosen on validation:** {b['chosen_model']}; live v2 on the same test crops: correct "
+                 f"{v2['correct_brand']['k']}/{v2['correct_brand']['n']}, wrong {v2['wrong_brand']['k']}")
+        for src, m in t.get("by_source", {}).items():
+            s.append(f"  - {src}: correct {m['correct_brand']['k']}/{m['correct_brand']['n']}, wrong "
+                     f"{m['wrong_brand']['k']}, other products called a brand "
+                     f"{m['other_products_called_a_brand']['k']}/{m['other_products_called_a_brand']['n']}")
+    for name in ("external_v2.json", "external_v3.json"):
+        x = j(name)
+        if x:
+            s.append(f"- **External photos ({name[9:11]}):** named correctly {x['named_correctly']}/"
+                     f"{x['with_true_brand']}, photos with a wrong name {x['photos_with_a_wrong_name']}")
+    dec = j("decision.json")
+    if dec:
+        s.append(f"- **Deploy decision:** {dec['verdict']} ({dec['reason']})")
     e = j("brands/e2e_report.json")
     if e:
         s.append(f"- **End to end ({e['images']} test photos, full pipeline):** detection recall "
