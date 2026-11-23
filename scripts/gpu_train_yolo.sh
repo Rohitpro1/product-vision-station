@@ -95,6 +95,31 @@ ev setup start
 "${CLEAN[@]}" "$VENV_E/bin/python" -s -c "import onnxruntime as o;o.preload_dlls() if hasattr(o,'preload_dlls') else None;print('onnxruntime',o.__version__,o.get_available_providers())"
 "${PY[@]}" scripts/fetch_models.py --only sam2 rtdetr_r18 dinov2
 "${PY[@]}" -m pvs.training.brands3 fetch-live --out "$WORK/live"
+DEV=$(seq -s, 0 $((NGPU - 1)))
+# GPU preflight (~3 min): everything the smoke check would only reach after the downloads
+mkdir -p "$WORK/pre"
+(cd "$WORK/pre" && yst preflight -c "
+from ultralytics import YOLO
+m = YOLO('yolo26n-seg.pt')
+m.train(data='coco8-seg.yaml', epochs=1, imgsz=320, batch=8, device='$DEV', workers=2, project='$WORK/pre',
+        name='t', exist_ok=True, plots=False, verbose=False)
+p = YOLO('$WORK/pre/t/weights/best.pt').export(format='onnx', imgsz=320, end2end=True, half=True, device=0)
+print('PREFLIGHT_ONNX', p)" 2>&1 | filt | grep -E "PREFLIGHT|Error|error" || true)
+PRE_ONNX=$(ls "$WORK"/pre/t/weights/best.onnx 2>/dev/null || true)
+[ -n "$PRE_ONNX" ] || { echo "preflight: Ultralytics train/export failed"; exit 7; }
+est preflight -c "
+import numpy as np
+from pvs.edge.seg import YoloSeg
+s = YoloSeg('$PRE_ONNX', device='cuda'); s(np.zeros((480, 640, 3), np.uint8))
+assert s.provider.startswith('CUDA'), s.provider
+print('PREFLIGHT edge runtime on', s.provider, 'fp16', s.fp16)"
+pyst preflight -c "
+import json, numpy as np
+from pvs.detectors.hf_models import Sam2MaskProvider
+m = json.load(open('models/manifest.json'))['models']['sam2']
+r = Sam2MaskProvider(m['repo'], m['revision'], device='cuda').masks(np.full((240, 320, 3), 200, np.uint8), [[40, 40, 200, 160]])
+print('PREFLIGHT sam2 on cuda ok', len(r))"
+echo "=== GPU preflight passed"
 "${PY[@]}" -m pvs.training.hub init --repo "$HF_REPO"
 "${PY[@]}" -m pvs.training.hub watch --repo "$HF_REPO" --status-dir "$STATUS" --every "$PUSH_EVERY_S" &
 WATCH_PID=$!
@@ -133,7 +158,6 @@ pyst masks -m pvs.training.yolo finalize --out "$D" | sed -n 1,60p
 cp "$D/dataset_report.json" "$OUT/yolo/"
 ev masks done
 
-DEV=$(seq -s, 0 $((NGPU - 1)))
 # chain <prefix> <outdir> <epochs> <imgsz> <hours or 0> <eval limit> <extra train args...>
 chain() {
   local P=$1 O=$2 EP=$3 SZ=$4 H=$5 LIM=$6; shift 6
