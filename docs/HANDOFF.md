@@ -638,8 +638,7 @@ once as a test input and never stored in the project.
   download, SHA-256 checks and a new pipeline, and requests switch over only when it is ready. A failed release is
   logged, skipped, and its partial folder removed; the current one keeps serving.
 - **No Space edits needed to change the model.** Files were last committed to the Space on 22 Nov through Rohit's signed-in browser
-  (repo `adb4daf`: `app.py`, `requirements.txt`). The Space's own README card on Hugging Face still shows the
-  run 1 numbers; the updated text is in `deploy/hf-space/README.md`.
+  (repo `adb4daf`: `app.py`, `requirements.txt`), and the README card on 23 Nov from `deploy/hf-space/README.md`.
 - Hugging Face's front proxy echoes any `Origin` in CORS headers (D27).
 
 ### Deploying or rolling back a model (`release.json`)
@@ -836,8 +835,8 @@ names on the site; DECISIONS, README, evidence and VERIFICATION updated.
 1. **Brand naming on real photos:** close-up web photos came back "unknown" (0 of 9). Adding a few hundred
    close-up/front-of-pack references per brand to the gallery is cheap (no retraining). Validate on held-out photos
    before publishing a new `release.json`.
-2. **The Space's README card** on Hugging Face still shows the run 1 numbers. Paste `deploy/hf-space/README.md`
-   into it, or leave it as is.
+2. **Space README card:** done. (The Space's README card was updated on 23 Nov 07:20 IST
+   from `deploy/hf-space/README.md`; the Space restarted and came back on release v2 from `release.json`.)
 
 **Data and validation:**
 
@@ -850,7 +849,8 @@ names on the site; DECISIONS, README, evidence and VERIFICATION updated.
 
 **Housekeeping:**
 
-6. **Delete the CyFuture VMs** `pvstrain5star` and `pvstrain` if they still exist.
+6. **Delete the CyFuture VMs** `pvstrain5star` and `pvstrain` if they still exist. Needs Rohit's sign-in on
+   cyfuture.ai; not checked (logged out on 23 Nov).
 7. **Scheduled tasks:** two one-off check-ins for 23 Nov 03:40 IST (`trig_01EPMXx41229jCzJJzunAUKK`,
    `trig_016yCxVkKSEFHgriLk1Uv1gG`) have fired and need no action.
 
