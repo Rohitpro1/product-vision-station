@@ -14,7 +14,7 @@
 # Optional: EPOCHS (80), IMGSZ (640), BATCH (64 over both GPUs), SKIP_SMOKE=1, HF_REPO (pack-station-training),
 #           TIME_LIMIT_H (12), PUSH_EVERY_S (240), MAX_PLAIN (15000), OFF_MAX_PER_BRAND (1500), OFF_MAX_NEG (7000)
 set -euo pipefail
-START_TS=$(date +%s)
+START_TS=${SESSION_START:-$(date +%s)}   # scripts/kaggle_autorun.py passes the session start on a retry
 REPO=${REPO:-$HOME/product-vision-station}
 WORK=${WORK:-/tmp/pvs-yolo}
 OUT=${OUT:-$HOME/pvs-yolo-out}
@@ -29,6 +29,9 @@ MAX_PLAIN=${MAX_PLAIN:-15000}
 OFF_MAX_PER_BRAND=${OFF_MAX_PER_BRAND:-1500}
 OFF_MAX_NEG=${OFF_MAX_NEG:-7000}
 LIST=configs/brand_datasets.yaml
+# resume: a stage that finished in an earlier attempt of this Kaggle session (same $WORK) is skipped
+is_done() { [ -f "$WORK/.done-$1" ]; }
+mark_done() { touch "$WORK/.done-$1"; }
 [ -n "${ROBOFLOW_API_KEY:-}" ] || { echo "ROBOFLOW_API_KEY is not set"; exit 2; }
 mkdir -p "$OUT/logs" "$OUT/status" "$OUT/yolo" "$WORK"
 LOG="$OUT/logs/run.log"
@@ -75,7 +78,7 @@ on_exit() {
 trap on_exit EXIT
 
 uvi() { local v=$1; shift; "${CLEAN[@]}" uv pip install -q --python "$v/bin/python" "$@"; }
-for v in "$VENV" "$VENV_Y" "$VENV_E" "$VENV_RF"; do "${CLEAN[@]}" uv venv -q --python 3.13 --seed "$v"; done
+for v in "$VENV" "$VENV_Y" "$VENV_E" "$VENV_RF"; do [ -x "$v/bin/python" ] || "${CLEAN[@]}" uv venv -q --python 3.13 --seed "$v"; done
 uvi "$VENV" --index-url https://download.pytorch.org/whl/cu124 torch==2.6.0 torchvision==0.21.0
 grep -vE '^(torch|torchvision|sympy)==' requirements/models.lock > /tmp/models-nottorch.lock
 grep -vE '^sympy==' requirements/runtime.lock > /tmp/runtime-nosympy.lock
@@ -88,15 +91,16 @@ uvi "$VENV_E" -r requirements/edge.txt "onnxruntime-gpu[cuda,cudnn]" scipy
 uvi "$VENV_E" --no-deps -e .
 uvi "$VENV_RF" roboflow==1.7.3
 uvi "$VENV_RF" --no-deps -e .
-rm -f "$STATUS/.stop" "$STATUS/status.json"
+rm -f "$STATUS/.stop"; is_done setup-status || { rm -f "$STATUS/status.json"; mark_done setup-status; }
 ev setup start
 "${PY[@]}" -c "import torch,sys;print('python',sys.version.split()[0],'torch',torch.__version__);assert torch.cuda.is_available()"
 "${CLEAN[@]}" "$VENV_Y/bin/python" -s -c "import ultralytics;print('ultralytics',ultralytics.__version__)"
 "${CLEAN[@]}" "$VENV_E/bin/python" -s -c "import onnxruntime as o;o.preload_dlls() if hasattr(o,'preload_dlls') else None;print('onnxruntime',o.__version__,o.get_available_providers())"
 "${PY[@]}" scripts/fetch_models.py --only sam2 rtdetr_r18 dinov2
-"${PY[@]}" -m pvs.training.brands3 fetch-live --out "$WORK/live"
+[ -f "$WORK/live/release.json" ] || "${PY[@]}" -m pvs.training.brands3 fetch-live --out "$WORK/live"
 DEV=$(seq -s, 0 $((NGPU - 1)))
 # GPU preflight (~3 min): everything the smoke check would only reach after the downloads
+if ! is_done preflight; then
 mkdir -p "$WORK/pre"
 (cd "$WORK/pre" && yst preflight -c "
 from ultralytics import YOLO
@@ -120,12 +124,16 @@ m = json.load(open('models/manifest.json'))['models']['sam2']
 r = Sam2MaskProvider(m['repo'], m['revision'], device='cuda').masks(np.full((240, 320, 3), 200, np.uint8), [[40, 40, 200, 160]])
 print('PREFLIGHT sam2 on cuda ok', len(r))"
 echo "=== GPU preflight passed"
+mark_done preflight
+fi
 "${PY[@]}" -m pvs.training.hub init --repo "$HF_REPO"
 "${PY[@]}" -m pvs.training.hub watch --repo "$HF_REPO" --status-dir "$STATUS" --every "$PUSH_EVERY_S" &
 WATCH_PID=$!
 ev setup done
 
-STAGE=download; ev download start
+STAGE=download
+if is_done download; then echo "=== download: done in an earlier attempt, skipped"; else
+ev download start
 (
   "${PY[@]}" -c "from huggingface_hub import hf_hub_download as d; print(d('openfoodfacts/product-database', 'food.parquet', repo_type='dataset', local_dir='$WORK/off'))"
   pyst off -m pvs.training.off scan --parquet "$WORK/off/food.parquet" --out "$WORK/off/products.json" > "$WORK/off/scan.log" 2>&1
@@ -139,15 +147,22 @@ tail -30 "$WORK/off/scan.log"; cp "$WORK/off/scan.log" "$OUT/logs/off_scan.log"
 pyst off -m pvs.training.off download --products "$WORK/off/products.json" --exports "$WORK/rf" \
     --max-per-brand "$OFF_MAX_PER_BRAND" --max-neg "$OFF_MAX_NEG" --workers 12
 cp "$WORK/rf/off_download_stats.json" "$WORK/rf/download_report.json" "$OUT/"
-ev download done
+ev download done; mark_done download
+fi
 
-STAGE=prepare; ev prepare start
+STAGE=prepare
+if is_done prepare; then echo "=== prepare: done in an earlier attempt, skipped"; else
+ev prepare start
 pyst prepare -m pvs.training.retail prepare --exports "$WORK/rf" --list "$LIST" --out "$WORK/data"
 cp "$WORK/data/stats.json" "$OUT/data_stats.json"
-ev prepare done
+ev prepare done; mark_done prepare
+fi
 
-STAGE=masks; ev masks start
-D="$WORK/yolo-data"; rm -rf "$D"
+STAGE=masks
+D="$WORK/yolo-data"
+if is_done masks; then echo "=== masks: done in an earlier attempt, skipped"; else
+ev masks start
+rm -rf "$D"
 MASK_PIDS=()
 for g in $(seq 0 $((NGPU - 1))); do
   "${CLEAN[@]}" CUDA_VISIBLE_DEVICES="$g" PVS_STAGE=masks "$VENV/bin/python" -s -m pvs.training.yolo dataset \
@@ -161,26 +176,38 @@ for p in "${MASK_PIDS[@]}"; do
 done
 pyst masks -m pvs.training.yolo finalize --out "$D" | sed -n 1,60p
 cp "$D/dataset_report.json" "$OUT/yolo/"
-ev masks done
+ev masks done; mark_done masks
+fi
 
 # chain <prefix> <outdir> <epochs> <imgsz> <hours or 0> <eval limit> <extra train args...>
 chain() {
   local P=$1 O=$2 EP=$3 SZ=$4 H=$5 LIM=$6; shift 6
   mkdir -p "$O"
-  STAGE=${P}train; ev "$STAGE" start
+  STAGE=${P}train
+  local K=${P:-full}; K=${K%:}
+  if is_done "$K-train"; then echo "=== $K train: done in an earlier attempt, skipped"; else
+  ev "$STAGE" start
   local TH=(); [ "$H" != "0" ] && TH=(--time-h "$H")
+  local MODEL=(); if [ -f "$O/run/train/weights/last.pt" ]; then   # an attempt died mid-training: continue from it
+    cp "$O/run/train/weights/last.pt" "$WORK/resume-$K.pt"; MODEL=(--model "$WORK/resume-$K.pt")
+    echo "=== $K train: continuing from the last checkpoint of the earlier attempt"; fi
   (cd "$WORK" && yst "${P}train" -m pvs.training.yolo train --yaml "$D/data.yaml" --out "$O/run" --epochs "$EP" \
-      --imgsz "$SZ" --batch "$BATCH" --device "$DEV" --workers 4 "${TH[@]}" "$@" 2>&1 | filt)
+      --imgsz "$SZ" --batch "$BATCH" --device "$DEV" --workers 4 "${TH[@]}" "${MODEL[@]}" "$@" 2>&1 | filt)
   [ -f "$O/run/train/weights/best.pt" ] || { echo "training produced no weights"; exit 4; }
   cp "$O/run/train_report.json" "$O/run/train/results.csv" "$O/" 2>/dev/null || true
-  ev "$STAGE" done
-  STAGE=${P}export; ev "$STAGE" start
+  ev "$STAGE" done; mark_done "$K-train"
+  fi
+  STAGE=${P}export
+  if is_done "$K-export"; then echo "=== $K export: done in an earlier attempt, skipped"; else
+  ev "$STAGE" start
   local B="$O/bundle"; rm -rf "$B"
   (cd "$WORK" && yst "${P}export" -m pvs.training.yolo export --weights "$O/run/train/weights/best.pt" --out "$B" \
       --imgsz 640 480 --default-size 480 --fp16 --device 0 2>&1 | filt | tail -5)
   [ -f "$B/edge.json" ] || { echo "export produced no bundle"; exit 8; }
   if [ -z "$P" ]; then rm -rf "$OUT/bundle"; cp -r "$B" "$OUT/bundle"; fi   # uploaded even if a check below fails
-  ev "$STAGE" done
+  ev "$STAGE" done; mark_done "$K-export"
+  fi
+  local B="$O/bundle"
   STAGE=${P}test; ev "$STAGE" start
   (cd "$WORK" && yst "${P}test" -m pvs.training.yolo val --weights "$O/run/train/weights/best.pt" --yaml "$D/data.yaml" \
       --out "$O/yolo_val_test.json" --imgsz "$SZ" --device 0 2>&1 | filt | tail -20) || echo "test mAP failed (not fatal)"
@@ -198,8 +225,9 @@ chain() {
   ev "$STAGE" done
 }
 
-if [ "$SKIP_SMOKE" != "1" ]; then
+if [ "$SKIP_SMOKE" != "1" ] && ! is_done smoke; then
   chain "smoke:" "$WORK/smoke-out" 1 320 0 40 --fraction 0.03
+  mark_done smoke
   echo "=== smoke check passed: the whole chain works; starting the full run"
 fi
 # time-box training: leave ~75 min for export, tests, benchmarks, the v2 comparison and upload
