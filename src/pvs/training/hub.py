@@ -28,7 +28,8 @@ ARTIFACTS = ["retail-v2-artifacts.tgz", "data_stats.json", "download_report.json
              # laptop model (YOLO26-seg + OCR)
              "yolo-edge-artifacts.tgz", "edge_bundle.tgz", "yolo/dataset_report.json", "yolo/train_report.json",
              "yolo/results.csv", "yolo/yolo_val_test.json", "yolo/yolo_report.json", "yolo/bench_t4_gpu.json",
-             "yolo/bench_cpu_4gb.json", "e2e_v2/e2e_report.json"]
+             "yolo/bench_cpu_4gb.json", "e2e_v2/e2e_report.json", "logs/masks_0.log", "logs/masks_1.log",
+             "logs/off_scan.log"]
 
 
 def _api():
@@ -222,15 +223,19 @@ def final(repo: str, status_dir: Path, out: Path, log: Path | None) -> int:
             files[f"results/{rel}"] = p.read_bytes()
     listing = [f"- `results/{k[len('results/'):]}`" for k in files] or ["- (none)"]
     bundle = out / "bundle"
+    edge = (bundle / "edge.json").exists()
     if bundle.exists():
-        listing.append("- `bundle/`: models + config for the hosted API (load with `configs/station.hosted.yaml`)")
+        listing.append("- `bundle/`: laptop station (YOLO26-seg + OCR); see docs/EDGE.md" if edge else
+                       "- `bundle/`: models + config for the hosted API (load with `configs/station.hosted.yaml`)")
     try:
         _push(api, repo, {"README.md": render(st, {"summary": _summary(out), "files": listing}),
                           "status.json": json.dumps(st, indent=1), **files},
               f"run {st.get('final', 'finished')}: reports")
         if bundle.exists():
+            # a laptop bundle replaces the folder (older revisions, incl. the pinned v2 release, stay intact)
             api.upload_folder(repo_id=repo, folder_path=str(bundle), path_in_repo="bundle",
-                              commit_message="bundle: models + hosted config")
+                              delete_patterns=["*"] if edge else None,
+                              commit_message="bundle: laptop station" if edge else "bundle: models + hosted config")
         print(f"[hub] uploaded results to https://huggingface.co/{repo}", flush=True)
     except Exception as e:  # noqa: BLE001
         print(f"[hub] final upload failed: {type(e).__name__}: {e} (files remain in the run output)", flush=True)

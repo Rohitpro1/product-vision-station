@@ -133,7 +133,7 @@ STAGE=download; ev download start
 ) &
 OFF_PID=$!
 "${CLEAN[@]}" PVS_STAGE=download "$VENV_RF/bin/python" -s -m pvs.training.retail download --list "$LIST" --out "$WORK/rf"
-wait "$OFF_PID" || { echo "Open Food Facts scan failed:"; tail -30 "$WORK/off/scan.log"; exit 5; }
+wait "$OFF_PID" || { echo "Open Food Facts scan failed:"; tail -n 30 "$WORK/off/scan.log" || true; exit 5; }
 tail -30 "$WORK/off/scan.log"; cp "$WORK/off/scan.log" "$OUT/logs/off_scan.log"
 "${PY[@]}" -c "import json;d=json.load(open('$WORK/off/products.json'));json.dump(d['stats'],open('$OUT/off_scan_stats.json','w'),indent=1)"
 pyst off -m pvs.training.off download --products "$WORK/off/products.json" --exports "$WORK/rf" \
@@ -157,7 +157,7 @@ for g in $(seq 0 $((NGPU - 1))); do
 done
 # wait for the mask shards only: a bare `wait` would also wait for the never-ending status uploader
 for p in "${MASK_PIDS[@]}"; do
-  wait "$p" || { echo "mask generation failed:"; tail -20 "$OUT"/logs/masks_*.log; exit 6; }
+  wait "$p" || { echo "mask generation failed:"; tail -n 25 "$OUT"/logs/masks_*.log || true; exit 6; }
 done
 pyst masks -m pvs.training.yolo finalize --out "$D" | sed -n 1,60p
 cp "$D/dataset_report.json" "$OUT/yolo/"
@@ -178,20 +178,23 @@ chain() {
   local B="$O/bundle"; rm -rf "$B"
   (cd "$WORK" && yst "${P}export" -m pvs.training.yolo export --weights "$O/run/train/weights/best.pt" --out "$B" \
       --imgsz 640 480 --default-size 480 --fp16 --device 0 2>&1 | filt | tail -5)
+  [ -f "$B/edge.json" ] || { echo "export produced no bundle"; exit 8; }
+  if [ -z "$P" ]; then rm -rf "$OUT/bundle"; cp -r "$B" "$OUT/bundle"; fi   # uploaded even if a check below fails
   ev "$STAGE" done
   STAGE=${P}test; ev "$STAGE" start
   (cd "$WORK" && yst "${P}test" -m pvs.training.yolo val --weights "$O/run/train/weights/best.pt" --yaml "$D/data.yaml" \
-      --out "$O/yolo_val_test.json" --imgsz "$SZ" --device 0 2>&1 | filt | tail -20)
+      --out "$O/yolo_val_test.json" --imgsz "$SZ" --device 0 2>&1 | filt | tail -20) || echo "test mAP failed (not fatal)"
   est "${P}test" -m pvs.training.yolo evaluate --data "$D" --bundle "$B" --out "$O/yolo_report.json" --device cuda \
-      --limit "$LIM" --ocr-sample $([ "$P" = "smoke:" ] && echo 20 || echo 400) 2>&1 | filt | tail -40
+      --limit "$LIM" --ocr-sample $([ "$P" = "smoke:" ] && echo 20 || echo 400) 2>&1 | filt | tail -40 \
+      || { echo "evaluation failed"; [ -z "$P" ] || exit 9; }
   ev "$STAGE" done
   STAGE=${P}bench; ev "$STAGE" start
   ls "$D/images/test" | sed -n "1,$([ "$P" = "smoke:" ] && echo 20 || echo 200)p" | sed "s#^#$D/images/test/#" > "$WORK/bench_list.txt"
   rm -rf "$WORK/bench_imgs"; mkdir -p "$WORK/bench_imgs"; xargs -a "$WORK/bench_list.txt" cp -L -t "$WORK/bench_imgs"
   est "${P}bench" -m pvs.edge.station bench --bundle "$B" --images "$WORK/bench_imgs" --device cuda \
-      --out "$O/bench_t4_gpu.json" 2>&1 | filt | tail -25
+      --out "$O/bench_t4_gpu.json" 2>&1 | filt | tail -25 || echo "GPU bench failed (not fatal)"
   est "${P}bench" -m pvs.edge.station bench --bundle "$B" --images "$WORK/bench_imgs" --device cpu --threads 4 \
-      --mem-limit-gb 4 --out "$O/bench_cpu_4gb.json" 2>&1 | filt | tail -25
+      --mem-limit-gb 4 --out "$O/bench_cpu_4gb.json" 2>&1 | filt | tail -25 || echo "CPU bench failed (not fatal)"
   ev "$STAGE" done
 }
 
@@ -203,7 +206,7 @@ fi
 LEFT_H=$("${PY[@]}" -c "import time;print(round(max(0.5, ($START_TS + $TIME_LIMIT_H*3600 - time.time())/3600 - 1.25), 2))")
 echo "training budget: $LEFT_H h"
 chain "" "$OUT/yolo" "$EPOCHS" "$IMGSZ" "$LEFT_H" 3000
-rm -rf "$OUT/bundle"; cp -r "$OUT/yolo/bundle" "$OUT/bundle"
+cp "$OUT/yolo/bundle/edge.json" "$OUT/bundle/edge.json"   # brand_conf chosen on validation by evaluate
 (cd "$OUT/bundle" && find . -type f | sort | xargs sha256sum) > "$OUT/bundle_sha256.txt"
 
 STAGE=compare; ev compare start   # what the live site (release v2) does on the same test split, end to end

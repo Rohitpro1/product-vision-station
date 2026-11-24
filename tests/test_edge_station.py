@@ -45,3 +45,20 @@ def test_brand_metrics_threshold():
     hi = _brand_metrics(rows, 0.5)
     assert (lo["correct_brand"]["k"], lo["wrong_brand"]["k"], lo["other_packs_called_a_brand"]["k"]) == (1, 1, 1)
     assert (hi["correct_brand"]["k"], hi["wrong_brand"]["k"], hi["other_packs_called_a_brand"]["k"]) == (1, 0, 0)
+
+
+def test_shared_photo_entries_are_merged():
+    from pvs.training.yolo import _merge_shared_images, _shard_of
+
+    a = {"image": "images/x.jpg", "export": "p1", "split": "train",
+         "boxes": [{"box": [0, 0, 10, 10], "brand": None, "class": "product"}]}
+    b = {"image": "images/x.jpg", "export": "p2", "split": "train",
+         "boxes": [{"box": [0, 0, 10, 11], "brand": "nestle:kitkat", "class": "kitkat"},
+                   {"box": [50, 50, 60, 60], "brand": None, "class": "product"}]}
+    c = {"image": "images/y.jpg", "export": "p1", "split": "val", "boxes": []}
+    out = _merge_shared_images([a, b, c])
+    assert [o["image"] for o in out] == ["images/x.jpg", "images/y.jpg"]
+    x = out[0]["boxes"]
+    assert len(x) == 2 and x[0]["brand"] == "nestle:kitkat"  # same pack: the brand label wins
+    assert a["boxes"][0]["brand"] is None  # inputs untouched
+    assert _shard_of("images/x.jpg", 2) == _shard_of("images/x.jpg", 2)

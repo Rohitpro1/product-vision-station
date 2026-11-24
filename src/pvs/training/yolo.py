@@ -58,6 +58,33 @@ def _select(items, max_plain: int, rng: random.Random):
     return sorted(keep, key=lambda it: it["image"])
 
 
+def _merge_shared_images(items):
+    """Prepare names image files by content hash, so one photo published in two projects is ONE file used by two
+    manifest entries. Merge them: one entry per file, boxes combined; where both projects labelled the same pack
+    (IoU > 0.7) keep one box, preferring a clear brand label over a generic or ambiguous one."""
+    from ..edge.station import _iou
+
+    by = {}
+    for it in items:
+        key = it["image"]
+        if key not in by:
+            by[key] = {**it, "boxes": list(it["boxes"])}
+            continue
+        cur = by[key]
+        for b in it["boxes"]:
+            hit = next((k for k, c in enumerate(cur["boxes"]) if _iou(c["box"], b["box"]) > 0.7), None)
+            if hit is None:
+                cur["boxes"].append(b)
+            elif b["brand"] and not b.get("ambiguous") and not (cur["boxes"][hit]["brand"]
+                                                               and not cur["boxes"][hit].get("ambiguous")):
+                cur["boxes"][hit] = b
+    return list(by.values())
+
+
+def _shard_of(image: str, shards: int) -> int:
+    return int(hashlib.sha256(image.encode()).hexdigest()[:8], 16) % shards
+
+
 def _polygon(mask: np.ndarray | None, box, W, H):
     """Mask -> polygon in pixels; falls back to the box rectangle when the mask does not fit the box."""
     x1, y1, x2, y2 = box
@@ -86,13 +113,13 @@ def _polygon(mask: np.ndarray | None, box, W, H):
 
 def dataset(a) -> dict:
     data, out = Path(a.data), Path(a.out)
-    items = json.loads((data / "manifest.json").read_text())["items"]
+    items = _merge_shared_images(json.loads((data / "manifest.json").read_text())["items"])
     classes = _classes(items, a.min_boxes)
     cid = {c: i for i, c in enumerate(classes)}
     sel = _select(items, a.max_plain, random.Random(0))
     if a.max_images:
         sel = sel[:a.max_images]
-    mine = [it for k, it in enumerate(sel) if k % a.shards == a.shard]
+    mine = [it for it in sel if _shard_of(it["image"], a.shards) == a.shard]
     sam = None
     if not a.no_sam:
         from ..detectors.hf_models import Sam2MaskProvider
@@ -133,8 +160,10 @@ def dataset(a) -> dict:
         (out / "images" / sp).mkdir(parents=True, exist_ok=True)
         (out / "labels" / sp / f"{stem}.txt").write_text("\n".join(lines) + "\n")
         dst = out / "images" / sp / f"{stem}{Path(it['image']).suffix}"
-        if not dst.exists():
+        try:
             dst.symlink_to((data / it["image"]).resolve())
+        except FileExistsError:  # one file per image after merging; never fatal
+            pass
         stats["images"][sp] += 1
     s = {"classes": classes, "images": dict(stats["images"]),
          "boxes": {k: dict(v) for k, v in stats["boxes"].items()}, "mask_source": dict(stats["mask_source"])}
