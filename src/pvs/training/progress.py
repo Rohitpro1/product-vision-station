@@ -56,6 +56,13 @@ def write_status(st: dict) -> None:
     # several processes (one mask job per GPU) and threads write this file: a temp name of their own each, and a
     # failed status write is never allowed to stop the work it reports on
     try:
+        import shutil
+
+        st = dict(st)
+        st["disk_free_gb"] = round(shutil.disk_usage(os.environ.get("PVS_DISK_PATH", "/tmp")).free / 1e9, 1)
+    except OSError:
+        pass
+    try:
         p.parent.mkdir(parents=True, exist_ok=True)
         tmp = p.with_name(f".status.{os.getpid()}.{threading.get_ident()}.tmp")
         tmp.write_text(json.dumps(st, indent=1))

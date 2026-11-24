@@ -56,7 +56,7 @@ VENV="$REPO/.venv-gpu"; VENV_Y="$REPO/.venv-yolo"; VENV_E="$REPO/.venv-edge"; VE
 CLEAN=(env -i HOME="$HOME" LANG=C.UTF-8 TERM=dumb PYTHONNOUSERSITE=1 PYTHONUNBUFFERED=1
        PATH="$VENV/bin:$UV_BIN:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
        LD_LIBRARY_PATH="${LD_LIBRARY_PATH:-}" TMPDIR="${TMPDIR:-/tmp}" ROBOFLOW_API_KEY="$ROBOFLOW_API_KEY"
-       HF_TOKEN="${HF_TOKEN:-}" PVS_STATUS_DIR="$STATUS" YOLO_CONFIG_DIR="$WORK/ultralytics-cfg"
+       HF_TOKEN="${HF_TOKEN:-}" PVS_STATUS_DIR="$STATUS" PVS_DISK_PATH="$WORK" YOLO_CONFIG_DIR="$WORK/ultralytics-cfg"
        HF_HUB_DISABLE_PROGRESS_BARS=1 TOKENIZERS_PARALLELISM=false OMP_NUM_THREADS=4)
 PY=("${CLEAN[@]}" "$VENV/bin/python" -s)
 pyst() { local s=$1; shift; "${CLEAN[@]}" PVS_STAGE="$s" "$VENV/bin/python" -s "$@"; }
@@ -91,6 +91,8 @@ uvi "$VENV_E" -r requirements/edge.txt "onnxruntime-gpu[cuda,cudnn]" scipy
 uvi "$VENV_E" --no-deps -e .
 uvi "$VENV_RF" roboflow==1.7.3
 uvi "$VENV_RF" --no-deps -e .
+"${CLEAN[@]}" uv cache clean -q 2>/dev/null || true   # wheels are installed; the cache only takes disk
+df -h "$WORK" /kaggle/working 2>/dev/null || df -h "$WORK"
 rm -f "$STATUS/.stop"; is_done setup-status || { rm -f "$STATUS/status.json"; mark_done setup-status; }
 ev setup start
 "${PY[@]}" -c "import torch,sys;print('python',sys.version.split()[0],'torch',torch.__version__);assert torch.cuda.is_available()"
@@ -155,6 +157,9 @@ if is_done prepare; then echo "=== prepare: done in an earlier attempt, skipped"
 ev prepare start
 pyst prepare -m pvs.training.retail prepare --exports "$WORK/rf" --list "$LIST" --out "$WORK/data"
 cp "$WORK/data/stats.json" "$OUT/data_stats.json"
+# the raw exports are no longer needed (prepare copied what it uses into $WORK/data): free their disk
+find "$WORK/rf" -mindepth 1 -maxdepth 1 -type d -exec rm -rf {} + 2>/dev/null || true
+df -h "$WORK"
 ev prepare done; mark_done prepare
 fi
 
@@ -183,6 +188,7 @@ fi
 chain() {
   local P=$1 O=$2 EP=$3 SZ=$4 H=$5 LIM=$6; shift 6
   mkdir -p "$O"
+  df -h "$WORK" | tail -1
   STAGE=${P}train
   local K=${P:-full}; K=${K%:}
   if is_done "$K-train"; then echo "=== $K train: done in an earlier attempt, skipped"; else
