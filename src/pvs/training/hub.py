@@ -117,21 +117,30 @@ def init(repo: str) -> int:
     return 0
 
 
+HEARTBEAT_S = 600
+
+
 def watch(repo: str, status_dir: Path, every: float) -> int:
     api = _api()
     if not api:
         return 0
     repo = resolve(api, repo)
-    last = None
+    last, last_push = None, 0.0
     while not (status_dir / ".stop").exists():
         p = status_dir / "status.json"
         if p.exists():
             raw = p.read_text()
-            if raw != last:
+            # push on every change, and a heartbeat every HEARTBEAT_S even without one: a status that stops
+            # changing while heartbeats continue means a stuck stage; no heartbeats means the session is gone
+            if raw != last or time.time() - last_push >= HEARTBEAT_S:
                 try:
                     st = json.loads(raw)
-                    _push(api, repo, {"README.md": render(st), "status.json": raw}, f"progress: {st.get('line', '')[:120]}")
-                    last = raw
+                    beat = raw == last
+                    st["heartbeat_at"] = time.strftime("%Y-%m-%dT%H:%M:%S+00:00", time.gmtime())
+                    body = json.dumps(st, indent=1)
+                    msg = ("heartbeat (no change): " if beat else "progress: ") + st.get("line", "")[:110]
+                    _push(api, repo, {"README.md": render(st), "status.json": body}, msg)
+                    last, last_push = raw, time.time()
                 except Exception as e:  # noqa: BLE001 - never let the publisher break the run
                     print(f"[hub] progress push failed (will retry): {type(e).__name__}: {e}", flush=True)
         for _ in range(int(every)):
