@@ -102,7 +102,7 @@ STAGE=download; ev download start
   rm -f "$WORK/off/food.parquet"
 ) &
 OFF_PID=$!
-"${CLEAN[@]}" PVS_STAGE=download "$VENV_RF/bin/python" -s -m pvs.training.retail download --list "$LIST" --out "$WORK/rf"
+"${CLEAN[@]}" PVS_STAGE=download "$VENV_RF/bin/python" -s -m pvs.training.retail download --list "$LIST" --out "$WORK/rf" --fork
 wait "$OFF_PID" || { echo "Open Food Facts scan failed:"; tail -30 "$WORK/off/scan.log"; exit 5; }
 tail -40 "$WORK/off/scan.log"
 cp "$WORK/off/scan.log" "$OUT/logs/off_scan.log"

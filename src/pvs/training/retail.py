@@ -39,12 +39,112 @@ def _licence(export: Path) -> str:
     return "unknown"
 
 
-def download(list_path: Path, out: Path, api_key: str) -> dict:
+FORK_REASONS = ("foreign_export", "no generated versions")
+
+
+def _needs_fork(skip: str | None) -> bool:
+    return bool(skip) and any(k in skip for k in FORK_REASONS)
+
+
+def _find_licence(obj) -> str | None:
+    """First licence string anywhere in a Roboflow project JSON (the key name differs between endpoints)."""
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            if k.lower() in ("license", "licence") and isinstance(v, str) and v.strip():
+                return v.strip()
+        for v in obj.values():
+            r = _find_licence(v)
+            if r:
+                return r
+    elif isinstance(obj, list):
+        for v in obj:
+            r = _find_licence(v)
+            if r:
+                return r
+    return None
+
+
+def _match_fork(project_ids, source: str) -> str | None:
+    """Slug of an earlier fork of `source` in our workspace: forks are named <source>-<suffix>."""
+    for pid in project_ids:
+        slug = str(pid).split("/")[-1]
+        if slug == source or (slug.startswith(source + "-") and len(slug) - len(source) <= 8):
+            return slug
+    return None
+
+
+def _own_projects(rf, own_url: str) -> list[str]:
+    ws = rf.workspace(own_url)
+    return [p["id"] if isinstance(p, dict) else str(p) for p in ws.project_list]
+
+
+def _via_fork(rf, api_key: str, own_url: str, ws: str, name: str, dest: Path, allowed, state: dict) -> dict:
+    """Fork a public Universe project into our own workspace, make sure it has a version, download it.
+    Downloading our own project is not a foreign export, so the new-workspace weekly export limit does not apply."""
+    from roboflow.adapters import rfapi
+    from roboflow.core.async_tasks import poll_until_terminal
+
+    rec = {"via": "fork"}
+    try:
+        rec["licence_source"] = _find_licence(rfapi.get_project(api_key, ws, name))
+    except Exception:  # noqa: BLE001 - fall back to the licence in the export
+        rec["licence_source"] = None
+    if rec["licence_source"] and rec["licence_source"] not in allowed:  # do not spend a fork on it
+        return {**rec, "ok": False, "licence": rec["licence_source"],
+                "skip": f"licence not allowed: {rec['licence_source']}"}
+    slug = _match_fork(_own_projects(rf, own_url), name)
+    if slug is None:
+        if state.get("stop"):
+            raise RuntimeError(f"forking stopped earlier: {state['stop']}")
+        try:
+            enq = rfapi.fork_project(api_key, own_url, url=f"https://universe.roboflow.com/{ws}/{name}")
+        except Exception as e:  # noqa: BLE001
+            msg = str(e)
+            if "402" in msg or "credit" in msg.lower() or "quota" in msg.lower():
+                state["stop"] = msg[:150]  # out of credits / image quota: do not hammer the API
+            if "409" in msg or "already" in msg.lower():
+                slug = _match_fork(_own_projects(rf, own_url), name)
+            if slug is None:
+                raise
+        else:
+            final = poll_until_terminal(api_key, own_url, enq["taskId"], polling_url=enq.get("url"), interval=5,
+                                        timeout=1800)
+            if final.get("status") != "completed":
+                raise RuntimeError(f"fork {final.get('status')}: {final.get('error')}")
+            slug = str((final.get("result") or {}).get("id", "")).split("/")[-1] or \
+                _match_fork(_own_projects(rf, own_url), name)
+            if not slug:
+                raise RuntimeError(f"fork finished but the new project was not found: {final}")
+    rec["fork"] = f"{own_url}/{slug}"
+    proj = rf.workspace(own_url).project(slug)
+    versions = sorted(proj.versions(), key=lambda v: int(str(v.version).split("/")[-1]))
+    if versions:
+        n = int(str(versions[-1].version).split("/")[-1])
+    else:  # a fork starts without versions: generate one with no augmentation (prepare resizes later)
+        n = proj.generate_version({"preprocessing": {"auto-orient": True}, "augmentation": {}})
+        rec["generated_version"] = True
+    rec["version"] = n
+    if not any((dest / s).exists() for s in ("train", "valid", "test")):
+        proj.version(n).download("coco", location=str(dest), overwrite=True)
+    rec["licence"] = rec["licence_source"] or _licence(dest)
+    rec["ok"] = rec["licence"] in allowed
+    if not rec["ok"]:
+        rec["skip"] = f"licence not allowed: {rec['licence']}"
+    return rec
+
+
+def download(list_path: Path, out: Path, api_key: str, fork: bool = False, fork_workers: int = 4) -> dict:
+    """Latest version of each listed project (COCO export). With fork=True, a project Roboflow will not export to
+    us (new-workspace weekly limit on exports from other workspaces) or that has no generated version is forked
+    into our own workspace and downloaded from there. Licences are checked the same way either way."""
+    from concurrent.futures import ThreadPoolExecutor
+
     from roboflow import Roboflow
 
     cfg = yaml.safe_load(list_path.read_text())
     try:
         rf = Roboflow(api_key=api_key)
+        own_url = rf.workspace().url if fork else None
     except Exception as e:  # noqa: BLE001
         raise SystemExit(f"Roboflow login failed ({type(e).__name__}: {e}); check the ROBOFLOW_API_KEY secret") from e
     out.mkdir(parents=True, exist_ok=True)
@@ -72,8 +172,30 @@ def download(list_path: Path, out: Path, api_key: str) -> dict:
         print(json.dumps(rec), flush=True)
         report.append(rec)
         prog.update(ok=sum(r.get("ok", False) for r in report), skipped=sum(not r.get("ok", False) for r in report))
+    todo = [r for r in report if fork and not r.get("ok") and _needs_fork(r.get("skip"))]
+    if todo:
+        state: dict = {}
+        fprog = Progress(stage_name("download") + ":fork", len(todo), "projects", every_s=0)
+
+        def work(r):
+            dest = out / f"{r['ws']}__{r['project']}"
+            try:
+                new = _via_fork(rf, api_key, own_url, r["ws"], r["project"], dest, cfg["allowed_licences"], state)
+                return {**r, **new, "direct_skip": r.get("skip"), **({} if not new["ok"] else {"skip": None})}
+            except Exception as e:  # noqa: BLE001
+                return {**r, "via": "fork", "ok": False, "direct_skip": r.get("skip"),
+                        "skip": f"fork: {type(e).__name__}: {e}"[:200]}
+
+        by_key = {(r["ws"], r["project"]): k for k, r in enumerate(report)}
+        with ThreadPoolExecutor(fork_workers) as ex:
+            for new in ex.map(work, todo):
+                new = {k: v for k, v in new.items() if v is not None}
+                report[by_key[(new["ws"], new["project"])]] = new
+                print(json.dumps(new), flush=True)
+                fprog.update(ok=sum(1 for r in report if r.get("via") == "fork" and r.get("ok")))
     (out / "download_report.json").write_text(json.dumps(report, indent=1))
-    return {"ok": sum(r["ok"] for r in report), "skipped": [r for r in report if not r["ok"]]}
+    return {"ok": sum(r["ok"] for r in report), "via_fork": sum(1 for r in report if r.get("via") == "fork" and r["ok"]),
+            "skipped": [r for r in report if not r["ok"]]}
 
 
 def _dhash_both(path: Path) -> tuple[int, int] | None:
@@ -252,6 +374,8 @@ def main(argv=None) -> int:
     d = sub.add_parser("download")
     d.add_argument("--list", default="configs/retail_datasets.yaml")
     d.add_argument("--out", required=True)
+    d.add_argument("--fork", action="store_true", help="fork projects Roboflow will not export to us, then download")
+    d.add_argument("--fork-workers", type=int, default=4)
     p = sub.add_parser("prepare")
     p.add_argument("--exports", required=True)
     p.add_argument("--list", default="configs/retail_datasets.yaml")
@@ -273,7 +397,7 @@ def main(argv=None) -> int:
         if not key:
             print("ROBOFLOW_API_KEY not set", file=sys.stderr)
             return 2
-        print(json.dumps(download(Path(a.list), Path(a.out), key), indent=1))
+        print(json.dumps(download(Path(a.list), Path(a.out), key, a.fork, a.fork_workers), indent=1))
     else:
         s = prepare(Path(a.exports), Path(a.list), Path(a.out))
         print(json.dumps({k: s[k] for k in ("images", "split_images", "boxes_by_split", "brand_boxes_by_split",
