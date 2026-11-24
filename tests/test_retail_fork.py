@@ -139,3 +139,43 @@ def test_no_fork_flag_keeps_old_behaviour(tmp_path, monkeypatch):
                                    "projects": [{"ws": "a", "project": "direct"}, {"ws": "b", "project": "limited"}]}))
     res = retail.download(lst, tmp_path / "rf", "key")
     assert res["ok"] == 1 and not any(c[0] == "fork" for c in w.calls)
+
+
+def test_rate_limit_retry():
+    calls, waits = [], []
+
+    def flaky():
+        calls.append(1)
+        if len(calls) < 3:
+            raise RuntimeError("RoboflowError: Too Many Requests")
+        return "done"
+
+    assert retail._retry_rate_limit(flaky, "x", sleep=waits.append) == "done"
+    assert len(calls) == 3 and len(waits) == 2 and waits[1] > waits[0]
+
+    def other():
+        raise ValueError("404 not found")
+    import pytest
+    with pytest.raises(ValueError):
+        retail._retry_rate_limit(other, "x", sleep=waits.append)
+
+
+def test_status_writes_from_two_processes_never_crash(tmp_path, monkeypatch):
+    import multiprocessing as mp
+
+    monkeypatch.setenv("PVS_STATUS_DIR", str(tmp_path))
+    ctx = mp.get_context("fork")
+    procs = [ctx.Process(target=_hammer_status) for _ in range(4)]
+    for p in procs:
+        p.start()
+    for p in procs:
+        p.join()
+    assert all(p.exitcode == 0 for p in procs)
+    assert json.loads((tmp_path / "status.json").read_text())["n"] >= 0
+
+
+def _hammer_status():
+    from pvs.training.progress import write_status
+
+    for i in range(300):
+        write_status({"n": i})

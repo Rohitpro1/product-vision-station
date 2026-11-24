@@ -107,7 +107,7 @@ def _via_fork(rf, api_key: str, own_url: str, ws: str, name: str, dest: Path, al
             if slug is None:
                 raise
         else:
-            final = poll_until_terminal(api_key, own_url, enq["taskId"], polling_url=enq.get("url"), interval=5,
+            final = poll_until_terminal(api_key, own_url, enq["taskId"], polling_url=enq.get("url"), interval=15,
                                         timeout=1800)
             if final.get("status") != "completed":
                 raise RuntimeError(f"fork {final.get('status')}: {final.get('error')}")
@@ -133,7 +133,27 @@ def _via_fork(rf, api_key: str, own_url: str, ws: str, name: str, dest: Path, al
     return rec
 
 
-def download(list_path: Path, out: Path, api_key: str, fork: bool = False, fork_workers: int = 4) -> dict:
+def _is_rate_limit(e: Exception) -> bool:
+    s = str(e)
+    return "Too Many Requests" in s or "429" in s or "rate limit" in s.lower()
+
+
+def _retry_rate_limit(fn, what: str, attempts: int = 7, base_s: float = 45.0, sleep=time.sleep):
+    """Run fn again after Roboflow's 'Too Many Requests', waiting longer each time (45 s .. ~10 min, with jitter).
+    Safe to repeat: an existing fork is found and reused, a finished download is not fetched again."""
+    for k in range(attempts):
+        try:
+            return fn()
+        except Exception as e:  # noqa: BLE001
+            if not _is_rate_limit(e) or k == attempts - 1:
+                raise
+            wait = min(600.0, base_s * 2 ** k) * random.uniform(0.8, 1.2)
+            print(f"[download] {what}: rate limited, retrying in {wait:.0f}s ({k + 1}/{attempts - 1})", flush=True)
+            sleep(wait)
+    raise RuntimeError("unreachable")
+
+
+def download(list_path: Path, out: Path, api_key: str, fork: bool = False, fork_workers: int = 2) -> dict:
     """Latest version of each listed project (COCO export). With fork=True, a project Roboflow will not export to
     us (new-workspace weekly limit on exports from other workspaces) or that has no generated version is forked
     into our own workspace and downloaded from there. Licences are checked the same way either way."""
@@ -180,7 +200,8 @@ def download(list_path: Path, out: Path, api_key: str, fork: bool = False, fork_
         def work(r):
             dest = out / f"{r['ws']}__{r['project']}"
             try:
-                new = _via_fork(rf, api_key, own_url, r["ws"], r["project"], dest, cfg["allowed_licences"], state)
+                new = _retry_rate_limit(lambda: _via_fork(rf, api_key, own_url, r["ws"], r["project"], dest,
+                                                          cfg["allowed_licences"], state), f"{r['ws']}/{r['project']}")
                 return {**r, **new, "direct_skip": r.get("skip"), **({} if not new["ok"] else {"skip": None})}
             except Exception as e:  # noqa: BLE001
                 return {**r, "via": "fork", "ok": False, "direct_skip": r.get("skip"),
@@ -375,7 +396,7 @@ def main(argv=None) -> int:
     d.add_argument("--list", default="configs/retail_datasets.yaml")
     d.add_argument("--out", required=True)
     d.add_argument("--fork", action="store_true", help="fork projects Roboflow will not export to us, then download")
-    d.add_argument("--fork-workers", type=int, default=4)
+    d.add_argument("--fork-workers", type=int, default=2)
     p = sub.add_parser("prepare")
     p.add_argument("--exports", required=True)
     p.add_argument("--list", default="configs/retail_datasets.yaml")

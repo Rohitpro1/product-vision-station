@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import os
+import threading
 import time
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
@@ -52,10 +53,15 @@ def write_status(st: dict) -> None:
     p = _status_path()
     if not p:
         return
-    p.parent.mkdir(parents=True, exist_ok=True)
-    tmp = p.with_suffix(".tmp")
-    tmp.write_text(json.dumps(st, indent=1))
-    tmp.replace(p)
+    # several processes (one mask job per GPU) and threads write this file: a temp name of their own each, and a
+    # failed status write is never allowed to stop the work it reports on
+    try:
+        p.parent.mkdir(parents=True, exist_ok=True)
+        tmp = p.with_name(f".status.{os.getpid()}.{threading.get_ident()}.tmp")
+        tmp.write_text(json.dumps(st, indent=1))
+        tmp.replace(p)
+    except OSError as e:
+        print(f"[progress] status not written: {type(e).__name__}: {e}", flush=True)
 
 
 def remaining_after(stage: str) -> float:
