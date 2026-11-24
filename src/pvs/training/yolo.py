@@ -177,7 +177,11 @@ def train(a) -> dict:
     if a.fraction:
         kw["fraction"] = a.fraction
     t0 = time.time()
-    m.train(**kw)
+    stop = _watch_epochs(Path(a.out) / "train" / "results.csv", a.epochs, t0)
+    try:
+        m.train(**kw)
+    finally:
+        stop.set()
     best = Path(a.out) / "train" / "weights" / "best.pt"
     rep = {"weights": str(best), "minutes": round((time.time() - t0) / 60, 1),
            "args": {k: (v if isinstance(v, (int, float, str)) else str(v)) for k, v in kw.items()}}
@@ -188,6 +192,48 @@ def train(a) -> dict:
         rep["last_row"] = dict(zip([h.strip() for h in rows[0].split(",")], [x.strip() for x in rows[-1].split(",")]))
     (Path(a.out) / "train_report.json").write_text(json.dumps(rep, indent=1))
     return rep
+
+
+def _watch_epochs(csv: Path, epochs: int, t0: float):
+    """Report each finished epoch to the run status (works with multi-GPU training, where Ultralytics runs in a
+    child process): a background thread reads results.csv every 30 s."""
+    import threading
+
+    from .progress import read_status, write_status
+
+    stop = threading.Event()
+
+    def loop():
+        seen = 0
+        while not stop.wait(30):
+            if not csv.exists():
+                continue
+            rows = [r for r in csv.read_text().strip().splitlines() if r.strip()]
+            if len(rows) - 1 <= seen:
+                continue
+            head = [h.strip() for h in rows[0].split(",")]
+            st = read_status()
+            for r in rows[seen + 1:]:
+                v = dict(zip(head, [x.strip() for x in r.split(",")]))
+
+                def f(k, v=v):
+                    try:
+                        return round(float(v[k]), 4)
+                    except (KeyError, ValueError):
+                        return None
+                st.setdefault("epochs", []).append(
+                    {"epoch": int(float(v.get("epoch", 0) or 0)), "box_map50_95": f("metrics/mAP50-95(B)"),
+                     "mask_map50_95": f("metrics/mAP50-95(M)"), "box_recall": f("metrics/recall(B)"),
+                     "elapsed_s": round(time.time() - t0, 1)})
+            seen = len(rows) - 1
+            st["epochs"] = st["epochs"][-40:]
+            st["line"] = f"[{st.get('stage', 'train')}] epoch {seen}/{epochs} done | box mAP50-95 " \
+                         f"{st['epochs'][-1]['box_map50_95']} | mask {st['epochs'][-1]['mask_map50_95']}"
+            st["updated_at"] = time.strftime("%Y-%m-%dT%H:%M:%S+00:00", time.gmtime())
+            write_status(st)
+
+    threading.Thread(target=loop, daemon=True).start()
+    return stop
 
 
 OCR_URLS = {

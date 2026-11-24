@@ -148,12 +148,17 @@ ev prepare done
 
 STAGE=masks; ev masks start
 D="$WORK/yolo-data"; rm -rf "$D"
+MASK_PIDS=()
 for g in $(seq 0 $((NGPU - 1))); do
   "${CLEAN[@]}" CUDA_VISIBLE_DEVICES="$g" PVS_STAGE=masks "$VENV/bin/python" -s -m pvs.training.yolo dataset \
       --data "$WORK/data" --out "$D" --max-plain "$MAX_PLAIN" --shard "$g" --shards "$NGPU" --device cuda \
       > "$OUT/logs/masks_$g.log" 2>&1 &
+  MASK_PIDS+=($!)
 done
-wait || { echo "mask generation failed:"; tail -20 "$OUT"/logs/masks_*.log; exit 6; }
+# wait for the mask shards only: a bare `wait` would also wait for the never-ending status uploader
+for p in "${MASK_PIDS[@]}"; do
+  wait "$p" || { echo "mask generation failed:"; tail -20 "$OUT"/logs/masks_*.log; exit 6; }
+done
 pyst masks -m pvs.training.yolo finalize --out "$D" | sed -n 1,60p
 cp "$D/dataset_report.json" "$OUT/yolo/"
 ev masks done
